@@ -5,7 +5,7 @@
 \alias{lseguid}
 \alias{useguid}
 \alias{cseguid}
-\title{The SEGUID of a nucleotide or amino-acid sequence}
+\title{The SEGUID of nucleotide and amino-acid sequences}
 \usage{
 seguid(seq)
 
@@ -22,10 +22,12 @@ cseguid(seq)
 A character string.
 }
 \description{
-The SEGUID of a nucleotide or amino-acid sequence
+The SEGUID of nucleotide and amino-acid sequences
 }
 \examples{
 seguid("ACGTACGTACGT")
+seguid("acgtACGTacgt")
+seguid("ACGTACGTACGT") == seguid("acgtACGTacgt")
 
 useguid("aaa")
 
