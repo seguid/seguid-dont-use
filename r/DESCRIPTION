@@ -1,0 +1,15 @@
+Package: seguid
+Version: 0.0.0-9000
+Title: Sequence Globally Unique Identifier (SEGUID) for Nucleotide and Amino-Acid Sequences
+Authors@R: c(
+    person("Henrik", "Bengtsson",
+           role=c("aut", "cre", "cph"),
+           email = "henrikb@braju.com"
+    ))
+Description: An R implementation of the cross-platform, language-independent linear and circular Sequence Globally Unique Identifier (SEGUID) algorithms (<https://github.com/MetabolicEngineeringGroupCBMA/SEGUID-code-snippets/>).
+License: MIT + file LICENSE
+URL: https://github.com/MetabolicEngineeringGroupCBMA/SEGUID-code-snippets/
+BugReports: https://github.com/MetabolicEngineeringGroupCBMA/SEGUID-code-snippets/issues
+Encoding: UTF-8
+RoxygenNote: 7.2.3
+Roxygen: list(markdown = TRUE)

@@ -1,0 +1,10 @@
+^.git
+^.github
+^.Rhistory
+^.Rdump
+^Makefile$
+^port4me[.]R$
+^incl
+^cran-comments.md$
+^.local
+^tests/*.bats$
