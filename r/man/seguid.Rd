@@ -3,7 +3,7 @@
 \name{seguid}
 \alias{seguid}
 \alias{useguid}
-\alias{lseguid}
+\alias{lseguid_blunt}
 \alias{cseguid}
 \title{The SEGUID of nucleotide and amino-acid sequences}
 \usage{
@@ -11,7 +11,7 @@ seguid(seq)
 
 useguid(seq)
 
-lseguid(seq)
+lseguid_blunt(seq)
 
 cseguid(seq)
 }
@@ -30,6 +30,8 @@ seguid("acgtACGTacgt")
 seguid("ACGTACGTACGT") == seguid("acgtACGTacgt")
 
 useguid("aaa")
+
+lseguid_blunt("ACGGGT")
 
 cseguid("attt")
 cseguid("ttta")

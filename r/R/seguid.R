@@ -40,10 +40,14 @@ useguid <- function(seq) {
   checksum
 }
 
-
+#' @examples
+#' lseguid_blunt("ACGGGT")
+#'
 #' @rdname seguid
 #' @export
-lseguid <- function(seq) {
+lseguid_blunt <- function(seq) {
+  seq <- toupper(seq)
+  useguid(min(seq, rc(seq)))
 }
 
 
@@ -59,10 +63,27 @@ cseguid <- function(seq) {
 
 
 
+# ---------------------------------------------------------
 # Internal functions
+# ---------------------------------------------------------
 smallest_rotation <- function(s) {
 }
 
+
+ambiguous_dna_complement <- c(
+    "A" = "T", "C" = "G", "G" = "C",
+    "T" = "A", "M" = "K", "R" = "Y",
+    "W" = "W", "S" = "S", "Y" = "R",
+    "K" = "M", "V" = "B", "H" = "D",
+    "D" = "H", "B" = "V", "X" = "X",
+    "N" = "N", "U" = "A"
+)
+                                  
+# Reverse complement
 rc <- function(sequence) {
+  sequence <- strsplit(sequence, split = "", fixed = TRUE)[[1]]
+  sequence_c <- ambiguous_dna_complement[sequence]
+  stopifnot(!anyNA(sequence_c))
+  sequence_cr <- rev(sequence_c)
+  paste(sequence_cr, collapse = "")
 }
-        
