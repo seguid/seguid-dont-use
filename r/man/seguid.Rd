@@ -34,3 +34,10 @@ cseguid("ttta")
 cseguid("attt") == cseguid("ttta")
 
 }
+\references{
+\enumerate{
+\item Babnigg G, Giometti CS. A database of unique protein sequence
+identifiers for proteome studies. Proteomics.
+2006 Aug;6(16):4514-22. \doi{10.1002/pmic.200600032}.
+}
+}

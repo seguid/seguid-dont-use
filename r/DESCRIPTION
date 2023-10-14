@@ -6,7 +6,7 @@ Authors@R: c(
            role=c("aut", "cre", "cph"),
            email = "henrikb@braju.com"
     ))
-Description: An R implementation of the cross-platform, language-independent linear and circular Sequence Globally Unique Identifier (SEGUID) algorithms (<https://github.com/MetabolicEngineeringGroupCBMA/SEGUID-code-snippets/>).
+Description: An R implementation of the cross-platform, language-independent linear and circular Sequence Globally Unique Identifier (SEGUID) algorithms [Babnigg and Giometti (2006) <doi:10.1002/pmic.200600032>, <https://github.com/MetabolicEngineeringGroupCBMA/SEGUID-code-snippets/>].
 License: MIT + file LICENSE
 URL: https://github.com/MetabolicEngineeringGroupCBMA/SEGUID-code-snippets/
 BugReports: https://github.com/MetabolicEngineeringGroupCBMA/SEGUID-code-snippets/issues
