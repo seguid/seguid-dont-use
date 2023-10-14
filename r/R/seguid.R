@@ -51,6 +51,35 @@ lseguid_blunt <- function(seq) {
 }
 
 
+#' @param watson,crick (character string) Two complementary DNA strands.
+#'
+#' @param overhang (integer) Amount of 3' overhang in the 5' side of
+#' the molecule. A molecule with 5' overhang has a negative value.
+#' 
+#' @rdname seguid
+#' @export
+lseguid_sticky <- function(watson, crick, overhang) {
+  watson <- toupper(watson)
+  crick <- toupper(crick)
+  lw <- nchar(watson)
+  lc <- nchar(crick)
+  
+  if (overhang == 0L && lw == lc) {
+    lseguid_blunt(watson)
+  } else {
+    w <- min(watson, crick)
+    c <- min(crick, watson)
+    o <- min(overhang, lw - lc + overhang)
+    spaces_w <- if (o > 0L) rep(" ", times =  o) else ""
+    spaces_c <- if (o < 0L) rep(" ", times = -o) else ""
+    seq_w <- paste(spaces_w,     w , sep = "")
+    seq_c <- paste(spaces_c, rev(c), sep = "")
+    seq <- paste(seq_w, seq_c, sep = "\n")
+    useguid(seq)
+  }
+}
+
+
 #' @examples
 #' cseguid("attt")
 #' cseguid("ttta")

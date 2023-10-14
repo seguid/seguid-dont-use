@@ -4,6 +4,7 @@
 \alias{seguid}
 \alias{useguid}
 \alias{lseguid_blunt}
+\alias{lseguid_sticky}
 \alias{cseguid}
 \title{The SEGUID of nucleotide and amino-acid sequences}
 \usage{
@@ -13,10 +14,17 @@ useguid(seq)
 
 lseguid_blunt(seq)
 
+lseguid_sticky(watson, crick, overhang)
+
 cseguid(seq)
 }
 \arguments{
 \item{seq}{A character string.}
+
+\item{watson, crick}{(character string) Two complementary DNA strands.}
+
+\item{overhang}{(integer) Amount of 3' overhang in the 5' side of
+the molecule. A molecule with 5' overhang has a negative value.}
 }
 \value{
 A character string.

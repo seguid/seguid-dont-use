@@ -2,6 +2,7 @@
 
 export(cseguid)
 export(lseguid_blunt)
+export(lseguid_sticky)
 export(seguid)
 export(useguid)
 importFrom(base64enc,base64encode)
