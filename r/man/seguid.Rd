@@ -2,16 +2,16 @@
 % Please edit documentation in R/seguid.R
 \name{seguid}
 \alias{seguid}
-\alias{lseguid}
 \alias{useguid}
+\alias{lseguid}
 \alias{cseguid}
 \title{The SEGUID of nucleotide and amino-acid sequences}
 \usage{
 seguid(seq)
 
-lseguid(seq)
-
 useguid(seq)
+
+lseguid(seq)
 
 cseguid(seq)
 }
