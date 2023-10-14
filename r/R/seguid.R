@@ -1,4 +1,4 @@
-#' The SEGUID of a nucleotide or amino-acid sequence
+#' The SEGUID of nucleotide and amino-acid sequences
 #'
 #' @param seq A character string.
 #'
@@ -7,6 +7,11 @@
 #'
 #' @examples
 #' seguid("ACGTACGTACGT")
+#'
+#' @references
+#' 1. Babnigg G, Giometti CS. A database of unique protein sequence
+#'    identifiers for proteome studies. Proteomics.
+#'    2006 Aug;6(16):4514-22. \doi{10.1002/pmic.200600032}.
 #'
 #' @export
 seguid <- function(seq) {
