@@ -1,5 +1,5 @@
-# Version 0.0.0-9001
+# Version 0.0.0-9002
 
 ## New Features
 
- * Add `seguid()`.
+ * Add `seguid()` and `useguid()`.

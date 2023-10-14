@@ -28,17 +28,22 @@ seguid <- function(seq) {
 }
 
 
-#' @rdname seguid
-#' @export
-lseguid <- function(seq) {
-}
-
 #' @examples
 #' useguid("aaa")
 #'
 #' @rdname seguid
 #' @export
 useguid <- function(seq) {
+  checksum <- seguid(seq)
+  checksum <- gsub("+", "-", checksum, fixed = TRUE)
+  checksum <- gsub("/", "_", checksum, fixed = TRUE)
+  checksum
+}
+
+
+#' @rdname seguid
+#' @export
+lseguid <- function(seq) {
 }
 
 
