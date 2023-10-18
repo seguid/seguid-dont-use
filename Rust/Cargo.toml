@@ -1,1 +1,6 @@
-[workspace]
+[package]
+name = "rust_seguid" # the name of the package
+version = "0.0.1"    # the current version, obeying semver
+authors = ["Alice <a@example.com>", "Bob <b@example.com>"]
+[dependencies]
+sha1 = "0.10.6"
