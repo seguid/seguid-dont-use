@@ -43,8 +43,6 @@ _values = "".join(ambiguous_dna_complement.values())
 _complement_table = str.maketrans(_keys + _keys.lower(),
                                   _values + _values.lower())
 
-ambiguous_dna = "".join(ambiguous_dna_complement)
-
 def rc(sequence: str):
     """Reverse complement.
 
@@ -67,7 +65,7 @@ def seguid(seq: str) -> str:
     >>> seguid("aaa")
     'YG7G6b2Kj/KtFOX63j8mRHHoIlE'
 
-    The resulting string is not urs-safe.
+    The resulting string is not url-safe.
 
     For more information about SEGUID, see:
 
@@ -85,8 +83,8 @@ def useguid(seq: str) -> str:
     """Url-safe SEGUID checksum for a sequence (string).
 
     This is the SEGUID checksum where the
-    '+' and '/' characters of standard Base64 encoding are replaced by
-    '-' and '_'.
+    '+' and '/' characters of standard Base64 encoding
+    are replaced by '-' and '_', respectively.
 
     Examples
     --------
@@ -272,8 +270,7 @@ def cseguid(seq: str, fun=smallest_rotation) -> str:
 
 
 def tuple_from_representation(rpr: str) -> tuple:
-    """
-    Generate a tuple from dsDNA text representation.
+    """Generate a tuple from dsDNA text representation.
 
     This function can generate a tuple (watson, crick, overhang)
     from a dsDNA figure such as the one depicted below:
@@ -308,7 +305,7 @@ def tuple_from_representation(rpr: str) -> tuple:
     ('TATGCC', 'gcatac', 1)
 
     """
-    allowed = ambiguous_dna.upper() + ambiguous_dna.lower() + chr(10) + chr(32)
+    allowed = _values.upper() + _values.lower() + chr(10) + chr(32)
 
     cleaned_rpr = "".join(c if c in allowed else chr(32) for c in rpr)
 
@@ -472,10 +469,6 @@ if __name__ == "__main__":
     print(timeit.timeit("cseguid(dna500)",
                         globals=globals(),
                         number=1000))
-
-
-
-
 
 
     # import base64, hashlib
