@@ -1,14 +1,5 @@
 # SEGUID checksums for double stranded linear and circular DNA
 
-
-
-
-
-
-
-
-## Python
-
 [![Documentation Status](https://readthedocs.org/projects/seguid/badge/?version=latest)](https://seguid.readthedocs.io/en/latest/?badge=latest)
 
 Install with:
