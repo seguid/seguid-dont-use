@@ -1,11 +1,20 @@
 # seguid
 
-Functions for calculating uSEGUID, lSEGUID and cSEGUID checksums for biological sequences  
+Functions for calculating uSEGUID, lSEGUID and cSEGUID checksums for biological sequences.
+
+
+## R
+
+
+## C++
 
 
 
+## Rust
 
-# Python
+
+
+## Python
 
 [![Documentation Status](https://readthedocs.org/projects/seguid/badge/?version=latest)](https://seguid.readthedocs.io/en/latest/?badge=latest)
 
