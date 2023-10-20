@@ -16,7 +16,17 @@ release = '0.0.1'
 
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.coverage',
-              'sphinx.ext.napoleon']
+              'sphinx.ext.napoleon'
+              "sphinx.ext.doctest",
+              "sphinx.ext.viewcode",
+              "sphinx.ext.autosummary",
+              "numpydoc",
+              "sphinx.ext.intersphinx",]
+
+intersphinx_mapping = {
+    "biopython": ("https://biopython.org/docs/latest/api/", None),
+    "python": ("http://docs.python.org/3.8", None),
+}
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', "tests.py"]
