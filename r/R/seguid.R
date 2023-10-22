@@ -22,7 +22,7 @@ seguid <- function(seq) {
   seq <- toupper(seq)
 
   if (!is_dna_sequence(seq) && !is_rna_sequence(seq) && !is_amino_acid_sequence(seq)) {
-     stop("Sequence is neither a DNA sequence, an RNA sequence, nor an amino-acid sequence: ", sQuote(seq))
+#     stop("Sequence is neither a DNA sequence, an RNA sequence, nor an amino-acid sequence: ", sQuote(seq))
   }
 
   checksum <- digest::digest(seq, algo = "sha1", serialize = FALSE, raw = TRUE)
@@ -41,7 +41,7 @@ seguid <- function(seq) {
 useguid <- function(seq) {
   seq <- toupper(seq)
   if (!is_dna_sequence(seq) && !is_rna_sequence(seq)) {
-     stop("Sequence is neither a DNA sequence nor an RNA sequence: ", sQuote(seq))
+#     stop("Sequence is neither a DNA sequence nor an RNA sequence: ", sQuote(seq))
   }
 
   checksum <- seguid(seq)
@@ -60,7 +60,7 @@ lseguid_blunt <- function(seq) {
   if (!is_dna_sequence(seq) && !is_rna_sequence(seq)) {
      stop("Sequence is neither a DNA sequence nor an RNA sequence: ", sQuote(seq))
   }
-  useguid(min(seq, rc(seq)))
+  lseguid_sticky(watson = seq, crick = rc(seq), overhang = 0L)
 }
 
 
@@ -72,6 +72,8 @@ lseguid_blunt <- function(seq) {
 #' @rdname seguid
 #' @export
 lseguid_sticky <- function(watson, crick, overhang) {
+#  watson <- if (missing(watson)) watson <- rc(crick)
+#  crick <- if (missing(crick)) crick <- rc(watson)
   watson <- toupper(watson)
   crick <- toupper(crick)
 
@@ -83,22 +85,23 @@ lseguid_sticky <- function(watson, crick, overhang) {
      stop("The 'crick' sequence is neither a DNA sequence nor an RNA sequence: ", sQuote(crick))
   }
 
+  stopifnot(is.numeric(overhang), length(overhang) == 1L, is.finite(overhang))
+
   lw <- nchar(watson)
   lc <- nchar(crick)
   
-  if (overhang == 0L && lw == lc) {
-    lseguid_blunt(watson)
-  } else {
-    w <- min(watson, crick)
-    c <- min(crick, watson)
-    o <- min(overhang, lw - lc + overhang)
-    spaces_w <- if (o > 0L) rep(" ", times =  o) else ""
-    spaces_c <- if (o < 0L) rep(" ", times = -o) else ""
-    seq_w <- paste(spaces_w,     w , sep = "")
-    seq_c <- paste(spaces_c, rev(c), sep = "")
-    seq <- paste(seq_w, seq_c, sep = "\n")
-    useguid(seq)
-  }
+  df <- data.frame(A = c(watson, crick), B = c(crick, watson), C = c(overhang, lw - lc + overhang))
+  o <- order(df$A, df$B, df$C)
+  df <- df[o[1],]
+  w <- df$A
+  c <- df$B
+  o <- df$C
+  spaces_w <- if (o > 0L) space(o) else ""
+  spaces_c <- if (o < 0L) space(-o) else ""
+  seq_w <- paste(spaces_w, w , sep = "")
+  seq_c <- paste(spaces_c, reverse_sequence(c), sep = "")
+  seq <- paste(seq_w, seq_c, sep = "\n")
+  useguid(seq)
 }
 
 
