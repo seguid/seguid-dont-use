@@ -20,6 +20,11 @@
 #' @export
 seguid <- function(seq) {
   seq <- toupper(seq)
+
+  if (!is_dna_sequence(seq) && !is_rna_sequence(seq) && !is_amino_acid_sequence(seq)) {
+     stop("Sequence is neither a DNA sequence, an RNA sequence, nor an amino-acid sequence: ", sQuote(seq))
+  }
+
   checksum <- digest::digest(seq, algo = "sha1", serialize = FALSE, raw = TRUE)
   checksum <- base64encode(checksum)
   checksum <- sub("[\n]+$", "", checksum)
@@ -34,6 +39,11 @@ seguid <- function(seq) {
 #' @rdname seguid
 #' @export
 useguid <- function(seq) {
+  seq <- toupper(seq)
+  if (!is_dna_sequence(seq) && !is_rna_sequence(seq)) {
+     stop("Sequence is neither a DNA sequence nor an RNA sequence: ", sQuote(seq))
+  }
+
   checksum <- seguid(seq)
   checksum <- gsub("+", "-", checksum, fixed = TRUE)
   checksum <- gsub("/", "_", checksum, fixed = TRUE)
@@ -47,6 +57,9 @@ useguid <- function(seq) {
 #' @export
 lseguid_blunt <- function(seq) {
   seq <- toupper(seq)
+  if (!is_dna_sequence(seq) && !is_rna_sequence(seq)) {
+     stop("Sequence is neither a DNA sequence nor an RNA sequence: ", sQuote(seq))
+  }
   useguid(min(seq, rc(seq)))
 }
 
@@ -61,6 +74,15 @@ lseguid_blunt <- function(seq) {
 lseguid_sticky <- function(watson, crick, overhang) {
   watson <- toupper(watson)
   crick <- toupper(crick)
+
+  if (!is_dna_sequence(watson) && !is_rna_sequence(watson)) {
+     stop("The 'watson' sequence is neither a DNA sequence nor an RNA sequence: ", sQuote(watson))
+  }
+
+  if (!is_dna_sequence(crick) && !is_rna_sequence(crick)) {
+     stop("The 'crick' sequence is neither a DNA sequence nor an RNA sequence: ", sQuote(crick))
+  }
+
   lw <- nchar(watson)
   lc <- nchar(crick)
   
@@ -88,6 +110,10 @@ lseguid_sticky <- function(watson, crick, overhang) {
 #' @rdname seguid
 #' @export
 cseguid <- function(seq) {
+  seq <- toupper(seq)
+  if (!is_dna_sequence(seq) && !is_rna_sequence(seq)) {
+     stop("Sequence is neither a DNA sequence nor an RNA sequence: ", sQuote(seq))
+  }
 }
 
 
@@ -95,24 +121,110 @@ cseguid <- function(seq) {
 # ---------------------------------------------------------
 # Internal functions
 # ---------------------------------------------------------
-smallest_rotation <- function(s) {
-}
-
+dna_complement <- c("A" = "T", "C" = "G", "G" = "C", "T" = "A")
+rna_complement <- c("A" = "U", "C" = "G", "G" = "C", "U" = "A")
+amino_acids <- c("A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y")
 
 ambiguous_dna_complement <- c(
-    "A" = "T", "C" = "G", "G" = "C",
-    "T" = "A", "M" = "K", "R" = "Y",
+    dna_complement,
+    rna_complement,
+    "M" = "K", "R" = "Y",
     "W" = "W", "S" = "S", "Y" = "R",
     "K" = "M", "V" = "B", "H" = "D",
     "D" = "H", "B" = "V", "X" = "X",
-    "N" = "N", "U" = "A"
+    "N" = "N"
 )
-                                  
+
+
+is_dna_sequence <- function(seq) {
+  seq <- strsplit(seq, split = "", fixed = TRUE)[[1]]
+  all(seq %in% dna_complement)
+}
+
+is_rna_sequence <- function(seq) {
+  seq <- strsplit(seq, split = "", fixed = TRUE)[[1]]
+  all(seq %in% rna_complement)
+}
+
+is_amino_acid_sequence <- function(seq) {
+  seq <- strsplit(seq, split = "", fixed = TRUE)[[1]]
+  all(seq %in% amino_acids)
+}
+
+
+space <- function(n) {
+  paste(rep(" ", times = n), collapse = "")
+}
+
+reverse_sequence <- function(sequence) {
+  sequence <- strsplit(sequence, split = "", fixed = TRUE)[[1]]
+  paste(sequence, collapse = "")
+} 
+
 # Reverse complement
-rc <- function(sequence) {
+reverse_complement <- function(sequence) {
+  if (!is_dna_sequence(sequence) && !is_rna_sequence(sequence)) {
+     stop("Sequence is neither a DNA sequence nor an RNA sequence: ", sQuote(sequence))
+  }
+  sequence <- toupper(sequence)
   sequence <- strsplit(sequence, split = "", fixed = TRUE)[[1]]
   sequence_c <- ambiguous_dna_complement[sequence]
   stopifnot(!anyNA(sequence_c))
   sequence_cr <- rev(sequence_c)
   paste(sequence_cr, collapse = "")
+}
+
+rc <- reverse_complement
+
+# Smallest rotation of a string.
+#
+# Algorithm described in:
+# 1. Pierre Duval, Jean. 1983. Factorizing Words over an Ordered
+#    Alphabet. Journal of Algorithms & Computational Technology
+#    4 (4) (December 1): 363–381
+# 2. Algorithms on strings and sequences based on Lyndon words,
+#    David Eppstein 2011 <https://gist.github.com/dvberkel/1950267>
+#
+# Examples:
+# smallest_rotation("taaa") == "aaat"
+#
+smallest_rotation <- function(s) {
+#    from array import array as _array
+#    prev <- ""
+#    rep <- 0
+#    ds <- c("u", paste0(s, s))
+#    lens <- nchar(s)
+#    lends <- nchar(ds)
+#    old <- 0
+#    k <- 0
+#    w <- ""
+#    
+#    while (k < lends) {
+#        i <- k
+#        j <- k + 1
+#        
+#        while (j < lends && ds[i] <= ds[j]) {
+#            i <- (ds[i] == ds[j]) and i + 1 or k
+#            j <- j + 1
+#        }
+#        
+#        while (k < i + 1) {
+#            k <- k + (j - i)
+#            prev <- w
+#            w <- ds[old:k]
+#            old <- k
+#            
+#            if (w == prev) {
+#                rep <- rep + 1
+#            } else {
+#                prev <- w
+#                rep <- 1
+#            }
+#
+#            ## Done?
+#            if (nchar(w) * rep == lens) {
+#                return(paste(rep(w, times = rep), collapse = ""))
+#            }
+#        }
+#    }
 }
