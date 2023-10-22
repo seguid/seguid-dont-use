@@ -32,11 +32,13 @@ rprs[[4]] <- "   \
                  \
 "
 
-tuples <- lapply(rprs, FUN = tuple_from_representation)
-void <- mapply(rprs, tuples, FUN = function(rpr, tuple) {
+truth <- list(watson = "TATGCC", crick = "gcatac", overhang = 1L)
+
+tuples <- lapply(rprs, FUN = function(rpr) {
   cat(rpr, sep = "")
+  tuple <- tuple_from_representation(rpr)
   str(tuple)
-  stopifnot(identical(tuple, tuples[[1]]))
+  stopifnot(identical(tuple, truth))
 })
 
 
