@@ -158,6 +158,7 @@ space <- function(n) {
 
 reverse_sequence <- function(sequence) {
   sequence <- strsplit(sequence, split = "", fixed = TRUE)[[1]]
+  sequence <- rev(sequence)
   paste(sequence, collapse = "")
 } 
 
@@ -199,13 +200,13 @@ tuple_from_representation <- function(bfr) {
   ls <- gsub(pattern, "\\1", bfr)
   nls <- nchar(ls) - min(nchar(ls))
   ms <- gsub(pattern, "\\2", bfr)
-
+  
   stopifnot(
     is_dna_sequence(toupper(ms[1])) || is_rna_sequence(toupper(ms[1])),
     is_dna_sequence(toupper(ms[2])) || is_rna_sequence(toupper(ms[2]))
   )
   
-  list(watson = ms[1], cricket = ms[2], overhang = nls[1])
+  list(watson = ms[1], crick = reverse_sequence(ms[2]), overhang = nls[1])
 }  
 
 
