@@ -176,10 +176,43 @@ reverse_complement <- function(sequence) {
 
 rc <- reverse_complement
 
+
+tuple_from_representation <- function(bfr) {
+  ## Split up into lines
+  bfr <- strsplit(bfr, split = "\n", fixed = TRUE)[[1]]
+  
+  ## Drop empty lines
+  bfr <- bfr[!grepl("^[[:space:]]*$", bfr)]
+
+  ## Drop lines with |||
+  bfr <- bfr[!grepl("^[[:space:]]*[|]+[[:space:]]*$", bfr)]
+
+  stopifnot(length(bfr) == 2L)
+
+  ## Drop 5' and 3' prefixes and suffixes
+  bfr <- gsub("([35]'-|-[35]')", "", bfr)
+  
+  ## Trim right
+  bfr <- gsub("[[:space:]]*$", "", bfr)
+  
+  pattern <- "^([[:space:]]*)([^[:space:]]+)$"
+  ls <- gsub(pattern, "\\1", bfr)
+  nls <- nchar(ls) - min(nchar(ls))
+  ms <- gsub(pattern, "\\2", bfr)
+
+  stopifnot(
+    is_dna_sequence(toupper(ms[1])) || is_rna_sequence(toupper(ms[1])),
+    is_dna_sequence(toupper(ms[2])) || is_rna_sequence(toupper(ms[2]))
+  )
+  
+  list(watson = ms[1], cricket = ms[2], overhang = nls[1])
+}  
+
+
 # Smallest rotation of a string.
 #
 # Algorithm described in:
-# 1. Pierre Duval, Jean. 1983. Factorizing Words over an Ordered
+# 1. Pierre Duval , Jean. 1983. Factorizing Words over an Ordered
 #    Alphabet. Journal of Algorithms & Computational Technology
 #    4 (4) (December 1): 363–381
 # 2. Algorithms on strings and sequences based on Lyndon words,
@@ -228,3 +261,4 @@ smallest_rotation <- function(s) {
 #        }
 #    }
 }
+
