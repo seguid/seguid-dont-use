@@ -96,7 +96,7 @@ tuples <- lapply(rprs, FUN = function(rpr) {
 # Test 3
 # ----------------------------------------------------------------
 cat("--------------------------------\n")
-truth <- list(watson = "TATGCC", crick = "ggggcat", overhang = -1L)
+truth <- list(watson = "TATGCC", crick = "ggggca", overhang = -1L)
 
 rprs <- list()
 
@@ -132,5 +132,5 @@ tuples <- lapply(rprs, FUN = function(rpr) {
   cat(rpr, sep = "")
   tuple <- tuple_from_representation(rpr)
   str(tuple)
-#  stopifnot(identical(tuple, truth))
+  stopifnot(identical(tuple, truth))
 })
