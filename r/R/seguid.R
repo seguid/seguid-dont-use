@@ -187,7 +187,6 @@ tuple_from_representation <- function(bfr) {
 
   ## Drop lines with |||
   bfr <- bfr[!grepl("^[[:space:]]*[|]+[[:space:]]*$", bfr)]
-
   stopifnot(length(bfr) == 2L)
 
   ## Drop 5' and 3' prefixes and suffixes
@@ -195,10 +194,10 @@ tuple_from_representation <- function(bfr) {
   
   ## Trim right
   bfr <- gsub("[[:space:]]*$", "", bfr)
-  
+
   pattern <- "^([[:space:]]*)([^[:space:]]+)$"
   ls <- gsub(pattern, "\\1", bfr)
-  nls <- nchar(ls) - min(nchar(ls))
+  nls <- nchar(ls[1]) - nchar(ls[2])
   ms <- gsub(pattern, "\\2", bfr)
   
   stopifnot(
