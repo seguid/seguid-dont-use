@@ -164,10 +164,6 @@ def test_tuple_from_representation():
 
 
 
-
-
-
-
 def test_dcseguid():
 
     pUC19dna = Path("puc19.txt").read_text().strip()
@@ -177,6 +173,7 @@ def test_dcseguid():
     assert nseguid(pUC19dna, circular=True, ds=True) == pUC19_scseguid
 
     assert useguid(smallest_rotation(rc(pUC19dna))) == pUC19_scseguid
+
 
 def test_scseguid():
 
@@ -195,11 +192,11 @@ def test_dlseguid():
 
     dlDNA_dlseguid = 'AWD-dt5-TEua8RbOWfnctJIu9nA'
 
-    assert dlDNA_dlseguid == b64us(sha1("AT\nTA".encode("ASCII").upper()).digest()).decode("ASCII").rstrip("=")
-
     assert nseguid(dlDNA, circular=False, ds=True) == dlDNA_dlseguid
 
     assert useguid("AT\nTA") == dlDNA_dlseguid
+
+    assert b64us(sha1("AT\nTA".encode("ASCII").upper()).digest()).decode("ASCII").rstrip("=") == dlDNA_dlseguid
 
     #  TA
     # TA
@@ -212,6 +209,8 @@ def test_dlseguid():
 
     assert useguid(" TA\nAT") == dlDNA2_dlseguid
 
+    assert b64us(sha1(" TA\nAT".encode("ASCII").upper()).digest()).decode("ASCII").rstrip("=") == dlDNA2_dlseguid
+
     # TA
     #  TA
 
@@ -222,6 +221,8 @@ def test_dlseguid():
     assert nseguid(*dlDNA3, circular=False, ds=True) == dlDNA3_dlseguid
 
     assert useguid("TA\n AT") == dlDNA3_dlseguid
+
+    assert b64us(sha1("TA\n AT".encode("ASCII").upper()).digest()).decode("ASCII").rstrip("=") == dlDNA3_dlseguid
 
     # CTATAG
     #   TA
@@ -234,6 +235,8 @@ def test_dlseguid():
 
     assert useguid("  AT\nGATATC") == dlDNA4_dlseguid
 
+    assert b64us(sha1("  AT\nGATATC".encode("ASCII").upper()).digest()).decode("ASCII").rstrip("=") == dlDNA4_dlseguid
+
     #   AT
     # GATATC
 
@@ -245,6 +248,7 @@ def test_dlseguid():
 
     assert useguid("  AT\nGATATC") == dlDNA5_dlseguid
 
+    assert b64us(sha1("  AT\nGATATC".encode("ASCII").upper()).digest()).decode("ASCII").rstrip("=") == dlDNA5_dlseguid
 
 
 def test_slseguid():
@@ -256,10 +260,8 @@ def test_slseguid():
     assert nseguid(slDNA, circular=False, ds=False) == slDNA_dlseguid
 
 
-
-
-
 x = "tcgcgcgtttcggtgatgacggtgAAAAcctctgacacatgcagctcccggattgtactgagagtgc"
+
 
 def test_lseguid_blunt():
     assert (
