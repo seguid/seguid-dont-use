@@ -579,7 +579,7 @@ def nseguid(watson: str,
             w = watson
 
     msg = f"{o*chr(32)}{w}{chr(10)}{-o*chr(32)}{c[::-1]}".rstrip()
-    print(msg)
+    #print(msg)
     return cksumfunc(msg,
                      encoding=encoding)
 
