@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-The seguid module.
-
-The seguid module supplies ten functions for calculations of checksums of
+The seguid module provides ten functions for calculations of checksums of
 biological sequences. Som auxillary functions are also provided.
 
 """
@@ -86,6 +84,143 @@ def rc(sequence: str,
                              f"{' '.join(not_in_table)} not permitted.")
     return sequence.translate(COMPLEMENT_TABLE)[::-1]
 
+
+def smallest_rotation(s):
+    """Smallest rotation of a string using a fast C-algorithm.
+
+    This implementation uses the pydivsufsort python extension for the
+    libdivsufsort algorithm by Yuta Mori, written in C.
+
+    The python extension (https://github.com/louisabraham/pydivsufsort)
+    is available as a python package installable from PyPi:
+    ::
+
+         pip install pydivsufsort
+
+    The C-code for libdivsufsort can be found here:
+    https://github.com/y-256/libdivsufsort
+
+    Note that this function is case-sensitive.
+
+    Examples
+    --------
+    >>> smallest_rotation("taaa")
+    'aaat'
+    >>> smallest_rotation("abaabaaabaababaaabaaababaab")
+    'aaabaaababaababaabaaabaabab'
+    >>> smallest_rotation("abaabaaabaababaaabaaaBabaab")
+    'Babaababaabaaabaababaaabaaa'
+    """
+    from pydivsufsort import min_rotation
+    k = min_rotation(s)
+    return s[k:] + s[:k]
+
+
+def smallest_rotation_py(s):
+    """Smallest rotation of a string, pure Python.
+
+    Algorithm described in:
+
+    Pierre Duval, Jean. 1983. Factorizing Words
+    over an Ordered Alphabet. Journal of Algorithms & Computational Technology
+    4 (4) (December 1): 363–381. and Algorithms on strings and sequences based
+    on Lyndon words, David Eppstein 2011.
+    https://gist.github.com/dvberkel/1950267
+
+    This is a pure python implementation, considerably slower than the
+    smallest_rotation function above.
+
+    This should only be used if a pure python implementation is required.
+
+    Note that this function is case-sensitive.
+
+    Examples
+    --------
+    >>> smallest_rotation_py("taaa")
+    'aaat'
+    >>> smallest_rotation_py("abaabaaabaababaaabaaababaab")
+    'aaabaaababaababaabaaabaabab'
+    >>> smallest_rotation_py("abaabaaabaababaaabaaaBabaab")
+    'Babaababaabaaabaababaaabaaa'
+    """
+    from array import array as _array
+    prev, rep = None, 0
+    ds = _array("u", 2 * s)
+    lens, lends = len(s), len(ds)
+    old = 0
+    k = 0
+    w = ""
+    while k < lends:
+        i, j = k, k + 1
+        while j < lends and ds[i] <= ds[j]:
+            i = (ds[i] == ds[j]) and i + 1 or k
+            j += 1
+        while k < i + 1:
+            k += j - i
+            prev = w
+            w = ds[old:k]
+            old = k
+            if w == prev:
+                rep += 1
+            else:
+                prev, rep = w, 1
+            if len(w) * rep == lens:
+                return "".join(w * rep)
+
+
+def tuple_from_representation(rpr: str,
+                              allowed: str = ("ABCDGHKMSTVWNabcdghkmstvwn"
+                                              + chr(10) + chr(32))) -> tuple:
+    """Generate a tuple from dsDNA text representation.
+
+    This function can generate a tuple (watson, crick, overhang)
+    from a dsDNA figure such as the ones depicted below. The resulting
+    tuple can be used as an argument for the lSEGUID_sticky or nseguid
+    functions. See these functions for the definition of watson, crick and
+    overhang.
+    ::
+
+
+            5'-TATGCC-3'
+               |||||
+           3'-catacg-5'
+
+        or:
+
+               TATGCC
+               |||||
+              catacg
+
+        or:
+
+               TATGCC
+              catacg
+
+
+    The three figures above represent the same dsDNA molecule.
+
+
+    Examples
+    --------
+    >>> s = \"""
+    ...         5'-TATGCC-3'
+    ...            |||||
+    ...        3'-catacg-5'  \"""
+    >>> tuple_from_representation(s)
+    ('TATGCC', 'gcatac', 1)
+    """
+    cleaned_rpr = "".join(c if c in allowed else chr(32) for c in rpr)
+
+    cleaned_rpr = "".join(ln for ln in
+                          cleaned_rpr.splitlines(keepends=True) if ln.strip())
+
+    cleaned_rpr = dedent(cleaned_rpr)
+
+    w, c = [x.rstrip() for x in cleaned_rpr.splitlines()]
+
+    overhang = len(w) - len(w.lstrip()) - (len(c) - len(c.lstrip()))
+
+    return w.strip(), c.strip()[::-1], overhang
 
 def seguid(seq: str,
            encoding=base64.standard_b64encode) -> str:
@@ -188,7 +323,7 @@ def lseguid_blunt(seq: str) -> str:
     >>> useguid("gcatac" + chr(10) + "CGTATG")
     'b0Xa5pLe4LNd5T8fhGWHicCI_f4'
     """
-    return dsseguid(watson=seq, crick="", overhang=0)
+    return nseguid(watson=seq, crick="", overhang=0)
 
 
 def lseguid_sticky(watson: str, crick: str, overhang: int) -> str:
@@ -278,89 +413,7 @@ def lseguid_sticky(watson: str, crick: str, overhang: int) -> str:
     >>> lseguid_sticky("gcatac", "GTATGC", 0)
     'b0Xa5pLe4LNd5T8fhGWHicCI_f4'
     """
-    return dsseguid(watson=watson, crick=crick, overhang=overhang)
-
-
-def smallest_rotation(s):
-    """Smallest rotation of a string using a fast algorithm.
-
-    This implementation uses the pydivsufsort python extension for the
-    libdivsufsort algorithm by Yuta Mori, written in C.
-
-    The python extension (https://github.com/louisabraham/pydivsufsort)
-    is distributed as a python package installable from PyPi:
-    ::
-
-         pip install pydivsufsort
-
-    The C-code for libdivsufsort can be found here:
-    https://github.com/y-256/libdivsufsort
-
-    Note that this function is case-sensitive.
-
-    Examples
-    --------
-    >>> smallest_rotation("taaa")
-    'aaat'
-    >>> smallest_rotation("abaabaaabaababaaabaaababaab")
-    'aaabaaababaababaabaaabaabab'
-    >>> smallest_rotation("abaabaaabaababaaabaaaBabaab")
-    'Babaababaabaaabaababaaabaaa'
-    """
-    from pydivsufsort import min_rotation
-    k = min_rotation(s)
-    return s[k:] + s[:k]
-
-
-def smallest_rotation_py(s):
-    """Smallest rotation of a string, pure Python.
-
-    Algorithm described in:
-
-    Pierre Duval, Jean. 1983. Factorizing Words
-    over an Ordered Alphabet. Journal of Algorithms & Computational Technology
-    4 (4) (December 1): 363–381. and Algorithms on strings and sequences based
-    on Lyndon words, David Eppstein 2011.
-    https://gist.github.com/dvberkel/1950267
-
-    This is a pure python implementation, considerably slower than the
-    smallest_rotation function above.
-    This should only be used if a pure python implementation is requred.
-
-    Note that this function is case-sensitive.
-
-    Examples
-    --------
-    >>> smallest_rotation_py("taaa")
-    'aaat'
-    >>> smallest_rotation_py("abaabaaabaababaaabaaababaab")
-    'aaabaaababaababaabaaabaabab'
-    >>> smallest_rotation_py("abaabaaabaababaaabaaaBabaab")
-    'Babaababaabaaabaababaaabaaa'
-    """
-    from array import array as _array
-    prev, rep = None, 0
-    ds = _array("u", 2 * s)
-    lens, lends = len(s), len(ds)
-    old = 0
-    k = 0
-    w = ""
-    while k < lends:
-        i, j = k, k + 1
-        while j < lends and ds[i] <= ds[j]:
-            i = (ds[i] == ds[j]) and i + 1 or k
-            j += 1
-        while k < i + 1:
-            k += j - i
-            prev = w
-            w = ds[old:k]
-            old = k
-            if w == prev:
-                rep += 1
-            else:
-                prev, rep = w, 1
-            if len(w) * rep == lens:
-                return "".join(w * rep)
+    return nseguid(watson=watson, crick=crick, overhang=overhang)
 
 
 def cseguid(seq: str, srfunc=smallest_rotation) -> str:
@@ -378,73 +431,56 @@ def cseguid(seq: str, srfunc=smallest_rotation) -> str:
     >>> cseguid("ttta")
     'oopV-6158nHJqedi8lsshIfcqYA'
     """
-    return dsseguid(watson=seq, circular=True, srfunc=srfunc)
+    return nseguid(watson=seq, circular=True, srfunc=srfunc)
 
 
-def tuple_from_representation(rpr: str,
-                              allowed: str = ("ABCDGHKMSTVWNabcdghkmstvwn" +
-                                              chr(10) + chr(32))) -> tuple:
-    """Generate a tuple from dsDNA text representation.
-
-    This function can generate a tuple (watson, crick, overhang)
-    from a dsDNA figure such as the ones depicted below. The resulting
-    tuple can be used as an argument for the lSEGUID_sticky or dsSEGUID
-    functions.
-    ::
-
-
-            5'-TATGCC-3'
-               |||||
-           3'-catacg-5'
-
-        or:
-
-               TATGCC
-               |||||
-              catacg
-
-        or:
-
-               TATGCC
-              catacg
+def nseguid(watson: str,
+            crick: str = "",
+            overhang: int = 0,
+            circular: bool = False,
+            ds: bool = True,
+            srfunc: callable = smallest_rotation,
+            rc: callable = rc,
+            encoding: callable = base64.urlsafe_b64encode,
+            cksumfunc: callable = seguid) -> str:
+    """SEGUID checksums for linear or circular single or double stranded DNA.
 
 
-    The three figures above represent the same dsDNA molecule.
+    aaaaa
+
+    Double stranded, circular DNA (dcSEGUID)
+    ========================================
+    Most bacterial plasmids are good examples of this kind of molecule.
 
 
-    Examples
-    --------
-    >>> s = \"""
-    ...         5'-TATGCC-3'
-    ...            |||||
-    ...        3'-catacg-5'  \"""
-    >>> tuple_from_representation(s)
-    ('TATGCC', 'gcatac', 1)
-    """
-    cleaned_rpr = "".join(c if c in allowed else chr(32) for c in rpr)
-
-    cleaned_rpr = "".join(ln for ln in
-                          cleaned_rpr.splitlines(keepends=True) if ln.strip())
-
-    cleaned_rpr = dedent(cleaned_rpr)
-
-    w, c = [x.rstrip() for x in cleaned_rpr.splitlines()]
-
-    overhang = len(w) - len(w.lstrip()) - (len(c) - len(c.lstrip()))
-
-    return w.strip(), c.strip()[::-1], overhang
+    Single stranded, circular DNA  (scSEGUID)
+    =========================================
+    Some bacteriphages such as the M13 phage (Genbank NC_003287) is an example
+    of this kind of molecule. This molecule has no complementary strand, so
+    not a part of the checksum calculation. It does have n equally valid
+    rotations where n is equal to the number of bases in the DNA string.
+    The SEGUID for a single stranded, circular DNA (scSEGUID) is defined as
+    the sha1 digest of the smallest rotation of the DNA string in uppercase.
 
 
-def dsseguid(watson: str,
-             crick: str = "",
-             overhang: int = 0,
-             circular: bool = False,
-             srfunc: callable = smallest_rotation,
-             rc: callable = rc,
-             encoding: callable = base64.urlsafe_b64encode) -> str:
-    """Double stranded SEGUID checksums for linear (lSEGUID) or circular (cSEGUID) dsDNA.
 
-    This function can calculate lSEGUID or cSEGUID checksums depending on the
+    scSEGUID()
+
+
+
+    CtfRtztP5kiC7OSqXWAIuiJfpok
+
+
+    https://www.ncbi.nlm.nih.gov/nuccore/NC_003287.2
+
+    Double stranded, linear DNA (dlSEGUID)
+    ======================================
+
+    Single stranded, linear DNA (slSEGUID)
+    ======================================
+
+
+    This function can calculate checksums or cSEGUID checksums depending on the
     arguments given.
 
     The crick strand is an optional argument, if not given it is inferred from
@@ -463,7 +499,7 @@ def dsseguid(watson: str,
     sequence is interpreted as a circular double stranded DNA sequence.
     The overhang is assumed to be zero for circular sequences.
 
-    For a circular sequence dsSEGUID is the uSEGUID checksum calculated for
+    For a circular sequence nseguid is the uSEGUID checksum calculated for
     the lexicographically smallest of the minimum rotation of the watson and
     the minimum rotation of the crick strand. The optional fun argument sets
     a function for the caclulation of minimum rotation for a string. The fun
@@ -473,45 +509,79 @@ def dsseguid(watson: str,
     The rc function is used by default to deduce the complementary sequence if
     needed. Another rc function can be used by setting the rc argument.
 
-    The dsSEGUID function uses the url-safe Base64 encoding by default, but
+    The nseguid function uses the url-safe Base64 encoding by default, but
     this can be changed using the ´encoding´ argument.
+
+    ttta
+    aaat
 
     Examples
     --------
-    >>> dsseguid("TATGCC", "gcatac", 1)
+    >>> nseguid("TATGCC", "gcatac", 1)
     'Jv9Z9JJ0IYnG-dTPBGwhDyAqnmU'
-    >>> dsseguid("gcatac", "TATGCC", 1)
+    >>> nseguid("gcatac", "TATGCC", 1)
     'Jv9Z9JJ0IYnG-dTPBGwhDyAqnmU'
-    >>> dsseguid("TATGCC")
+    >>> nseguid("TATGCC")
     'jZwQDKGSBpAF1wOh9icAv13hC2c'
-    >>> dsseguid("ggcata")
+    >>> nseguid("ggcata")
     'jZwQDKGSBpAF1wOh9icAv13hC2c'
-    >>> dsseguid("attt", circular=True)
+    >>> nseguid("attt", circular=True)
     'oopV-6158nHJqedi8lsshIfcqYA'
-    >>> dsseguid("ttta", circular=True)
+    >>> nseguid("ttta", circular=True)
     'oopV-6158nHJqedi8lsshIfcqYA'
-    >>> dsseguid("ttta", overhang=1, circular=True)
+    >>> nseguid("ttta", ds=True)
+    '3mcb7TbmWRazzfCKk5iohMo7REg'
+    >>> nseguid("ttta", ds=False)
+    '8zCvKwyQAEsbPtC4yTV-pY0H93Q'
+    >>> nseguid("ttta", "TAAA", ds=False)  #
+    Traceback (most recent call last):
+        ...
+    ValueError: ssDNA can only have a watson strand.
+    >>> nseguid("ttta", overhang=1, circular=True)
     Traceback (most recent call last):
         ...
     ValueError: Circular sequence with overhang != 0.
+    >>> nseguid("ttta", overhang=1)
+    Traceback (most recent call last):
+        ...
+    ValueError: Overhang != 0 requires a crick strand.
     """
-
-    watson = watson.upper() if watson else rc(crick)
-    crick = crick.upper() if crick else rc(watson)
-
-    if overhang and not crick:
-        raise ValueError("Overhang != 0 requre a crick strand.")
-
+    if not ds and (watson and crick):
+        raise ValueError("ssDNA can only have a watson strand.")
     if circular and overhang:
         raise ValueError("Circular sequence with overhang != 0.")
+    if overhang and not crick:
+        raise ValueError("Overhang != 0 requires a crick strand.")
 
-    if circular:
-        msg = min(srfunc(watson), srfunc(crick))
+    watson = watson.upper()
+
+    w, c, o = "", "", 0
+
+    if ds:
+
+        crick = crick.upper() if crick else rc(watson)
+
+        if circular:
+
+            w = min(srfunc(watson), srfunc(crick))
+
+        else:
+
+            w, c, o = min(((watson, crick, overhang),
+                           (crick, watson, len(watson) - len(crick) + overhang)))
     else:
-        w, c, o = min(((watson, crick, overhang),
-                       (crick, watson, len(watson) - len(crick) + overhang)))
-        msg = f"{o*chr(32)}{w}{chr(10)}{-o*chr(32)}{c[::-1]}"
-    return seguid(msg, encoding=encoding)
+        if circular:
+
+            w = srfunc(watson)
+
+        else:
+
+            w = watson
+
+    msg = f"{o*chr(32)}{w}{chr(10)}{-o*chr(32)}{c[::-1]}".rstrip()
+    #print(msg)
+    return cksumfunc(msg,
+                     encoding=encoding)
 
 
 if __name__ == "__main__":
@@ -534,7 +604,7 @@ if __name__ == "__main__":
     ATATTGCCCACAATCAGCTC""".replace("\n", "")
 
     print("pure Python : ", end="")
-    print(timeit.timeit("cseguid(dna500, fun=smallest_rotation_py)",
+    print(timeit.timeit("cseguid(dna500, srfunc=smallest_rotation_py)",
                         globals=globals(),
                         number=1000))
     print("pydivsufsort: ", end="")
@@ -548,3 +618,8 @@ if __name__ == "__main__":
     # sha512_digest = hashlib.sha512(data).digest()
     # sha512t24u = base64.urlsafe_b64encode(sha512_digest[:24]).decode(" ascii")
     # sha512t24u
+
+
+    # for watson, crick in [("",""),("a",""),("","b"),("a","b")]:
+    #     r = bool(watson and crick)
+    #     print(r, watson, crick)
