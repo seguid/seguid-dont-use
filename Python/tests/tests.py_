@@ -4,7 +4,7 @@ from seguid import tuple_from_representation
 from seguid import useguid
 from seguid import cseguid
 from seguid import rc
-from seguid import _nseguid
+from seguid import nseguid
 
 from seguid import smallest_rotation
 from seguid import smallest_rotation_py
@@ -42,60 +42,148 @@ def test_smallest_rotation_py():
 
 def test_tuple_from_representation():
     """docstring."""
+    rprs = {}
 
-    rpr = """
+    rprs[0] = """
+
+        5'-TATGCC-3'
+           |||||
+       3'-catacg-5'
+
+      """
+
+    rprs[1] = """
+
+        5'-TATGCC-3'
+           |||||
+        3-catacg-5'
+
+      """
+
+    rprs[2] = """
+           TATGCC
+           |||||
+          catacg
+      """
+    rprs[3] = """
        TATGCC
       catacg
+
     """
 
-    assert tuple_from_representation(rpr) == ('TATGCC', 'gcatac', 1)
+    for i, rpr in rprs.items():
 
-    rpr = """
+        assert tuple_from_representation(rpr) == ('TATGCC', 'gcatac', 1)
+
+    rprs[0] = """
+
+        5'-TATGCC-3'
+           ||||||
+        3'-atacgg-5'
+
+      """
+
+    rprs[1] = """
+
+        5'-TATGCC-3'
+           ||||||
+         3-atacgg-5'
+
+      """
+
+    rprs[2] = """
+           TATGCC
+           ||||||
+           atacgg
+      """
+    rprs[3] = """
        TATGCC
        atacgg
     """
 
-    assert tuple_from_representation(rpr) == ('TATGCC', 'ggcata', 0)
+    for i, rpr in rprs.items():
+        assert tuple_from_representation(rpr) == ('TATGCC', 'ggcata', 0)
 
-    rpr = """
+    rprs[0] = """
+
+        5'-TATGCC-3'
+           ||||||
+        3'- tacgggg-5'
+
+      """
+
+    rprs[1] = """
+
+        5'-TATGCC-3'
+           ||||||
+         3- tacgggg-5'
+
+      """
+
+    rprs[2] = """
+           TATGCC
+           ||||||
+            tacgggg
+      """
+    rprs[3] = """
        TATGCC
         tacgggg
     """
 
-    assert tuple_from_representation(rpr) == ('TATGCC', 'ggggcat', -1)
+    for i, rpr in rprs.items():
+        assert tuple_from_representation(rpr) == ('TATGCC', 'ggggcat', -1)
 
-    rpr = """
+    rprs[0] = """
+
+        5'-TATGCC-3'
+           ||||||
+        3'-  acgggg-5'
+
+      """
+
+    rprs[1] = """
+
+        5'-TATGCC-3'
+           ||||||
+         3-  acgggg-5'
+
+      """
+
+    rprs[2] = """
+           TATGCC
+           ||||||
+             acgggg
+      """
+    rprs[3] = """
        TATGCC
          acgggg
     """
 
-    assert tuple_from_representation(rpr) == ('TATGCC', 'ggggca', -2)
+    for i, rpr in rprs.items():
+        assert tuple_from_representation(rpr) == ('TATGCC', 'ggggca', -2)
 
-
-def cs(arg):
-    return b64us(sha1(arg.encode("ASCII")).digest()).decode("ASCII").rstrip("=")
 
 
 def test_dcseguid():
 
     pUC19dna = Path("puc19.txt").read_text().strip()
 
-    sg = 'TjUtGuJLLCwtboFklW_FlQUAyWo'
+    pUC19_scseguid = "n-NZfWfjHgA7wKoEBU6zfoXib_0"
 
-    assert _nseguid(pUC19dna, circular=True, ds=True) == sg
+    assert nseguid(pUC19dna, circular=True, ds=True) == pUC19_scseguid
 
-    assert useguid(Path("pUC19msg.txt").read_text().strip()) == sg
+    assert useguid(smallest_rotation(rc(pUC19dna))) == pUC19_scseguid
 
 
 def test_scseguid():
 
     m13dna = Path("M13.txt").read_text().strip()
 
-    sg = 'MXhEZHw_nj5AlSnYstCXSluezVU'
+    m13_scseguid = 'aAjgnsF9cPI6cu8IQ81sYnstVzU'
 
-    assert _nseguid(m13dna, circular=True, ds=False) == sg
+    assert nseguid(m13dna, circular=True, ds=False) == m13_scseguid
 
-    assert cs(Path("M13msg.txt").read_text().strip()) == sg
+    assert useguid(smallest_rotation(m13dna)) == m13_scseguid
 
 
 def test_dlseguid():
@@ -104,11 +192,11 @@ def test_dlseguid():
 
     dlDNA_dlseguid = 'AWD-dt5-TEua8RbOWfnctJIu9nA'
 
-    assert _nseguid(dlDNA, circular=False, ds=True) == dlDNA_dlseguid
+    assert nseguid(dlDNA, circular=False, ds=True) == dlDNA_dlseguid
 
     assert useguid("AT\nTA") == dlDNA_dlseguid
 
-    assert cs("AT\nTA") == dlDNA_dlseguid
+    assert b64us(sha1("AT\nTA".encode("ASCII").upper()).digest()).decode("ASCII").rstrip("=") == dlDNA_dlseguid
 
     #  TA
     # TA
@@ -117,11 +205,11 @@ def test_dlseguid():
 
     dlDNA2_dlseguid = 'ZXq8qWnfgGJ69cxyVURZ-m69_8Y'
 
-    assert _nseguid(*dlDNA2, circular=False, ds=True) == dlDNA2_dlseguid
+    assert nseguid(*("TA", "TA", 1), circular=False, ds=True) == dlDNA2_dlseguid
 
     assert useguid(" TA\nAT") == dlDNA2_dlseguid
 
-    assert cs(" TA\nAT") == dlDNA2_dlseguid
+    assert b64us(sha1(" TA\nAT".encode("ASCII").upper()).digest()).decode("ASCII").rstrip("=") == dlDNA2_dlseguid
 
     # TA
     #  TA
@@ -130,11 +218,11 @@ def test_dlseguid():
 
     dlDNA3_dlseguid = 'YrR7e0wVUeGwO8ftuRJLJfKlbPw'
 
-    assert _nseguid(*dlDNA3, circular=False, ds=True) == dlDNA3_dlseguid
+    assert nseguid(*dlDNA3, circular=False, ds=True) == dlDNA3_dlseguid
 
     assert useguid("TA\n AT") == dlDNA3_dlseguid
 
-    assert cs("TA\n AT") == dlDNA3_dlseguid
+    assert b64us(sha1("TA\n AT".encode("ASCII").upper()).digest()).decode("ASCII").rstrip("=") == dlDNA3_dlseguid
 
     # CTATAG
     #   TA
@@ -143,11 +231,11 @@ def test_dlseguid():
 
     dlDNA4_dlseguid = '2njX4EGB3Is9Yvz3wmnAc3EagUI'
 
-    assert _nseguid(*dlDNA4, circular=False, ds=True) == dlDNA4_dlseguid
+    assert nseguid(*dlDNA4, circular=False, ds=True) == dlDNA4_dlseguid
 
     assert useguid("  AT\nGATATC") == dlDNA4_dlseguid
 
-    assert cs("  AT\nGATATC") == dlDNA4_dlseguid
+    assert b64us(sha1("  AT\nGATATC".encode("ASCII").upper()).digest()).decode("ASCII").rstrip("=") == dlDNA4_dlseguid
 
     #   AT
     # GATATC
@@ -156,11 +244,11 @@ def test_dlseguid():
 
     dlDNA5_dlseguid = '2njX4EGB3Is9Yvz3wmnAc3EagUI'
 
-    assert _nseguid(*dlDNA5, circular=False, ds=True) == dlDNA5_dlseguid
+    assert nseguid(*dlDNA5, circular=False, ds=True) == dlDNA5_dlseguid
 
     assert useguid("  AT\nGATATC") == dlDNA5_dlseguid
 
-    assert cs("  AT\nGATATC") == dlDNA5_dlseguid
+    assert b64us(sha1("  AT\nGATATC".encode("ASCII").upper()).digest()).decode("ASCII").rstrip("=") == dlDNA5_dlseguid
 
 
 def test_slseguid():
@@ -169,9 +257,11 @@ def test_slseguid():
 
     slDNA_slseguid = "Ax_RG6hzSrMEEWoCO1IWMGska-4"
 
-    assert _nseguid(slDNA, circular=False, ds=False) == slDNA_slseguid
+    assert nseguid(slDNA, circular=False, ds=False) == slDNA_slseguid
 
-    assert cs("AT") == slDNA_slseguid
+    assert b64us(sha1("AT".encode("ASCII").upper()).digest()).decode("ASCII").rstrip("=") == slDNA_slseguid
+
+
 
 
 x = "tcgcgcgtttcggtgatgacggtgAAAAcctctgacacatgcagctcccggattgtactgagagtgc"
@@ -179,9 +269,9 @@ x = "tcgcgcgtttcggtgatgacggtgAAAAcctctgacacatgcagctcccggattgtactgagagtgc"
 
 def test_lseguid_blunt():
     assert (
-        lseguid_blunt(x) ==
-        useguid(rc(x)+chr(10)+x[::-1]) ==
-        'R7VPKJXvozX-xPk0wFeNxbZd_dM'
+        lseguid_blunt(x)
+        == useguid(rc(x)+chr(10)+x[::-1])
+        == 'R7VPKJXvozX-xPk0wFeNxbZd_dM'
     )
 
 def test_lseguid_sticky():
@@ -224,39 +314,10 @@ NP_313053_1 = "MKALTARQQEVFDLIRDHISQTGMPPTRAEIAQRLGFRSPNAAEEHLKALARKGVIEIVSGASRG
 
 def test_cseguid():
 
-    assert cseguid(x) == 'zH8Vfbq2vCWgr-LyPj2pYoMCAJs'
+    assert cseguid(x) == "naaZmDzyMa58OsNXROe5SvjC7WU"
     assert cseguid(x) == cseguid(x.upper())
     assert cseguid(x) == cseguid(x.lower())
 
 
-def _____test_speed():
-
-    import timeit
-
-    dna500 = """\
-    CAGTGAAATCAGAACCCATGAGGGCGGACGAGTCATATCC
-    GGTATTAGAGATTTATACAGTCTGGACACCTAGCGAACCG
-    ACTTGAACCACCAGGATTGAAGACGAAACCTTAGAGTATA
-    GTAATGCCGTACGTGTCGGGGCCCACGCATCTAGGACAGG
-    ATCGCATGATGGTGGTTTTAGTTGCCGTTGTACCGGATTT
-    CTTAGTAGTATAAGCATGAGGATAAGTGAAACCGGGTGAA
-    GGTGGTTTGTGTGAGTGCCTAATAGTCCGACTCCCCGAGG
-    GGAGTAGGCACTGCCTTCAGCGTTCAGTTATTGAGCACGT
-    CCGCCCGGCGAAAGATGGCTTTGAGCTCCACTGACAGCCA
-    GGGACCGCGTGCATGAGGCTAGAGCAGAGTCGTTGACAGT
-    GAGATTAGATTGATCATTTTTATCTGAAACGGCAGCATAC
-    CGACAGTTGTTCTCAAGCAAAGTGGTCTTGCCTAGATTCA
-    ATATTGCCCACAATCAGCTC""".replace("\n", "")
-
-    print("pure Python : ", end="")
-    print(timeit.timeit("cseguid(dna500, minrotation=min_rotation)",
-                        globals=globals(),
-                        number=1000))
-    print("pydivsufsort: ", end="")
-    print(timeit.timeit("cseguid(dna500)",
-                        globals=globals(),
-                        number=1000))
-
-
 if __name__ == "__main__":
-    pytest.main([__file__, "-vvv", "-s"])
+    pytest.main([__file__, "-vv", "-s"])
