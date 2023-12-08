@@ -1,16 +1,18 @@
-from seguid import lseguid_blunt
-from seguid import lseguid_sticky
-from seguid import tuple_from_representation
-from seguid import useguid
-from seguid import cseguid
-from seguid import rc
-from seguid import _nseguid
+#!/usr/bin/env python3
 
-from seguid import smallest_rotation
-from seguid import smallest_rotation_py
+from seguid import tuple_from_repr
+from seguid import repr_from_tuple
+
+from seguid import rc
+from seguid import min_rotation_py
+
+from seguid import seguid
+from seguid import slseguid
+from seguid import scseguid
+from seguid import dlseguid
+from seguid import dcseguid
 
 from pathlib import Path
-
 from hashlib import sha1
 from base64 import urlsafe_b64encode as b64us
 
@@ -26,210 +28,165 @@ def test_rc():
         rc("GTZ", strict=True)
 
 
-def test_smallest_rotation():
+def test_min_rotation():
     """docstring."""
+    from pydivsufsort import min_rotation
+
+    def smallest_rotation(s):
+        i = min_rotation(s)
+        return s[i:] + s[:i]
+
     assert smallest_rotation("taaa") == 'aaat'
     assert smallest_rotation("abaabaaabaababaaabaaababaab") == 'aaabaaababaababaabaaabaabab'
     assert smallest_rotation("abaabaaabaababaaabaaaBabaab") == 'Babaababaabaaabaababaaabaaa'
 
 
-def test_smallest_rotation_py():
+def test_min_rotation_py():
     """docstring."""
+
+    def smallest_rotation_py(s):
+        i = min_rotation_py(s)
+        return s[i:] + s[:i]
+
     assert smallest_rotation_py("taaa") == 'aaat'
     assert smallest_rotation_py("abaabaaabaababaaabaaababaab") == 'aaabaaababaababaabaaabaabab'
     assert smallest_rotation_py("abaabaaabaababaaabaaaBabaab") == 'Babaababaabaaabaababaaabaaa'
 
 
-def test_tuple_from_representation():
+def test_anneal():
+    pass
+
+def test_tuple_from_repr():
     """docstring."""
 
     rpr = """
-       TATGCC
-      catacg
+      -TATGCC
+      catacg-
     """
 
-    assert tuple_from_representation(rpr) == ('TATGCC', 'gcatac', 1)
+    assert tuple_from_repr(rpr) == ('TATGCC', 'gcatac', 1)
 
-    rpr = """
-       TATGCC
-       atacgg
+    rpr = """     # ERRR
+        TATGCC
+        atacgg
     """
 
-    assert tuple_from_representation(rpr) == ('TATGCC', 'ggcata', 0)
+    with pytest.raises(ValueError):
+        tuple_from_repr(rpr)
 
     rpr = """
        TATGCC
         tacgggg
     """
 
-    assert tuple_from_representation(rpr) == ('TATGCC', 'ggggcat', -1)
+    assert tuple_from_repr(rpr) == ('TATGCC', 'ggggcat', -1)
 
     rpr = """
        TATGCC
          acgggg
     """
 
-    assert tuple_from_representation(rpr) == ('TATGCC', 'ggggca', -2)
+    assert tuple_from_repr(rpr) == ('TATGCC', 'ggggca', -2)
+
+
+def test_repr_from_tuple():
+    assert repr_from_tuple(*('TATGCC', 'ggggca', -2)) == "TATGCC--\n--acgggg"
+
+NP_313053_1 = ("MKALTARQQEVFDLIRDHISQTGMPPTRAEIAQRLGFRSPNAAEEHLKALARKGVIEIVSG"
+               "ASRGIRLLQEEEEGLPLVGRVAAGEPLLAQQHIEGHYQVDPSLFKPNADFLLRVSGMSMKD"
+               "IGIMDGDLLAVHKTQDVRNGQVVVARIDDEVTVKRLKKQGNKVELLPENSEFKPIVVDLRQ"
+               "QSFTIEGLAVGVIRNGDWL")
+
+def test_seguid():
+    assert seguid("AT") == 'seguid:Ax/RG6hzSrMEEWoCO1IWMGska+4'
+    assert seguid("At") == 'seguid:Ax/RG6hzSrMEEWoCO1IWMGska+4'
+    assert seguid("aT") == 'seguid:Ax/RG6hzSrMEEWoCO1IWMGska+4'
+    assert seguid("at") == 'seguid:Ax/RG6hzSrMEEWoCO1IWMGska+4'
+
+    assert seguid(NP_313053_1) == 'seguid:2c4yjE+JqjvzYF1d0OmUh8pCpz8'
 
 
 def cs(arg):
     return b64us(sha1(arg.encode("ASCII")).digest()).decode("ASCII").rstrip("=")
 
 
-def test_dcseguid():
+def test_slseguid():
+    assert slseguid("AT") == 'slseguid:Ax_RG6hzSrMEEWoCO1IWMGska-4'
+    assert slseguid("At") == 'slseguid:Ax_RG6hzSrMEEWoCO1IWMGska-4'
+    assert slseguid("aT") == 'slseguid:Ax_RG6hzSrMEEWoCO1IWMGska-4'
+    assert slseguid("at") == 'slseguid:Ax_RG6hzSrMEEWoCO1IWMGska-4'
 
-    pUC19dna = Path("puc19.txt").read_text().strip()
+    assert cs("AT") in slseguid("AT")
 
-    sg = 'TjUtGuJLLCwtboFklW_FlQUAyWo'
-
-    assert _nseguid(pUC19dna, circular=True, ds=True) == sg
-
-    assert useguid(Path("pUC19msg.txt").read_text().strip()) == sg
+    assert slseguid(NP_313053_1) == 'slseguid:2c4yjE-JqjvzYF1d0OmUh8pCpz8'
 
 
 def test_scseguid():
-
     m13dna = Path("M13.txt").read_text().strip()
-
-    sg = 'MXhEZHw_nj5AlSnYstCXSluezVU'
-
-    assert _nseguid(m13dna, circular=True, ds=False) == sg
-
-    assert cs(Path("M13msg.txt").read_text().strip()) == sg
+    sc = 'scseguid:aAjgnsF9cPI6cu8IQ81sYnstVzU'
+    assert scseguid(m13dna) == sc
+    assert cs(Path("M13msg.txt").read_text().strip()) in sc
 
 
 def test_dlseguid():
 
+    # AT
+    # TA
+
     dlDNA = "AT"
-
     dlDNA_dlseguid = 'AWD-dt5-TEua8RbOWfnctJIu9nA'
-
-    assert _nseguid(dlDNA, circular=False, ds=True) == dlDNA_dlseguid
-
-    assert useguid("AT\nTA") == dlDNA_dlseguid
-
+    assert dlseguid(dlDNA, rc(dlDNA), 0) == f"dlseguid:{dlDNA_dlseguid}"
+    assert dlDNA_dlseguid in slseguid("AT\nTA")
     assert cs("AT\nTA") == dlDNA_dlseguid
 
-    #  TA
-    # TA
+    #  -AT
+    #  AT-
 
-    dlDNA2 = ("TA", "TA", 1)
+    dlDNA2 = ("AT", "TA", 1)
+    dlDNA2_dlseguid = 'JwB2eUmZkCNjyWAv471JeUbiSDM'
+    assert dlseguid(*dlDNA2) == f"dlseguid:{dlDNA2_dlseguid}"
+    assert dlDNA2_dlseguid in slseguid("-AT\nAT-")
+    assert cs("-AT\nAT-") == dlDNA2_dlseguid
 
-    dlDNA2_dlseguid = 'ZXq8qWnfgGJ69cxyVURZ-m69_8Y'
 
-    assert _nseguid(*dlDNA2, circular=False, ds=True) == dlDNA2_dlseguid
+    # TA-
+    # -TA
 
-    assert useguid(" TA\nAT") == dlDNA2_dlseguid
-
-    assert cs(" TA\nAT") == dlDNA2_dlseguid
-
-    # TA
-    #  TA
-
-    dlDNA3 = ("TA", "TA", -1)
-
-    dlDNA3_dlseguid = 'YrR7e0wVUeGwO8ftuRJLJfKlbPw'
-
-    assert _nseguid(*dlDNA3, circular=False, ds=True) == dlDNA3_dlseguid
-
-    assert useguid("TA\n AT") == dlDNA3_dlseguid
-
-    assert cs("TA\n AT") == dlDNA3_dlseguid
+    dlDNA3 = ("TA", "AT", -1)
+    dlDNA3_dlseguid = 'bv0UOR12eWrBeaAx79PNZvveviU'
+    assert dlseguid(*dlDNA3) == f"dlseguid:{dlDNA3_dlseguid}"
+    assert dlDNA3_dlseguid in slseguid("AT-\n-AT")
+    assert cs("AT-\n-AT") == dlDNA3_dlseguid
 
     # CTATAG
     #   TA
 
     dlDNA4 = ("CTATAG", "AT", -2)
-
-    dlDNA4_dlseguid = '2njX4EGB3Is9Yvz3wmnAc3EagUI'
-
-    assert _nseguid(*dlDNA4, circular=False, ds=True) == dlDNA4_dlseguid
-
-    assert useguid("  AT\nGATATC") == dlDNA4_dlseguid
-
-    assert cs("  AT\nGATATC") == dlDNA4_dlseguid
+    dlDNA4_dlseguid = 'np3hncfQvOh8rZ8Co1Ts_02NXg4'
+    assert dlseguid(*dlDNA4) == f"dlseguid:{dlDNA4_dlseguid}"
+    assert dlDNA4_dlseguid in slseguid("--AT--\nGATATC")
+    assert cs("--AT--\nGATATC") == dlDNA4_dlseguid
 
     #   AT
     # GATATC
 
     dlDNA5 = ("AT", "CTATAG", 2)
-
-    dlDNA5_dlseguid = '2njX4EGB3Is9Yvz3wmnAc3EagUI'
-
-    assert _nseguid(*dlDNA5, circular=False, ds=True) == dlDNA5_dlseguid
-
-    assert useguid("  AT\nGATATC") == dlDNA5_dlseguid
-
-    assert cs("  AT\nGATATC") == dlDNA5_dlseguid
+    dlDNA5_dlseguid = 'np3hncfQvOh8rZ8Co1Ts_02NXg4'
+    assert dlseguid(*dlDNA5) == f"dlseguid:{dlDNA4_dlseguid}"
+    assert dlDNA5_dlseguid in slseguid("--AT--\nGATATC")
+    assert cs("--AT--\nGATATC") == dlDNA5_dlseguid
 
 
-def test_slseguid():
 
-    slDNA = "AT"
-
-    slDNA_slseguid = "Ax_RG6hzSrMEEWoCO1IWMGska-4"
-
-    assert _nseguid(slDNA, circular=False, ds=False) == slDNA_slseguid
-
-    assert cs("AT") == slDNA_slseguid
+def test_dcseguid():
+    pUC19dna = Path("puc19.txt").read_text().strip()
+    dcsg = 'dcseguid:zhw8Yrxfo3FO5DDccx4PamBVPCQ'
+    assert dcseguid(pUC19dna, rc(pUC19dna)) == dcsg
+    w, c = Path("pUC19msg.txt").read_text().splitlines()
+    assert dlseguid(w,c[::-1], 0) == 'dlseguid:zhw8Yrxfo3FO5DDccx4PamBVPCQ'
 
 
-x = "tcgcgcgtttcggtgatgacggtgAAAAcctctgacacatgcagctcccggattgtactgagagtgc"
-
-
-def test_lseguid_blunt():
-    assert (
-        lseguid_blunt(x) ==
-        useguid(rc(x)+chr(10)+x[::-1]) ==
-        'R7VPKJXvozX-xPk0wFeNxbZd_dM'
-    )
-
-def test_lseguid_sticky():
-
-    case1 = tuple_from_representation("""
-       TATGCC
-      catacg
-    """)
-    assert case1 == ('TATGCC', 'gcatac', 1)
-    assert lseguid_sticky(*case1) == 'Jv9Z9JJ0IYnG-dTPBGwhDyAqnmU'
-    assert lseguid_sticky(*case1) == useguid(" gcatac\nCCGTAT")
-
-    case2 = tuple_from_representation("""
-      gTATGC
-      catacg
-    """)
-    assert case2 == ('gTATGC', 'gcatac', 0)
-    assert lseguid_sticky(*case2) == 'b0Xa5pLe4LNd5T8fhGWHicCI_f4'
-    assert lseguid_sticky(*case2) == lseguid_blunt("gcatac") # Here nseguid is different!
-
-    case3 = tuple_from_representation("""
-      gTATGC
-       atacgc
-
-    """)
-    assert case3 == ('gTATGC', 'cgcata', -1)
-
-    assert lseguid_sticky(*case3) == '3PZNLU2tPDYs78AJP3mg5w1uEw4'
-
-    assert lseguid_sticky(*case3) == useguid("cgcata\n CGTATg")
-
-
-def test_useguid():
-
-    assert useguid(x) == "cl5ukSUdlvZeBaBLEUhxisdRaL8"
-    assert useguid(x.upper()) == "cl5ukSUdlvZeBaBLEUhxisdRaL8"
-    assert useguid(x.lower()) == "cl5ukSUdlvZeBaBLEUhxisdRaL8"
-
-NP_313053_1 = "MKALTARQQEVFDLIRDHISQTGMPPTRAEIAQRLGFRSPNAAEEHLKALARKGVIEIVSGASRGIRLLQEEEEGLPLVGRVAAGEPLLAQQHIEGHYQVDPSLFKPNADFLLRVSGMSMKDIGIMDGDLLAVHKTQDVRNGQVVVARIDDEVTVKRLKKQGNKVELLPENSEFKPIVVDLRQQSFTIEGLAVGVIRNGDWL"
-
-def test_cseguid():
-
-    assert cseguid(x) == 'zH8Vfbq2vCWgr-LyPj2pYoMCAJs'
-    assert cseguid(x) == cseguid(x.upper())
-    assert cseguid(x) == cseguid(x.lower())
-
-
-def _____test_speed():
+def _test_speed():
 
     import timeit
 
