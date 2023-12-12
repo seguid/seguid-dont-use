@@ -3,10 +3,18 @@
 """
 seguid.
 
-The seguid module provides functions for calculations of SEGUID checksums for
-DNA sequences. Some auxillary functions are also provided.
+The seguid module provides four functions for calculations of SEGUID checksums
+for biological sequences with varying topologies
 
-The functions can be made to work without external dependencies.
+slseguid (s)ingle-stranded (l)inear SEGUID
+scseguid (s)ingle-stranded (c)ircular SEGUID
+dlseguid (d)ouble-stranded (l)inear SEGUID
+dcseguid (d)ouble-stranded (c)ircular SEGUID
+
+Some auxillary functions are also provided.
+
+The functions can be made to work without external dependencies, but
+scseguid and dcseguid are considerably faster with pydivsufsort installed.
 
 """
 
@@ -24,93 +32,20 @@ import hashlib
 import base64
 from textwrap import dedent
 from typing import Callable
-
-# TODO assert complement table function
+from warnings import warn
+from array import array
+from seguid.manip import rc
+from seguid.tables import COMPLEMENT_TABLE
+from seguid.asserts import assert_in_alphabet
 
 try:
     from pydivsufsort import min_rotation
 except ModuleNotFoundError:
-    pass
-    # säg till!
-
-# Definition of Complementary DNA Symbols
-COMPLEMENT_TABLE = str.maketrans("GATC", "CTAG")
-
-# Definition of Complementary IUPAC Ambigous DNA Symbols
-COMPLEMENT_TABLE_IUPAC = str.maketrans(
-    "ABCDGHKMSTVWN", "TVGHCDMKSABWN"
-)
+    warn("pydivsufsort not found.", ImportWarning)  # TODO Is this the right way?
 
 
-def rc(sequence: str,
-       table: dict = COMPLEMENT_TABLE_IUPAC):
-    """Reverse complement of sequence.
-
-    Returns the reverse complement for a DNA strand.
-    The default complement table accepts the ambiguous codes
-    suggested by IUPAC (Cornish-Bowden, 1985).
-
-    The optional table argument is a dictionary containing
-    ASCII codes for the transformation.
-
-    The table below was adapted from Cornish-Bowden, 1985:
-
-    ======== ================== ============ ======================================
-    Symbol   Meaning            Complement   Origin of designation
-    ======== ================== ============ ======================================
-     G        G                  C            Guanine
-     A        A                  T            Adenine
-     T        T                  A            Thymine
-     C        C                  G            Cytosine
-     R        A or G             Y            puRine
-     Y        C or T             R            pYrimidine
-     M        A or C             K            aMino
-     K        G or T             M            Ketone
-     S        C or G             S            Strong interaction (3 H bonds)
-     W        A or T             W            Weak interaction (2 H bonds)
-     H        A or C or T        D            not-G, H (follows G in the alphabet)
-     B        C or G or T        V            not-A, B follows A
-     V        A or C or G        B            not-T (not-U), V follows U
-     D        A or G or T        H            not-C, D follows C
-     N        G or A or T or C   N            aNy
-    ======== ================== ============ ======================================
-
-
-    Cornish-Bowden, A. (1985). Nomenclature for incompletely specified
-    bases in nucleic acid sequences: recommendations 1984.
-    Nucleic Acids Research, 13(9), 3021–3030.
-    https://www.ncbi.nlm.nih.gov/pmc/articles/PMC341218
-
-    The function raises a ValueError if characters are found that are not in
-    the translation table.
-
-    This implementation
-
-    Examples
-    --------
-    >>> rc("GTT")
-    'AAC'
-    >>> from seguid import rc
-    >>> rc("GTa")
-    Traceback (most recent call last):
-        ...
-    ValueError: Character(s) a not permitted.
-    >>> rc("GTa".upper())
-    'TAC'
-    """
-    not_in_table = set(
-        c for c in sequence if c not in (chr(k) for k in table.keys())
-    )
-    if not_in_table:
-        raise ValueError(
-            "Character(s) " f"{' '.join(not_in_table)} not in table."
-        )
-    result = sequence.translate(COMPLEMENT_TABLE)[::-1]
-    return result
-
-
-def min_rotation_py(s: bytes,
-                    table: list =) -> int:
+def min_rotation_py(s: str,
+                    table: dict = COMPLEMENT_TABLE) -> int:
     """Start position for the smallest rotation of a string s (pure Python).
 
     Algorithm described in:
@@ -158,10 +93,9 @@ def min_rotation_py(s: bytes,
     '-baaabaaaBabaababaabaaabaaba'
     """
 
-    # validate table
-    # följ tabellen!
+    assert_table(table)
+    assert_in_alphabet(s, alphabet = set(table.keys()))
 
-    from array import array
     prev, rep = None, 0
     ds = array("u", 2 * s)
     lens = len(s)
@@ -187,30 +121,35 @@ def min_rotation_py(s: bytes,
                 return old - i
 
 
-def anneal(watson: str,
+def assert_anneal(watson: str,  #
            crick: str,
            overhang: int,
-           table: ...) -> bool:
+           table: dict = COMPLEMENT_TABLE) -> bool:
     """docstring."""
-    watson, crick = watson.upper(), crick.upper() # Ta bort?
-    # kolla efter attribut "tabell"
-    # validera tecken watson och crick
-    # kolla att overhang är integer och abs() < min length
+
+    assert_table(table)
+    assert_in_alphabet(watson, alphabet=set(table.keys()))
+    assert_in_alphabet(crick, alphabet=set(table.keys()))
+
+    assert isinstance(overhang, int)
+    assert -len(watson) < overhang
+    assert overhang < len(crick)
 
     up = f"{overhang*chr(45)}{watson}{chr(45)*(-overhang+len(crick)-len(watson))}"
     dn = f"{-overhang*chr(45)}{rc(crick)}{chr(45)*(overhang+len(watson)-len(crick))}"
 
-    up = watson[max(-overhang, 0) : max(overhang + len(watson), len(crick))]
-    dn = rc(crick, table=)[max(overhang, 0) : max(overhang + len(watson), len(crick))]
-    return up != dn
+    up = watson[max(-overhang, 0): max(overhang + len(watson), len(crick))]
+    dn = rc(crick, table=table)[max(overhang, 0): max(overhang + len(watson), len(crick))]
+
+    if up != dn:
+        raise ValueError("Mismatched basepairs.")
 
 
 def tuple_from_repr(
     rpr: str,
-    allowed: str = "GATCgatc",  # samma tabell som innan
+    table: dict = COMPLEMENT_TABLE,
     space: str = "-. ",
-    sep: str = "\n",
-    strict: bool = True,
+    sep: str = "\n"
 ) -> tuple:
     """Generate a tuple from dsDNA text representation.
 
@@ -243,14 +182,19 @@ def tuple_from_repr(
     >>> tuple_from_repr(s) == tuple_from_repr(t)
     True
     """
-    if strict:
-        nono = set(c for c in rpr if c not in allowed + space + sep)
-        if nono:
-            raise ValueError(
-                f"Character(s) {' '.join(nono)} not in allowed: {allowed}"
-            )
 
-    cleaned_rpr = "".join(c if c in allowed + sep else chr(32) for c in rpr)
+    assert isinstance(space, (str, set))
+    assert isinstance(sep, (str, set))
+
+    if not isinstance(space, set):
+        space = set(space)
+
+    if not isinstance(sep, set):
+        sep = set(sep)
+
+    assert_in_alphabet(rpr, alphabet=set(table.keys()) | space | sep)
+
+    # cleaned_rpr = "".join(c if c in allowed + sep else " " for c in rpr)
 
     cleaned_rpr = sep.join(ln for ln in cleaned_rpr.split(sep) if ln.strip())
 
@@ -267,21 +211,16 @@ def tuple_from_repr(
 
     result = watson.strip(), crick.strip()[::-1], overhang
 
-    if strict and not anneal(*result):
-        # if not all([x==y if (x.strip() and y.strip()) else True
-        #            for x, y in zip(w.upper(), rc(c.upper())[::-1])]):
-        #     raise ValueError("Mismatched basepairs.")
-        # breakpoint()
-        raise ValueError("Mismatched basepairs.")
+    assert_anneal(*result)
+
     return result
 
 
-
 def repr_from_tuple(
-    watson: str, crick: str, overhang: int, strict: bool = True
+    watson: str, crick: str, overhang: int
 ) -> str:
-    if strict and not anneal(watson, crick, overhang):
-        raise ValueError("Mismatched basepairs.")
+
+    assert_anneal(watson, crick, overhang)
 
     msg = (
         f"{overhang*chr(45)}{watson}{chr(45)*(-overhang+len(crick)-len(watson))}"
@@ -292,10 +231,12 @@ def repr_from_tuple(
     return msg
 
 def _seguid(seq: str,
-            table
+            table: dict = COMPLEMENT_TABLE,
             encoding=base64.standard_b64encode,
             prefix: str = "seguid:") -> str:
-    # validera prefix
+    assert isinstance(prefix, str)
+    assert callable(encoding)
+    assert_in_alphabet(seq, alphabet=set(table.keys()))
     m = hashlib.sha1()
     m.update(seq.encode("ASCII").upper())
     hs = encoding(m.digest())
