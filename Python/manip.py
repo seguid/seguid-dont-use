@@ -1,8 +1,8 @@
-from asserts import *
-from tables import *
+from seguid.asserts import *
+from seguid.tables import COMPLEMENT_TABLE
 
 def rotate(seq: str, amount: int = 0) -> str:
-    """Rotates a circular, genomic sequence a certain amount.
+    """Rotates a circular, DNA sequence a certain amount.
 
     Rotates sequence 'seq', 'amount' number of symbols to the right.
     A rotation 'amount' is the same as a rotation 'amount + n * len(seq)'
@@ -45,25 +45,44 @@ def rotate(seq: str, amount: int = 0) -> str:
 
 
 def complementary(seq: str, table: dict = COMPLEMENT_TABLE) -> str:
-    """Complement of a genomic sequence.
+    """Complement of a DNA sequence.
     """
     ## Validate 'table':
     assert_table(table)
-    
+
     ## Validate 'seq':
     assert_in_alphabet(seq, alphabet = set(table.keys()))
-    
+
     return seq.translate(table)
 
 
 def reverse(seq) -> str:
-    """Reverses a genomic sequence
+    """Reverses a DNA sequence
     """
     assert isinstance(seq, str),    "Argument 'seq' must be an string"
     return seq[::-1]
 
 
 def rc(seq: str, table: dict = COMPLEMENT_TABLE) -> str:
-    """Reverse complement of a genomic sequence.
+    """Reverse complement of sequence.
+
+    Returns the reverse complement for a DNA strand.
+
+    The default complement table accepts GATC only.
+
+    The tables module defines and alternative table containing the
+    ambiguous codes suggested by IUPAC.
+
+    Examples
+    --------
+    >>> rc("GTT")
+    'AAC'
+    >>> from seguid import rc
+    >>> rc("GTa")
+    Traceback (most recent call last):
+        ...
+    ValueError: Character(s) a not permitted.
+    >>> rc("GTa".upper())
+    'TAC'
     """
     return reverse(complementary(seq, table = table))
