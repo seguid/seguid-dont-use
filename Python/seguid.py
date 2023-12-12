@@ -25,24 +25,25 @@ import base64
 from textwrap import dedent
 from typing import Callable
 
+# TODO assert complement table function
 
 try:
     from pydivsufsort import min_rotation
 except ModuleNotFoundError:
     pass
+    # säg till!
 
 # Definition of Complementary DNA Symbols
-COMPLEMENT_TABLE = str.maketrans("GATCgatc", "CTAGctag")
+COMPLEMENT_TABLE = str.maketrans("GATC", "CTAG")
 
 # Definition of Complementary IUPAC Ambigous DNA Symbols
 COMPLEMENT_TABLE_IUPAC = str.maketrans(
-    "ABCDGHKMSTVWNabcdghkmstvwn", "TVGHCDMKSABWNtvghcdmksabwn"
+    "ABCDGHKMSTVWN", "TVGHCDMKSABWN"
 )
 
 
-def rc(
-    sequence: str, table: dict = COMPLEMENT_TABLE_IUPAC, strict: bool = False
-):
+def rc(sequence: str,
+       table: dict = COMPLEMENT_TABLE_IUPAC):
     """Reverse complement of sequence.
 
     Returns the reverse complement for a DNA strand.
@@ -80,39 +81,36 @@ def rc(
     Nucleic Acids Research, 13(9), 3021–3030.
     https://www.ncbi.nlm.nih.gov/pmc/articles/PMC341218
 
-    The optional boolean strict argument can optionally check for
-    characters not defined in the translation table and raise a
-    ValueError if such are encountered in the sequence.
+    The function raises a ValueError if characters are found that are not in
+    the translation table.
 
     This implementation
 
     Examples
     --------
-    >>> rc("Gat")
-    'atC'
-    >>> rc("GTT", strict=True)
+    >>> rc("GTT")
     'AAC'
     >>> from seguid import rc
-    >>> rc("GTZ", strict=True)
+    >>> rc("GTa")
     Traceback (most recent call last):
         ...
-    ValueError: Character(s) Z not permitted.
-    >>>
-    rc("GTT", table=COMPLEMENT_TABLE, strict=True)
+    ValueError: Character(s) a not permitted.
+    >>> rc("GTa".upper())
+    'TAC'
     """
-    if strict:
-        not_in_table = set(
-            c for c in sequence if c not in (chr(k) for k in table.keys())
+    not_in_table = set(
+        c for c in sequence if c not in (chr(k) for k in table.keys())
+    )
+    if not_in_table:
+        raise ValueError(
+            "Character(s) " f"{' '.join(not_in_table)} not in table."
         )
-        if not_in_table:
-            raise ValueError(
-                "Character(s) " f"{' '.join(not_in_table)} not permitted."
-            )
     result = sequence.translate(COMPLEMENT_TABLE)[::-1]
     return result
 
 
-def min_rotation_py(s: bytes) -> int:
+def min_rotation_py(s: bytes,
+                    table: list =) -> int:
     """Start position for the smallest rotation of a string s (pure Python).
 
     Algorithm described in:
@@ -159,8 +157,11 @@ def min_rotation_py(s: bytes) -> int:
     >>> s[13:] + s[:13]
     '-baaabaaaBabaababaabaaabaaba'
     """
-    from array import array
 
+    # validate table
+    # följ tabellen!
+
+    from array import array
     prev, rep = None, 0
     ds = array("u", 2 * s)
     lens = len(s)
@@ -186,22 +187,28 @@ def min_rotation_py(s: bytes) -> int:
                 return old - i
 
 
-def anneal(watson: str, crick: str, overhang: int) -> bool:
+def anneal(watson: str,
+           crick: str,
+           overhang: int,
+           table: ...) -> bool:
     """docstring."""
-    watson, crick = watson.upper(), crick.upper()
+    watson, crick = watson.upper(), crick.upper() # Ta bort?
+    # kolla efter attribut "tabell"
+    # validera tecken watson och crick
+    # kolla att overhang är integer och abs() < min length
 
     up = f"{overhang*chr(45)}{watson}{chr(45)*(-overhang+len(crick)-len(watson))}"
     dn = f"{-overhang*chr(45)}{rc(crick)}{chr(45)*(overhang+len(watson)-len(crick))}"
 
     up = watson[max(-overhang, 0) : max(overhang + len(watson), len(crick))]
-    dn = rc(crick)[max(overhang, 0) : max(overhang + len(watson), len(crick))]
-    return up.upper() != dn.upper()
+    dn = rc(crick, table=)[max(overhang, 0) : max(overhang + len(watson), len(crick))]
+    return up != dn
 
 
 def tuple_from_repr(
     rpr: str,
-    allowed: str = "GATCgatc",
-    space: str = "- ",
+    allowed: str = "GATCgatc",  # samma tabell som innan
+    space: str = "-. ",
     sep: str = "\n",
     strict: bool = True,
 ) -> tuple:
@@ -269,6 +276,7 @@ def tuple_from_repr(
     return result
 
 
+
 def repr_from_tuple(
     watson: str, crick: str, overhang: int, strict: bool = True
 ) -> str:
@@ -283,8 +291,18 @@ def repr_from_tuple(
 
     return msg
 
+def _seguid(seq: str,
+            table
+            encoding=base64.standard_b64encode,
+            prefix: str = "seguid:") -> str:
+    # validera prefix
+    m = hashlib.sha1()
+    m.update(seq.encode("ASCII").upper())
+    hs = encoding(m.digest())
+    return f"{prefix}{hs.decode('ASCII').rstrip('=')}"
 
-def seguid(seq: str, encoding=base64.standard_b64encode,
+def seguid(seq: str,
+           table
            prefix: str = "seguid:") -> str:
     """SEGUID checksum for protein or single stranded linear DNA.
 
@@ -324,13 +342,10 @@ def seguid(seq: str, encoding=base64.standard_b64encode,
     >>> seguid("at")
     'seguid:Ax/RG6hzSrMEEWoCO1IWMGska+4'
     """
-    m = hashlib.sha1()
-    m.update(seq.encode("ASCII").upper())
-    hs = encoding(m.digest())
-    return f"{prefix}{hs.decode('ASCII').rstrip('=')}"
+    return _seguid(seq, encoding=base64.standard_b64encode, prefix=prefix)
 
 
-def slseguid(seq: str, prefix: str = "slseguid:") -> str:
+def slseguid(seq: str, table, prefix: str = "slseguid:") -> str:
     """SEGUID checksum for single stranded linear DNA (slSEGUID).
 
     Identical to the seguid function except for that the '+' and '/' characters
@@ -351,11 +366,11 @@ def slseguid(seq: str, prefix: str = "slseguid:") -> str:
     >>> slseguid("at")
     'slseguid:Ax_RG6hzSrMEEWoCO1IWMGska-4'
     """
-    return seguid(seq, encoding=base64.urlsafe_b64encode, prefix=prefix)
-
+    return _seguid(seq, encoding=base64.urlsafe_b64encode, prefix=prefix)
 
 def scseguid(seq: str,
-             min_rotation: Callable[[str], int] = min_rotation,
+             table
+             min_rotation: Callable[[str, dict?], int] = min_rotation, # hur fixa kwargs
              prefix="scseguid:") -> str:
     r"""SEGUID checksum for single stranded circular DNA (scSEGUID).
 
@@ -380,14 +395,16 @@ def scseguid(seq: str,
     >>> slseguid("ttta")
     'slseguid:8zCvKwyQAEsbPtC4yTV-pY0H93Q'
     """
-    seq = seq.upper()
-    start = min_rotation(bytes(seq, "ASCII"))
-    return slseguid(seq[start:] + seq[:start], prefix=prefix)
+    # validera ?
+    start = min_rotation(seq, table) # TODO tysta varningen
+    return slseguid(seq[start:] + seq[:start], prefix=prefix, table)
 
 
 def dlseguid(watson: str,
              crick: str,
-             overhang: int, prefix="dlseguid:") -> str:
+             overhang: int,
+             table
+             prefix="dlseguid:") -> str:
     r"""SEGUID checksum for double stranded linear DNA (dlSEGUID)
 
     Calculates the dlSEGUID checksum for a dsDNA sequence defined by two
@@ -474,26 +491,29 @@ def dlseguid(watson: str,
     >>> slseguid("gcatac\nCGTATG")
     'slseguid:b0Xa5pLe4LNd5T8fhGWHicCI_f4'
     """
-    watson, crick = watson.upper(), crick.upper()
+    watson, crick = watson.upper(), crick.upper() # bort!
+    # validera
     w, c, o = min(
         (
             (watson, crick, overhang),
             (crick, watson, len(watson) - len(crick) + overhang),
         )
     )
-
+    spacer = "-"
     msg = (
-        f"{o*chr(45)}{w}{chr(45)*(-o+len(c)-len(w))}"
+        f"{o*spacer}{w}{spacer*(-o+len(c)-len(w))}"
         "\n"
-        f"{-o*chr(45)}{c[::-1]}{chr(45)*(o+len(w)-len(c))}"
+        f"{-o*spacer}{c[::-1]}{spacer*(o+len(w)-len(c))}"
     ).rstrip()
+    # lägg till newline & spacer till tabell gör ny tabell
 
-    return slseguid(msg, prefix=prefix)
+    return slseguid(msg, table=extendedtable, prefix=prefix)
 
 
 def dcseguid(watson: str,
              crick: str,
              min_rotation: Callable[[str], int] = min_rotation,
+             table,
              prefix="dcseguid:") -> str:
     """SEGUID checksum for double stranded circular DNA (dcSEGUID).
 
@@ -504,17 +524,21 @@ def dcseguid(watson: str,
 
     The checksum is prefixed with "dcseguid:"
     """
+    # validera att watson lika lang som crick
     watson, crick = watson.upper(), crick.upper()
     lw = len(watson)
-    x = min_rotation(bytes(watson, "ascii"))
-    y = min_rotation(bytes(crick, "ascii"))
+    x = min_rotation(watson, table)
+    y = min_rotation(crick, table )
+    #watson2 = rotate(watson, lw - y)
+    #watson1 = rotate(watson, x)
+    #watson2 = rotate(watson1, lw - y -x)
 
-    w, c, o = min(
-        (watson[x:] + watson[:x], crick[lw - x :] + crick[: lw - x], 0),
-        (crick[y:] + crick[:y], watson[lw - y :] + watson[: lw - y], 0),
+    w, c = min(
+        (watson[x:] + watson[:x], crick[lw - x :] + crick[: lw - x]),
+        (crick[y:] + crick[:y], watson[lw - y :] + watson[: lw - y]),
     )
 
-    return dlseguid(w, c, o, prefix=prefix)
+    return dlseguid(w, c, overhang=0, table, prefix=prefix)
 
 
 if __name__ == "__main__":
