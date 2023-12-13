@@ -1,5 +1,9 @@
+
 # Definition of Complementary DNA Symbols
-COMPLEMENT_TABLE = str.maketrans("GATC", "CTAG")
+COMPLEMENT_TABLE = {"G":"C",
+                    "A":"T",
+                    "C":"G",
+                    "T":"A"}
 
 # Definition of Complementary IUPAC Ambigous DNA Symbols
 """
@@ -31,6 +35,4 @@ bases in nucleic acid sequences: recommendations 1984.
 Nucleic Acids Research, 13(9), 3021–3030.
 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC341218
 """
-COMPLEMENT_TABLE_IUPAC = str.maketrans(
-    "ABCDGHKMSTVWN", "TVGHCDMKSABWN"
-)
+COMPLEMENT_TABLE_IUPAC = ("ABCDGHKMSTVWN", "TVGHCDMKSABWN")
