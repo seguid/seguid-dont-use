@@ -44,16 +44,16 @@ def rotate(seq: str, amount: int = 0) -> str:
     return seq
 
 
-def complementary(seq: str, table: dict = COMPLEMENT_TABLE) -> str:
+def complementary(seq: str, table: tuple = COMPLEMENT_TABLE) -> str:
     """Complement of a DNA sequence.
     """
     ## Validate 'table':
     assert_table(table)
 
     ## Validate 'seq':
-    assert_in_alphabet(seq, alphabet = set(table.keys()))
+    assert_in_alphabet(seq, alphabet=set(table.keys()))
 
-    return seq.translate(table)
+    return seq.translate({ord(k): ord(v) for k, v in table.items()})
 
 
 def reverse(seq) -> str:

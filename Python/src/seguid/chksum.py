@@ -34,9 +34,12 @@ from textwrap import dedent
 from typing import Callable
 from warnings import warn
 from array import array
+
 from seguid.manip import rc
+from seguid.manip import rotate
 from seguid.tables import COMPLEMENT_TABLE
 from seguid.asserts import assert_in_alphabet
+from seguid.asserts import assert_table
 
 try:
     from pydivsufsort import min_rotation
@@ -45,7 +48,7 @@ except ModuleNotFoundError:
 
 
 def min_rotation_py(s: str,
-                    table: dict = COMPLEMENT_TABLE) -> int:
+                    table: tuple = COMPLEMENT_TABLE) -> int:
     """Start position for the smallest rotation of a string s (pure Python).
 
     Algorithm described in:
@@ -72,29 +75,18 @@ def min_rotation_py(s: str,
 
     Examples
     --------
-    >>> min_rotation_py("taaa")
+    >>> min_rotation_py("TAAA")
     1
-    >>> "taaa"[1:] + "taaa"[:1]
-    'aaat'
-    >>> s = "abaabaaabaababaaabaaababaab"
+    >>> "TAAA"[1:] + "TAAA"[:1]
+    'AAAT'
+    >>> s = "ACAACAAACAACACAAACAAACACAAC"
     >>> min_rotation_py(s)
     14
     >>> s[14:] + s[:14]
-    'aaabaaababaababaabaaabaabab'
-    >>> s = "abaabaaabaababaaabaaaBabaab"
-    >>> min_rotation_py(s)
-    21
-    >>> s[21:] + s[:21]
-    'Babaababaabaaabaababaaabaaa'
-    >>> s= "abaabaaabaaba-baaabaaaBabaab"
-    >>> min_rotation(s)
-    13
-    >>> s[13:] + s[:13]
-    '-baaabaaaBabaababaabaaabaaba'
+    'AAACAAACACAACACAACAAACAACAC'
     """
-
     assert_table(table)
-    assert_in_alphabet(s, alphabet = set(table.keys()))
+    assert_in_alphabet(s, alphabet=set(table.keys()))
 
     prev, rep = None, 0
     ds = array("u", 2 * s)
@@ -171,7 +163,7 @@ def tuple_from_repr(
     --------
     >>> s = \"""
     ...           -TATGCC
-    ...           catacg- \"""
+    ...           CATACG- \"""
     >>> tuple_from_repr(s)
     ('TATGCC', 'gcatac', 1)
     >>> t = \"""
@@ -182,28 +174,23 @@ def tuple_from_repr(
     >>> tuple_from_repr(s) == tuple_from_repr(t)
     True
     """
-
     assert isinstance(space, (str, set))
     assert isinstance(sep, (str, set))
 
     if not isinstance(space, set):
-        space = set(space)
+        space = set(ord(c) for c in space)
 
     if not isinstance(sep, set):
-        sep = set(sep)
+        sep = set(ord(sep))
 
     assert_in_alphabet(rpr, alphabet=set(table.keys()) | space | sep)
 
-    # cleaned_rpr = "".join(c if c in allowed + sep else " " for c in rpr)
+    rpr_dedent = dedent(sep.join(ln for ln in rpr.split(sep) if ln.strip()))
 
-    cleaned_rpr = sep.join(ln for ln in cleaned_rpr.split(sep) if ln.strip())
-
-    cleaned_rpr = dedent(cleaned_rpr)
-
-    if sep not in cleaned_rpr:
+    if sep not in rpr_dedent:
         raise ValueError(f"Expected two non-empty lines separated by {sep}")
 
-    watson, crick = [x.rstrip() for x in cleaned_rpr.split(sep)]
+    watson, crick = [x.rstrip() for x in rpr_dedent.split(chr(sep))]
 
     overhang = (
         len(watson) - len(watson.lstrip()) - (len(crick) - len(crick.lstrip()))
@@ -230,20 +217,25 @@ def repr_from_tuple(
 
     return msg
 
+
 def _seguid(seq: str,
             table: dict = COMPLEMENT_TABLE,
-            encoding=base64.standard_b64encode,
+            encoding: callable = base64.standard_b64encode,
             prefix: str = "seguid:") -> str:
+
     assert isinstance(prefix, str)
     assert callable(encoding)
+
     assert_in_alphabet(seq, alphabet=set(table.keys()))
     m = hashlib.sha1()
     m.update(seq.encode("ASCII").upper())
     hs = encoding(m.digest())
+
     return f"{prefix}{hs.decode('ASCII').rstrip('=')}"
 
+
 def seguid(seq: str,
-           table
+           table: dict = COMPLEMENT_TABLE,
            prefix: str = "seguid:") -> str:
     """SEGUID checksum for protein or single stranded linear DNA.
 
@@ -283,10 +275,15 @@ def seguid(seq: str,
     >>> seguid("at")
     'seguid:Ax/RG6hzSrMEEWoCO1IWMGska+4'
     """
-    return _seguid(seq, encoding=base64.standard_b64encode, prefix=prefix)
+    return _seguid(seq,
+                   table=table,
+                   encoding=base64.standard_b64encode,
+                   prefix=prefix)
 
 
-def slseguid(seq: str, table, prefix: str = "slseguid:") -> str:
+def slseguid(seq: str,
+             table: dict = COMPLEMENT_TABLE,
+             prefix: str = "slseguid:") -> str:
     """SEGUID checksum for single stranded linear DNA (slSEGUID).
 
     Identical to the seguid function except for that the '+' and '/' characters
@@ -307,11 +304,15 @@ def slseguid(seq: str, table, prefix: str = "slseguid:") -> str:
     >>> slseguid("at")
     'slseguid:Ax_RG6hzSrMEEWoCO1IWMGska-4'
     """
-    return _seguid(seq, encoding=base64.urlsafe_b64encode, prefix=prefix)
+    return _seguid(seq,
+                   table=table,
+                   encoding=base64.urlsafe_b64encode,
+                   prefix=prefix)
+
 
 def scseguid(seq: str,
-             table
-             min_rotation: Callable[[str, dict?], int] = min_rotation, # hur fixa kwargs
+             table: dict = COMPLEMENT_TABLE,
+             min_rotation: Callable[[str], int] = min_rotation,
              prefix="scseguid:") -> str:
     r"""SEGUID checksum for single stranded circular DNA (scSEGUID).
 
@@ -336,16 +337,19 @@ def scseguid(seq: str,
     >>> slseguid("ttta")
     'slseguid:8zCvKwyQAEsbPtC4yTV-pY0H93Q'
     """
-    # validera ?
-    start = min_rotation(seq, table) # TODO tysta varningen
-    return slseguid(seq[start:] + seq[:start], prefix=prefix, table)
+    start = min_rotation(seq, table)
+
+    return slseguid(rotate(seq, start),
+                    table=table,
+                    prefix=prefix)
 
 
 def dlseguid(watson: str,
              crick: str,
              overhang: int,
-             table
-             prefix="dlseguid:") -> str:
+             table: dict = COMPLEMENT_TABLE,
+             prefix="dlseguid:"
+             ) -> str:
     r"""SEGUID checksum for double stranded linear DNA (dlSEGUID)
 
     Calculates the dlSEGUID checksum for a dsDNA sequence defined by two
@@ -432,29 +436,33 @@ def dlseguid(watson: str,
     >>> slseguid("gcatac\nCGTATG")
     'slseguid:b0Xa5pLe4LNd5T8fhGWHicCI_f4'
     """
-    watson, crick = watson.upper(), crick.upper() # bort!
-    # validera
+
+
     w, c, o = min(
         (
             (watson, crick, overhang),
             (crick, watson, len(watson) - len(crick) + overhang),
         )
     )
-    spacer = "-"
-    msg = (
-        f"{o*spacer}{w}{spacer*(-o+len(c)-len(w))}"
-        "\n"
-        f"{-o*spacer}{c[::-1]}{spacer*(o+len(w)-len(c))}"
-    ).rstrip()
-    # lägg till newline & spacer till tabell gör ny tabell
 
-    return slseguid(msg, table=extendedtable, prefix=prefix)
+    space = "-"
+    sep = "\n"
+
+    msg = (
+        f"{o*space}{w}{space*(-o+len(c)-len(w))}"
+        "{sep}"
+        f"{-o*space}{c[::-1]}{space*(o+len(w)-len(c))}"
+    ).rstrip()
+
+    extable = table | {ord(space): ord(space), ord(sep): ord(sep)}
+
+    return slseguid(msg, table=extable, prefix=prefix)
 
 
 def dcseguid(watson: str,
              crick: str,
+             table: dict = COMPLEMENT_TABLE,
              min_rotation: Callable[[str], int] = min_rotation,
-             table,
              prefix="dcseguid:") -> str:
     """SEGUID checksum for double stranded circular DNA (dcSEGUID).
 
@@ -465,21 +473,20 @@ def dcseguid(watson: str,
 
     The checksum is prefixed with "dcseguid:"
     """
-    # validera att watson lika lang som crick
-    watson, crick = watson.upper(), crick.upper()
-    lw = len(watson)
+    assert len(watson) == len(crick)
+    ln = len(watson)
+
     x = min_rotation(watson, table)
     y = min_rotation(crick, table )
-    #watson2 = rotate(watson, lw - y)
-    #watson1 = rotate(watson, x)
-    #watson2 = rotate(watson1, lw - y -x)
+    minwatson = rotate(watson, x)
+    mincrick = rotate(crick, y)
 
     w, c = min(
-        (watson[x:] + watson[:x], crick[lw - x :] + crick[: lw - x]),
-        (crick[y:] + crick[:y], watson[lw - y :] + watson[: lw - y]),
+        (minwatson, rotate(crick, ln - x)),
+        (mincrick, rotate(watson, ln - y)),
     )
 
-    return dlseguid(w, c, overhang=0, table, prefix=prefix)
+    return dlseguid(w, c, overhang=0, table=table, prefix=prefix)
 
 
 if __name__ == "__main__":
