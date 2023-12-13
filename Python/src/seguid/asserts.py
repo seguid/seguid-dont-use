@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+from seguid.tables import COMPLEMENT_TABLE
+import seguid.manip
+
 def assert_in_alphabet(seq: str,
                        alphabet: set):
 
@@ -30,9 +35,9 @@ def assert_in_alphabet(seq: str,
 
 def assert_table(table: dict):
     assert isinstance(table, dict), "Argument 'table' must be a dict"
-    keys, values = table.items()
-
-    ## Assert that the set of values are also in the set of keys
+    keys  = table.keys()
+    values = table.values()
+    # Assert that the set of values are also in the set of keys
     unknown = set(
         chr(v) for v in values if v not in (k for k in keys)
     )
@@ -42,3 +47,23 @@ def assert_table(table: dict):
         raise ValueError(
             "Detected values (" f"{missing}) in 'table' that are not in the keys"
         )
+
+
+def assert_anneal(watson: str,
+                  crick: str,
+                  overhang: int,
+                  table: dict = COMPLEMENT_TABLE) -> bool:
+    """docstring."""
+    assert_table(table)
+    assert_in_alphabet(watson, alphabet=set(table.keys()))
+    assert_in_alphabet(crick, alphabet=set(table.keys()))
+
+    assert isinstance(overhang, int)
+    assert -len(watson) < overhang
+    assert overhang < len(crick)
+
+    up = watson[max(-overhang, 0): min(len(watson) - overhang, len(crick))]
+    dn = seguid.manip.rc(crick, table=table)[max(overhang, 0): min(len(watson) + overhang, len(crick))]
+
+    if up != dn:
+        raise ValueError("Mismatched basepairs.")

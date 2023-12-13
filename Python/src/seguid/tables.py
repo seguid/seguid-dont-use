@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 # Definition of Complementary DNA Symbols
 COMPLEMENT_TABLE = {"G":"C",

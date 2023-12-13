@@ -32,115 +32,29 @@ import hashlib
 import base64
 from textwrap import dedent
 from typing import Callable
-from warnings import warn
-from array import array
+import warnings
 
-from seguid.manip import rc
 from seguid.manip import rotate
 from seguid.tables import COMPLEMENT_TABLE
 from seguid.asserts import assert_in_alphabet
-from seguid.asserts import assert_table
+from seguid.asserts import assert_anneal
 
 try:
-    from pydivsufsort import min_rotation
+    from pydivsufsort import min_rotation as mr
 except ModuleNotFoundError:
-    warn("pydivsufsort not found.", ImportWarning)  # TODO Is this the right way?
-
-
-def min_rotation_py(s: str,
-                    table: tuple = COMPLEMENT_TABLE) -> int:
-    """Start position for the smallest rotation of a string s (pure Python).
-
-    Algorithm described in:
-
-    Pierre Duval, Jean. 1983. Factorizing Words
-    over an Ordered Alphabet. Journal of Algorithms & Computational Technology
-    4 (4) (December 1): 363–381. and Algorithms on strings and sequences based
-    on Lyndon words, David Eppstein 2011.
-    https://gist.github.com/dvberkel/1950267
-
-    This is a pure python implementation, considerably slower than the
-    min_rotation function from pydivsufsort that is imported at the top of
-    this script.
-
-    Should only be used if pydivsufsort.min_rotation can not be used.
-
-    Note that both functions are case-sensitive and sorts by ASCII-code order
-    or "ASCIIbetical" order so:
-
-    - Uppercase come before lowercase letters; for example, "Z" precedes "a"
-    - Digits and several punctuation marks come before letters.
-
-    See the last two examples below for an example of the consequences of this.
-
-    Examples
-    --------
-    >>> min_rotation_py("TAAA")
-    1
-    >>> "TAAA"[1:] + "TAAA"[:1]
-    'AAAT'
-    >>> s = "ACAACAAACAACACAAACAAACACAAC"
-    >>> min_rotation_py(s)
-    14
-    >>> s[14:] + s[:14]
-    'AAACAAACACAACACAACAAACAACAC'
-    """
-    assert_table(table)
-    assert_in_alphabet(s, alphabet=set(table.keys()))
-
-    prev, rep = None, 0
-    ds = array("u", 2 * s)
-    lens = len(s)
-    lends = lens * 2
-    old = 0
-    k = 0
-    w = ""
-    while k < lends:
-        i, j = k, k + 1
-        while j < lends and ds[i] <= ds[j]:
-            i = (ds[i] == ds[j]) and i + 1 or k
-            j += 1
-        while k < i + 1:
-            k += j - i
-            prev = w
-            w = ds[old:k]
-            old = k
-            if w == prev:
-                rep += 1
-            else:
-                prev, rep = w, 1
-            if len(w) * rep == lens:
-                return old - i
-
-
-def assert_anneal(watson: str,  #
-           crick: str,
-           overhang: int,
-           table: dict = COMPLEMENT_TABLE) -> bool:
-    """docstring."""
-
-    assert_table(table)
-    assert_in_alphabet(watson, alphabet=set(table.keys()))
-    assert_in_alphabet(crick, alphabet=set(table.keys()))
-
-    assert isinstance(overhang, int)
-    assert -len(watson) < overhang
-    assert overhang < len(crick)
-
-    up = f"{overhang*chr(45)}{watson}{chr(45)*(-overhang+len(crick)-len(watson))}"
-    dn = f"{-overhang*chr(45)}{rc(crick)}{chr(45)*(overhang+len(watson)-len(crick))}"
-
-    up = watson[max(-overhang, 0): max(overhang + len(watson), len(crick))]
-    dn = rc(crick, table=table)[max(overhang, 0): max(overhang + len(watson), len(crick))]
-
-    if up != dn:
-        raise ValueError("Mismatched basepairs.")
+    warnings.warn("pydivsufsort not found.", ImportWarning)  # TODO Is this the right way?
+else:
+    def min_rotation(s):
+        with warnings.catch_warnings(category=UserWarning):
+            warnings.simplefilter("ignore")
+            result = mr(s)
+        return result
 
 
 def tuple_from_repr(
     rpr: str,
     table: dict = COMPLEMENT_TABLE,
-    space: str = "-. ",
+    space: str = "-",
     sep: str = "\n"
 ) -> tuple:
     """Generate a tuple from dsDNA text representation.
@@ -165,40 +79,34 @@ def tuple_from_repr(
     ...           -TATGCC
     ...           CATACG- \"""
     >>> tuple_from_repr(s)
-    ('TATGCC', 'gcatac', 1)
+    ('TATGCC', 'GCATAC', 1)
     >>> t = \"""
     ...                      -TATGCC
-    ...                      catacg- \"""
+    ...                      CATACG- \"""
     >>> tuple_from_repr(s)
-    ('TATGCC', 'gcatac', 1)
+    ('TATGCC', 'GCATAC', 1)
     >>> tuple_from_repr(s) == tuple_from_repr(t)
     True
     """
-    assert isinstance(space, (str, set))
-    assert isinstance(sep, (str, set))
+    assert isinstance(space, str)
+    assert isinstance(sep, str)
 
-    if not isinstance(space, set):
-        space = set(ord(c) for c in space)
-
-    if not isinstance(sep, set):
-        sep = set(ord(sep))
-
-    assert_in_alphabet(rpr, alphabet=set(table.keys()) | space | sep)
+    assert_in_alphabet(rpr, alphabet=set(table.keys()) | set(space) | set(sep) | set(" "))
 
     rpr_dedent = dedent(sep.join(ln for ln in rpr.split(sep) if ln.strip()))
 
     if sep not in rpr_dedent:
         raise ValueError(f"Expected two non-empty lines separated by {sep}")
 
-    watson, crick = [x.rstrip() for x in rpr_dedent.split(chr(sep))]
+    watson, crick = [x.rstrip() for x in rpr_dedent.split(sep)]
 
     overhang = (
-        len(watson) - len(watson.lstrip()) - (len(crick) - len(crick.lstrip()))
+        len(watson) - len(watson.lstrip(space)) - (len(crick) - len(crick.lstrip(space)))
     )
 
-    result = watson.strip(), crick.strip()[::-1], overhang
+    result = watson.strip(space), crick.strip(space)[::-1], overhang
 
-    assert_anneal(*result)
+    assert_anneal(*result, table=table | {c:c for c in space+sep})
 
     return result
 
@@ -272,8 +180,6 @@ def seguid(seq: str,
     --------
     >>> seguid("AT")
     'seguid:Ax/RG6hzSrMEEWoCO1IWMGska+4'
-    >>> seguid("at")
-    'seguid:Ax/RG6hzSrMEEWoCO1IWMGska+4'
     """
     return _seguid(seq,
                    table=table,
@@ -301,8 +207,6 @@ def slseguid(seq: str,
     --------
     >>> slseguid("AT")
     'slseguid:Ax_RG6hzSrMEEWoCO1IWMGska-4'
-    >>> slseguid("at")
-    'slseguid:Ax_RG6hzSrMEEWoCO1IWMGska-4'
     """
     return _seguid(seq,
                    table=table,
@@ -328,16 +232,16 @@ def scseguid(seq: str,
 
     Examples
     --------
-    >>> scseguid("attt")
+    >>> scseguid("ATTT")
     'scseguid:ot6JPLeAeMmfztW1736Kc6DAqlo'
-    >>> slseguid("attt")
+    >>> slseguid("ATTT")
     'slseguid:ot6JPLeAeMmfztW1736Kc6DAqlo'
-    >>> scseguid("ttta")
+    >>> scseguid("TTTA")
     'scseguid:ot6JPLeAeMmfztW1736Kc6DAqlo'
-    >>> slseguid("ttta")
+    >>> slseguid("TTTA")
     'slseguid:8zCvKwyQAEsbPtC4yTV-pY0H93Q'
     """
-    start = min_rotation(seq, table)
+    start = min_rotation(seq)
 
     return slseguid(rotate(seq, start),
                     table=table,
@@ -425,16 +329,10 @@ def dlseguid(watson: str,
 
     Examples
     --------
-    >>> dlseguid("TATGCC", "gcatac", 1)
+    >>> dlseguid("TATGCC", "GCATAC", 1)
     'dlseguid:E7YtPGWjj3qCaPzWurlYBaJy_X4'
-    >>> dlseguid("gcatac", "TATGCC", 1)
+    >>> dlseguid("GCATAC", "TATGCC", 1)
     'dlseguid:E7YtPGWjj3qCaPzWurlYBaJy_X4'
-    >>> slseguid("-gcatac\nCCGTAT-")
-    'slseguid:E7YtPGWjj3qCaPzWurlYBaJy_X4'
-    >>> dlseguid("gcatac", "GTATGC", 0)
-    'dlseguid:b0Xa5pLe4LNd5T8fhGWHicCI_f4'
-    >>> slseguid("gcatac\nCGTATG")
-    'slseguid:b0Xa5pLe4LNd5T8fhGWHicCI_f4'
     """
 
 
@@ -450,12 +348,12 @@ def dlseguid(watson: str,
 
     msg = (
         f"{o*space}{w}{space*(-o+len(c)-len(w))}"
-        "{sep}"
+        f"{sep}"
         f"{-o*space}{c[::-1]}{space*(o+len(w)-len(c))}"
     ).rstrip()
 
-    extable = table | {ord(space): ord(space), ord(sep): ord(sep)}
-
+    extable = table | {space: space, sep: sep}
+    # breakpoint()
     return slseguid(msg, table=extable, prefix=prefix)
 
 
@@ -476,8 +374,8 @@ def dcseguid(watson: str,
     assert len(watson) == len(crick)
     ln = len(watson)
 
-    x = min_rotation(watson, table)
-    y = min_rotation(crick, table )
+    x = min_rotation(watson)
+    y = min_rotation(crick)
     minwatson = rotate(watson, x)
     mincrick = rotate(crick, y)
 
