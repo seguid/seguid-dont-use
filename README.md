@@ -1,6 +1,10 @@
+[![Python checks](https://github.com/MetabolicEngineeringGroupCBMA/seguid/actions/workflows/check-python.yml/badge.svg)](https://github.com/MetabolicEngineeringGroupCBMA/seguid/actions/workflows/check-python.yml)
+[![R checks](https://github.com/MetabolicEngineeringGroupCBMA/seguid/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MetabolicEngineeringGroupCBMA/seguid/actions/workflows/R-CMD-check.yaml)
+
 # seguid
 
-Functions for calculating uSEGUID, lSEGUID and cSEGUID checksums for biological sequences.
+Functions for calculating uSEGUID, lSEGUID and cSEGUID checksums for
+biological sequences.
 
 
 ## R
@@ -20,23 +24,28 @@ Functions for calculating uSEGUID, lSEGUID and cSEGUID checksums for biological 
 
 Install with:
 
-    pip install seguid
-
+```sh
+$ python -m pip install --user seguid
+```
 
 use:
 
-    Python 3.8.18 | packaged by conda-forge | (default, Oct 10 2023, 15:44:36)
-    [GCC 12.3.0] on linux
-    Type "help", "copyright", "credits" or "license" for more information.
-    >>> from seguid import dsseguid
-    >>> dsseguid("TATGCC", "gcatac", 1)
-    'Jv9Z9JJ0IYnG-dTPBGwhDyAqnmU'
-    >>>
+```python
+Python 3.8.18 | packaged by conda-forge | (default, Oct 10 2023, 15:44:36)
+[GCC 12.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from seguid import dsseguid
+>>> dsseguid("TATGCC", "gcatac", 1)
+'Jv9Z9JJ0IYnG-dTPBGwhDyAqnmU'
+>>>
+```
+
+Run tests with pytest without arguments in the Python directory;
+
+```sh
+$ cd Python/
+$ pytest
+```
 
 
 
-Run tests with pytest:
-
-	pytest
-
-without arguments in the Python directory.
