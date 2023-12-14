@@ -158,20 +158,3 @@ def min_rotation_py(s: str,
                 prev, rep = w, 1
             if len(w) * rep == lens:
                 return old - i
-
-
-
-# def hej(watson, crick, overhang):
-#     up = watson[max(-overhang, 0): min(len(watson)-overhang, len(crick))]
-#     dn = rc(crick)[max(overhang, 0): min(len(watson) + overhang, len(crick))]
-#     print(up)
-#     print(dn)
-
-# # -TATGCC
-# # CATACG-
-
-# #  TATGCC--
-# #  -TACGGGG
-
-# hej("TATGCC", "GCATAC", 1)
-# hej("TATGCC", "GGGGCAT", -1)
