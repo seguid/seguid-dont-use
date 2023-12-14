@@ -45,7 +45,7 @@ except ModuleNotFoundError:
     warnings.warn("pydivsufsort not found.", ImportWarning)  # TODO Is this the right way?
 else:
     def min_rotation(s):
-        with warnings.catch_warnings(category=UserWarning):
+        with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             result = mr(s)
         return result
