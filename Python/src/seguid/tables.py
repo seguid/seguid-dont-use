@@ -2,10 +2,18 @@
 # -*- coding: utf-8 -*-
 
 # Definition of Complementary DNA Symbols
-COMPLEMENT_TABLE = {"G":"C",
-                    "A":"T",
-                    "C":"G",
-                    "T":"A"}
+COMPLEMENT_TABLE = {"G": "C",
+                    "A": "T",
+                    "C": "G",
+                    "T": "A"}
+
+
+# Definition of Complementary RNA Symbols
+COMPLEMENT_TABLE_RNA = {"G": "C",
+                        "A": "U",
+                        "C": "G",
+                        "U": "A"}
+
 
 # Definition of Complementary IUPAC Ambigous DNA Symbols
 """
@@ -37,4 +45,35 @@ bases in nucleic acid sequences: recommendations 1984.
 Nucleic Acids Research, 13(9), 3021–3030.
 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC341218
 """
-COMPLEMENT_TABLE_IUPAC = ("ABCDGHKMSTVWN", "TVGHCDMKSABWN")
+
+COMPLEMENT_TABLE_IUPAC = COMPLEMENT_TABLE | {"B": "V",
+                                             "D": "H",
+                                             "H": "D",
+                                             "K": "M",
+                                             "M": "K",
+                                             "S": "S",
+                                             "V": "B",
+                                             "W": "W",
+                                             "N": "N"}
+
+
+TABLE_IUPAC_PROTEIN = {"A": "",
+                       "C": "",
+                       "D": "",
+                       "E": "",
+                       "F": "",
+                       "G": "",
+                       "H": "",
+                       "I": "",
+                       "K": "",
+                       "L": "",
+                       "M": "",
+                       "N": "",
+                       "P": "",
+                       "Q": "",
+                       "R": "",
+                       "S": "",
+                       "T": "",
+                       "V": "",
+                       "W": "",
+                       "Y": ""}
