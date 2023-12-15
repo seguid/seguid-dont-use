@@ -15,5 +15,7 @@ coverage-html:
 	pytest --cov=src/ --cov-report=html; xdg-open htmlcov/index.html
 
 cleanup:
-	find . -type d -name "__pycache__" -exec rm -rf {} +
-
+	find . -type d -name "__pycache__" -exec rm -rf {} + || true
+	[[ -d .pytest_cache ]] && rm -rf .pytest_cache || true
+	[[ -f .coverage  ]] && rm .coverage || true
+	[[ -d htmlcov ]] && rm -rf htmlcov || true
