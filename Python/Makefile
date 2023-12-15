@@ -1,5 +1,7 @@
 SHELL=bash
 
+all: test install
+
 install:
 	python -m pip install .
 

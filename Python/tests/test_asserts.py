@@ -7,11 +7,6 @@ from seguid.asserts import assert_anneal
 from seguid.asserts import assert_in_alphabet
 from seguid.asserts import assert_table
 
-from seguid.tables import COMPLEMENT_TABLE_DNA
-from seguid.tables import COMPLEMENT_TABLE_RNA
-from seguid.tables import COMPLEMENT_TABLE_IUPAC
-from seguid.tables import TABLE_IUPAC_PROTEIN
-
 def test_assert_in_alphabet():
     """docstring."""
     seq = "ABCDEFGH"
@@ -37,7 +32,6 @@ def test_assert_in_alphabet():
 def test_assert_table():
     """docstring."""
     assert_table(str.maketrans("GATC", "CTAG"))
-    assert_table(COMPLEMENT_TABLE_DNA)
 
     try:
         assert_table(str.maketrans("GATx", "CTAG"))
@@ -66,7 +60,3 @@ def test_assert_anneal():
 
     with pytest.raises(AssertionError):
         assert_anneal("AT", "AT", 4)
-    
-
-if __name__ == "__main__":
-    pytest.main([__file__, "-vvv", "-s"])

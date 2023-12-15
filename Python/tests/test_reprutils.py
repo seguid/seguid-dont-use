@@ -87,6 +87,3 @@ def test_tuple_from_repr():
 
 def test_repr_from_tuple():
     assert repr_from_tuple(*("TATGCC", "GGGGCA", -2)) == "TATGCC--\n--ACGGGG"
-
-if __name__ == "__main__":
-    pytest.main([__file__, "-vvv", "-s"])

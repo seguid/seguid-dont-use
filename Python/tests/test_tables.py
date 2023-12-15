@@ -16,7 +16,3 @@ def test_complementary_tables():
     assert_table(COMPLEMENT_TABLE_DNA)
     assert_table(COMPLEMENT_TABLE_RNA)
     assert_table(COMPLEMENT_TABLE_IUPAC)
-
-
-if __name__ == "__main__":
-    pytest.main([__file__, "-vvv", "-s"])
