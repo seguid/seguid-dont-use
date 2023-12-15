@@ -27,37 +27,51 @@ def tuple_from_repr(
 
     Examples
     --------
-    >>> s = \"""
+    >>> rpr = \"""
     ...           -TATGCC
     ...           CATACG- \"""
-    >>> tuple_from_repr(s)
+    >>> tuple_from_repr(rpr)
     ('TATGCC', 'GCATAC', 1)
-    >>> t = \"""
+    >>> rpr2 = \"""
     ...                      -TATGCC
     ...                      CATACG- \"""
-    >>> tuple_from_repr(s)
+    >>> tuple_from_repr(rpr2)
     ('TATGCC', 'GCATAC', 1)
-    >>> tuple_from_repr(s) == tuple_from_repr(t)
+    >>> tuple_from_repr(rpr) == tuple_from_repr(rpr2)
     True
     """
-
+    # rpr = """
+    #   ---TGCC-
+    #   -ATACGG-
+    # """
     assert isinstance(space, str)
     assert len(space) == 1
     assert isinstance(sep, str)
     assert len(sep) == 1
 
-    assert_in_alphabet(rpr, alphabet=set(table.keys()) | set(space) | set(sep) | set(" "))
+    ws = " "
 
-    rpr_dedent = dedent(sep.join(ln for ln in rpr.split(sep) if ln.strip()))
+    assert_in_alphabet(rpr, alphabet=set(table.keys()) | set(space) | set(sep) | set(ws))
+
+    rpr_dedent = dedent(sep.join(ln for ln in rpr.split(sep) if ln.strip(ws)))
 
     if sep not in rpr_dedent:
         raise ValueError(f"Expected two non-empty lines separated by {sep}")
+
+    watson, crick = [x.rstrip(ws) for x in rpr_dedent.split(sep)]
+
+    assert not (watson.endswith(space) and crick.endswith(space))
 
     watson, crick = [x.rstrip(space) for x in rpr_dedent.split(sep)]
 
     overhang = (
         len(watson) - len(watson.lstrip(space)) - (len(crick) - len(crick.lstrip(space)))
     )
+
+    assert not (watson.startswith(space) and crick.startswith(space))
+
+
+
 
     result = watson.strip(space), crick.strip(space)[::-1], overhang
 
