@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from seguid.tables import COMPLEMENT_TABLE
+from seguid.tables import COMPLEMENT_TABLE_DNA
 import seguid.manip
 
 def assert_in_alphabet(seq: str,
@@ -52,7 +52,7 @@ def assert_table(table: dict):
 def assert_anneal(watson: str,
                   crick: str,
                   overhang: int,
-                  table: dict = COMPLEMENT_TABLE) -> bool:
+                  table: dict = COMPLEMENT_TABLE_DNA) -> bool:
     """docstring."""
     assert_table(table)
     assert_in_alphabet(watson, alphabet=set(table.keys()))

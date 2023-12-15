@@ -1,11 +1,11 @@
-from seguid.tables import COMPLEMENT_TABLE
+from seguid.tables import COMPLEMENT_TABLE_DNA
 from textwrap import dedent
 from seguid.asserts import assert_in_alphabet
 from seguid.asserts import assert_anneal
 
 def tuple_from_repr(
     rpr: str,
-    table: dict = COMPLEMENT_TABLE,
+    table: dict = COMPLEMENT_TABLE_DNA,
     space: str = "-",
     sep: str = "\n"
 ) -> tuple:
