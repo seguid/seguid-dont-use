@@ -22,35 +22,12 @@ from seguid.tables import TABLE_IUPAC_PROTEIN
 
 from seguid.asserts import assert_anneal
 from seguid.asserts import assert_in_alphabet
-from seguid.asserts import assert_table
-
 from seguid.manip import rc
 from seguid.manip import min_rotation_py
 from seguid.manip import complementary
 from seguid.manip import rotate
 
 from seguid.chksum import seguid
-
-def test_assert_anneal():
-
-    tuples = (("AT", "TA", 1),
-              ("CTATAG", "AT", -2),
-              ("AT", "CTATAG", 2),
-              ("AT", "AT", 0))
-
-    for watson, crick, overhang in tuples:
-        assert_anneal(watson, crick, overhang)
-
-    tuples = (("AT", "CG", 1),
-              ("CTATAG", "AT", -3),
-              ("AT", "CTATAG", 1))
-
-    for watson, crick, overhang in tuples:
-        with pytest.raises(ValueError):
-            assert_anneal(watson, crick, overhang)
-
-    with pytest.raises(AssertionError):
-        assert_anneal("AT", "AT", 4)
 
 
 def test_complementary():
