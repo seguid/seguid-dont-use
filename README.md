@@ -1,5 +1,7 @@
 [![Python checks](https://github.com/MetabolicEngineeringGroupCBMA/seguid/actions/workflows/check-python.yml/badge.svg)](https://github.com/MetabolicEngineeringGroupCBMA/seguid/actions/workflows/check-python.yml)
+[![Python Code Coverage](https://codecov.io/gh/MetabolicEngineeringGroupCBMA/seguid/graph/badge.svg)](https://codecov.io/gh/MetabolicEngineeringGroupCBMA/seguid)
 [![R checks](https://github.com/MetabolicEngineeringGroupCBMA/seguid/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MetabolicEngineeringGroupCBMA/seguid/actions/workflows/R-CMD-check.yaml)
+
 
 # seguid
 
