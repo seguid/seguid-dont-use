@@ -12,78 +12,15 @@ from seguid import scseguid
 from seguid import dlseguid
 from seguid import dcseguid
 
-from seguid.reprutils import tuple_from_repr
+from seguid.chksum import seguid
+
+from seguid.manip import rc
+from seguid.manip import min_rotation_py
+
 from seguid.reprutils import repr_from_tuple
 
 from seguid.tables import COMPLEMENT_TABLE_DNA
 from seguid.tables import TABLE_IUPAC_PROTEIN
-
-from seguid.asserts import assert_anneal
-from seguid.asserts import assert_in_alphabet
-from seguid.manip import rc
-from seguid.manip import min_rotation_py
-from seguid.manip import complementary
-from seguid.manip import rotate
-
-from seguid.chksum import seguid
-
-
-def test_complementary():
-    """docstring."""
-    seq = "AACCGGTT"
-    seq_complementary = "TTGGCCAA"
-    assert complementary(seq) == seq_complementary
-    assert complementary(seq_complementary) == seq
-    assert complementary(complementary(seq)) == seq
-
-    seq = "AACCGGTTxx"
-    try:
-        print(complementary(seq))
-        print("Should not be reached")
-    except ValueError:
-        pass
-
-
-def test_rc2():
-    """docstring."""
-    watson = "ACGTAACCGGTT"
-    crick = "AACCGGTTACGT"
-    assert rc(watson) == crick
-    assert rc(crick) == watson
-    assert rc(rc(watson)) == watson
-
-
-def test_rotate():
-    """docstring."""
-    seq = "ACGTAACCGGTT"
-    n = len(seq)
-    assert rotate(seq,   0) ==        seq
-    assert rotate(seq,   n) == rotate(seq,  0)
-    assert rotate(seq, 2*n) == rotate(seq,  0)
-    assert rotate(seq, n-1) == rotate(seq, -1)
-
-    ## Rotate on the complementary strand
-    assert complementary(rotate(complementary(seq), +1)) == rotate(seq, +1)
-
-
-def test_rotate2():
-    """docstring."""
-    watson = "ACGTAACCGGTT"
-    crick = "AACCGGTTACGT"
-
-    ## Rotate on Watson, is the opposite rotation on Crick
-    assert rc(watson)                 == crick
-    assert rc(rotate(crick, -1))      == rotate(watson, +1)
-    assert rc(rotate(rc(watson), -1)) == rotate(watson, +1)
-
-
-def test_rc():
-    """docstring."""
-    assert rc("GAT") == "ATC"
-    assert rc("GTT") == "AAC"
-
-    with pytest.raises(ValueError):
-        rc("GTZ")
 
 
 def test_min_rotation():
@@ -208,35 +145,3 @@ def test_dcseguid():
     assert dcseguid(pUC19dna, rc(pUC19dna)) == dcsg
     w, c = Path("test_data/pUC19msg.txt").read_text().splitlines()
     assert dlseguid(w, c[::-1], 0) == "dlseguid:zhw8Yrxfo3FO5DDccx4PamBVPCQ"
-
-
-def _test_speed():
-    import timeit
-
-    dna500 = """\
-    CAGTGAAATCAGAACCCATGAGGGCGGACGAGTCATATCC
-    GGTATTAGAGATTTATACAGTCTGGACACCTAGCGAACCG
-    ACTTGAACCACCAGGATTGAAGACGAAACCTTAGAGTATA
-    GTAATGCCGTACGTGTCGGGGCCCACGCATCTAGGACAGG
-    ATCGCATGATGGTGGTTTTAGTTGCCGTTGTACCGGATTT
-    CTTAGTAGTATAAGCATGAGGATAAGTGAAACCGGGTGAA
-    GGTGGTTTGTGTGAGTGCCTAATAGTCCGACTCCCCGAGG
-    GGAGTAGGCACTGCCTTCAGCGTTCAGTTATTGAGCACGT
-    CCGCCCGGCGAAAGATGGCTTTGAGCTCCACTGACAGCCA
-    GGGACCGCGTGCATGAGGCTAGAGCAGAGTCGTTGACAGT
-    GAGATTAGATTGATCATTTTTATCTGAAACGGCAGCATAC
-    CGACAGTTGTTCTCAAGCAAAGTGGTCTTGCCTAGATTCA
-    ATATTGCCCACAATCAGCTC""".replace(
-        "\n", ""
-    )
-
-    print("pure Python : ", end="")
-    print(
-        timeit.timeit(
-            "cseguid(dna500, minrotation=min_rotation)",
-            globals=globals(),
-            number=1000,
-        )
-    )
-    print("pydivsufsort: ", end="")
-    print(timeit.timeit("cseguid(dna500)", globals=globals(), number=1000))
