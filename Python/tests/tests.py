@@ -13,7 +13,7 @@ from seguid import dcseguid
 from seguid.reprutils import tuple_from_repr
 from seguid.reprutils import repr_from_tuple
 
-from seguid.tables import COMPLEMENT_TABLE
+from seguid.tables import COMPLEMENT_TABLE_DNA
 from seguid.tables import COMPLEMENT_TABLE_RNA
 from seguid.tables import COMPLEMENT_TABLE_IUPAC
 from seguid.tables import TABLE_IUPAC_PROTEIN
@@ -79,7 +79,7 @@ def test_assert_in_alphabet():
 def test_assert_table():
     """docstring."""
     assert_table(str.maketrans("GATC", "CTAG"))
-    assert_table(COMPLEMENT_TABLE)
+    assert_table(COMPLEMENT_TABLE_DNA)
 
     try:
         assert_table(str.maketrans("GATx", "CTAG"))
@@ -294,7 +294,7 @@ def test_scseguid():
 
 
 def test_dlseguid():
-    ct = COMPLEMENT_TABLE
+    ct = COMPLEMENT_TABLE_DNA
     table = ct | {"\n":"\n", "-":"-"}
     # AT
     # TA

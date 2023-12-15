@@ -24,7 +24,7 @@ from typing import Callable
 import warnings
 
 from seguid.manip import rotate
-from seguid.tables import COMPLEMENT_TABLE
+from seguid.tables import COMPLEMENT_TABLE_DNA
 from seguid.asserts import assert_in_alphabet
 from seguid.asserts import assert_anneal
 
@@ -41,7 +41,7 @@ else:
 
 
 def _seguid(seq: str,
-            table: dict = COMPLEMENT_TABLE,
+            table: dict = COMPLEMENT_TABLE_DNA,
             encoding: callable = base64.standard_b64encode,
             prefix: str = "seguid:") -> str:
 
@@ -57,7 +57,7 @@ def _seguid(seq: str,
 
 
 def seguid(seq: str,
-           table: dict = COMPLEMENT_TABLE,
+           table: dict = COMPLEMENT_TABLE_DNA,
            prefix: str = "seguid:") -> str:
     """SEGUID checksum for protein or single stranded linear DNA.
 
@@ -102,7 +102,7 @@ def seguid(seq: str,
 
 
 def slseguid(seq: str,
-             table: dict = COMPLEMENT_TABLE,
+             table: dict = COMPLEMENT_TABLE_DNA,
              prefix: str = "slseguid:") -> str:
     """SEGUID checksum for single stranded linear DNA (slSEGUID).
 
@@ -129,7 +129,7 @@ def slseguid(seq: str,
 
 
 def scseguid(seq: str,
-             table: dict = COMPLEMENT_TABLE,
+             table: dict = COMPLEMENT_TABLE_DNA,
              min_rotation: Callable[[str], int] = min_rotation,
              prefix="scseguid:") -> str:
     r"""SEGUID checksum for single stranded circular DNA (scSEGUID).
@@ -165,7 +165,7 @@ def scseguid(seq: str,
 def dlseguid(watson: str,
              crick: str,
              overhang: int,
-             table: dict = COMPLEMENT_TABLE,
+             table: dict = COMPLEMENT_TABLE_DNA,
              prefix="dlseguid:"
              ) -> str:
     r"""SEGUID checksum for double stranded linear DNA (dlSEGUID).
@@ -273,7 +273,7 @@ def dlseguid(watson: str,
 
 def dcseguid(watson: str,
              crick: str,
-             table: dict = COMPLEMENT_TABLE,
+             table: dict = COMPLEMENT_TABLE_DNA,
              min_rotation: Callable[[str], int] = min_rotation,
              prefix="dcseguid:") -> str:
     """SEGUID checksum for double stranded circular DNA (dcSEGUID).

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Definition of Complementary DNA Symbols
-COMPLEMENT_TABLE = {"G": "C",
+COMPLEMENT_TABLE_DNA = {"G": "C",
                     "A": "T",
                     "C": "G",
                     "T": "A"}
@@ -46,7 +46,7 @@ Nucleic Acids Research, 13(9), 3021–3030.
 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC341218
 """
 
-COMPLEMENT_TABLE_IUPAC = COMPLEMENT_TABLE | {"B": "V",
+COMPLEMENT_TABLE_IUPAC = COMPLEMENT_TABLE_DNA | {"B": "V",
                                              "D": "H",
                                              "H": "D",
                                              "K": "M",

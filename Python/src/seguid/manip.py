@@ -5,7 +5,7 @@ from array import array
 
 from seguid.asserts import assert_table
 from seguid.asserts import assert_in_alphabet
-from seguid.tables import COMPLEMENT_TABLE
+from seguid.tables import COMPLEMENT_TABLE_DNA
 
 def rotate(seq: str, amount: int = 0) -> str:
     """Rotates a circular, DNA sequence a certain amount.
@@ -50,7 +50,7 @@ def rotate(seq: str, amount: int = 0) -> str:
     return seq
 
 
-def complementary(seq: str, table: tuple = COMPLEMENT_TABLE) -> str:
+def complementary(seq: str, table: tuple = COMPLEMENT_TABLE_DNA) -> str:
     """Complement of a DNA sequence.
     """
     ## Validate 'table':
@@ -69,7 +69,7 @@ def reverse(seq) -> str:
     return seq[::-1]
 
 
-def rc(seq: str, table: dict = COMPLEMENT_TABLE) -> str:
+def rc(seq: str, table: dict = COMPLEMENT_TABLE_DNA) -> str:
     """Reverse complement of sequence.
 
     Returns the reverse complement for a DNA strand.
@@ -95,7 +95,7 @@ def rc(seq: str, table: dict = COMPLEMENT_TABLE) -> str:
 
 
 def min_rotation_py(s: str,
-                    table: tuple = COMPLEMENT_TABLE) -> int:
+                    table: tuple = COMPLEMENT_TABLE_DNA) -> int:
     """Start position for the smallest rotation of a string s (pure Python).
 
     Algorithm described in:
