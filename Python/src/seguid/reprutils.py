@@ -58,19 +58,17 @@ def tuple_from_repr(
     if sep not in rpr_dedent:
         raise ValueError(f"Expected two non-empty lines separated by {sep}")
 
-    watson, crick = [x.rstrip(ws) for x in rpr_dedent.split(sep)]
+    w, c = [x.strip(ws) for x in rpr_dedent.split(sep)]
+    assert not (w.startswith(space) and c.startswith(space))
+    assert not (w.endswith(space) and c.endswith(space))
 
-    assert not (watson.endswith(space) and crick.endswith(space))
-
-    watson, crick = [x.rstrip(space) for x in rpr_dedent.split(sep)]
+    watson, crick = [x.rstrip(space + ws) for x in rpr_dedent.split(sep)]
 
     overhang = (
         len(watson) - len(watson.lstrip(space)) - (len(crick) - len(crick.lstrip(space)))
     )
 
     assert not (watson.startswith(space) and crick.startswith(space))
-
-
 
 
     result = watson.strip(space), crick.strip(space)[::-1], overhang
