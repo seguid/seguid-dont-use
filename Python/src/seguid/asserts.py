@@ -58,12 +58,17 @@ def assert_anneal(watson: str,
     assert_in_alphabet(watson, alphabet=set(table.keys()))
     assert_in_alphabet(crick, alphabet=set(table.keys()))
 
-    assert isinstance(overhang, int)
-    assert -len(watson) < overhang
-    assert overhang < len(crick)
+    assert isinstance(overhang, int), "overhang must be an integer"
+    assert -len(watson) < overhang, "watson and crick has to anneal with at least one bp"
+    assert overhang < len(crick), "watson and crick has to anneal with at least one bp"
 
-    up = watson[max(-overhang, 0): min(len(watson) - overhang, len(crick))]
-    dn = seguid.manip.rc(crick, table=table)[max(overhang, 0): min(len(watson) + overhang, len(crick))]
+    up = watson[max(-overhang, 0): len(crick) - overhang]
+    dn = seguid.manip.rc(crick, table=table)[max(overhang, 0): len(watson) + overhang]
 
     if up != dn:
         raise ValueError("Mismatched basepairs.")
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
