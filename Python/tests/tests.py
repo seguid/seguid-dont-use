@@ -10,21 +10,24 @@ from seguid import scseguid
 from seguid import dlseguid
 from seguid import dcseguid
 
-from seguid.chksum import seguid
-
-from seguid.manip import rc
-from seguid.manip import min_rotation_py
-
 from seguid.reprutils import tuple_from_repr
 from seguid.reprutils import repr_from_tuple
-
-from seguid.asserts import assert_anneal
-from seguid.asserts import assert_in_alphabet
 
 from seguid.tables import COMPLEMENT_TABLE
 from seguid.tables import COMPLEMENT_TABLE_RNA
 from seguid.tables import COMPLEMENT_TABLE_IUPAC
 from seguid.tables import TABLE_IUPAC_PROTEIN
+
+from seguid.asserts import assert_anneal
+from seguid.asserts import assert_in_alphabet
+from seguid.asserts import assert_table
+
+from seguid.manip import rc
+from seguid.manip import min_rotation_py
+from seguid.manip import complementary
+from seguid.manip import rotate
+
+from seguid.chksum import seguid
 
 import pytest
 
@@ -48,6 +51,90 @@ def test_assert_anneal():
 
     with pytest.raises(AssertionError):
         assert_anneal("AT", "AT", 4)
+
+
+
+def test_assert_in_alphabet():
+    """docstring."""
+    seq = "ABCDEFGH"
+    alphabet = {'A', 'C', 'G', 'T'}
+
+    assert_in_alphabet("ACGT", alphabet = alphabet)
+    assert_in_alphabet("AAAA", alphabet = alphabet)
+    assert_in_alphabet("", alphabet = alphabet)
+
+    try:
+        assert_in_alphabet("x", alphabet = alphabet)
+        print("Should not be reached")
+    except ValueError:
+        pass
+
+    try:
+        assert_in_alphabet("ACGTx", alphabet = alphabet)
+        print("Should not be reached")
+    except ValueError:
+        pass
+
+
+def test_assert_table():
+    """docstring."""
+    assert_table(str.maketrans("GATC", "CTAG"))
+    assert_table(COMPLEMENT_TABLE)
+
+    try:
+        assert_table(str.maketrans("GATx", "CTAG"))
+        print("Should not be reached")
+    except ValueError:
+        pass
+
+
+def test_complementary():
+    """docstring."""
+    seq = "AACCGGTT"
+    seq_complementary = "TTGGCCAA"
+    assert complementary(seq) == seq_complementary
+    assert complementary(seq_complementary) == seq
+    assert complementary(complementary(seq)) == seq
+
+    seq = "AACCGGTTxx"
+    try:
+        print(complementary(seq))
+        print("Should not be reached")
+    except ValueError:
+        pass
+
+
+def test_rc2():
+    """docstring."""
+    watson = "ACGTAACCGGTT"
+    crick = "AACCGGTTACGT"
+    assert rc(watson) == crick
+    assert rc(crick) == watson
+    assert rc(rc(watson)) == watson
+
+
+def test_rotate():
+    """docstring."""
+    seq = "ACGTAACCGGTT"
+    n = len(seq)
+    assert rotate(seq,   0) ==        seq
+    assert rotate(seq,   n) == rotate(seq,  0)
+    assert rotate(seq, 2*n) == rotate(seq,  0)
+    assert rotate(seq, n-1) == rotate(seq, -1)
+
+    ## Rotate on the complementary strand
+    assert complementary(rotate(complementary(seq), +1)) == rotate(seq, +1)
+
+
+def test_rotate2():
+    """docstring."""
+    watson = "ACGTAACCGGTT"
+    crick = "AACCGGTTACGT"
+
+    ## Rotate on Watson, is the opposite rotation on Crick
+    assert rc(watson)                 == crick
+    assert rc(rotate(crick, -1))      == rotate(watson, +1)
+    assert rc(rotate(rc(watson), -1)) == rotate(watson, +1)
 
 
 def test_rc():
