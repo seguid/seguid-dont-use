@@ -1,21 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from pathlib import Path
-from hashlib import sha1
-from base64 import urlsafe_b64encode as b64us
-
-from seguid.tables import COMPLEMENT_TABLE_DNA
-from seguid.tables import COMPLEMENT_TABLE_RNA
-from seguid.tables import COMPLEMENT_TABLE_IUPAC
-from seguid.tables import TABLE_IUPAC_PROTEIN
+import pytest
 
 from seguid.manip import rc
 from seguid.manip import min_rotation_py
 from seguid.manip import complementary
 from seguid.manip import rotate
-
-import pytest
 
 def test_complementary():
     """docstring."""
