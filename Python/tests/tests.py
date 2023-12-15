@@ -19,6 +19,12 @@ from seguid.reprutils import tuple_from_repr
 from seguid.reprutils import repr_from_tuple
 
 from seguid.asserts import assert_anneal
+from seguid.asserts import assert_in_alphabet
+
+from seguid.tables import COMPLEMENT_TABLE
+from seguid.tables import COMPLEMENT_TABLE_RNA
+from seguid.tables import COMPLEMENT_TABLE_IUPAC
+from seguid.tables import TABLE_IUPAC_PROTEIN
 
 import pytest
 
@@ -125,6 +131,36 @@ def test_tuple_from_repr():
 
     assert tuple_from_repr(rpr) == ('TATGCC', 'GGCATA', 0)
 
+    rpr_should_err = """
+       - TGCC
+       ATACGG
+    """
+
+    with pytest.raises(ValueError):
+        tuple_from_repr(rpr_should_err)
+
+    rpr_should_err = """
+        -TGCC
+       ATACGG
+    """
+
+    with pytest.raises(ValueError):
+        tuple_from_repr(rpr_should_err)
+
+    rpr_should_err = """
+      ---TGCC
+       ATACGG
+    """
+
+    with pytest.raises(ValueError):
+        tuple_from_repr(rpr_should_err)
+
+    rpr_should_err = """
+      ---TGCC-
+      -ATACGG-
+    """
+
+    tuple_from_repr(rpr_should_err)
 
 
 def test_repr_from_tuple():
@@ -139,7 +175,6 @@ def test_seguid():
         "IGIMDGDLLAVHKTQDVRNGQVVVARIDDEVTVKRLKKQGNKVELLPENSEFKPIVVDLRQ"
         "QSFTIEGLAVGVIRNGDWL"
     )
-    from seguid.tables import TABLE_IUPAC_PROTEIN
 
     assert seguid(NP_313053_1, table=TABLE_IUPAC_PROTEIN) == "seguid:2c4yjE+JqjvzYF1d0OmUh8pCpz8"
 
@@ -165,7 +200,7 @@ def test_scseguid():
 
 
 def test_dlseguid():
-    from seguid.tables import COMPLEMENT_TABLE as ct
+    ct = COMPLEMENT_TABLE
     table = ct | {"\n":"\n", "-":"-"}
     # AT
     # TA
