@@ -6,7 +6,8 @@ install:
 test:
 	python -m pytest
 
-covr:
-	python -m pytest --cov=Python/
+coverage:
+	(cd Python/; python -m pytest --cov=src/)
+
 
 
