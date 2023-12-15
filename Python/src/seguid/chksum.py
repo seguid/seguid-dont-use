@@ -18,19 +18,8 @@ scseguid and dcseguid are considerably faster with pydivsufsort installed.
 
 """
 
-__all__ = [
-    "tuple_from_repr",
-    "repr_from_tuple",
-    "seguid",
-    "slseguid",
-    "scseguid",
-    "dlseguid",
-    "dcseguid",
-]
-
 import hashlib
 import base64
-from textwrap import dedent
 from typing import Callable
 import warnings
 
@@ -49,81 +38,6 @@ else:
             warnings.simplefilter("ignore")
             result = mr(s)
         return result
-
-
-def tuple_from_repr(
-    rpr: str,
-    table: dict = COMPLEMENT_TABLE,
-    space: str = "-",
-    sep: str = "\n"
-) -> tuple:
-    """Generate a tuple from dsDNA text representation.
-
-    This function can generate a tuple (watson, crick, overhang)
-    from a dsDNA figure such as the ones depicted below. The resulting
-    tuple can be used as an argument for the lSEGUID_sticky or nseguid
-    functions. See these functions for the definition of watson, crick and
-    overhang.
-    ::
-
-              -TATGCC
-              catacg-
-
-
-    The three figures above represent the same dsDNA molecule.
-
-
-    Examples
-    --------
-    >>> s = \"""
-    ...           -TATGCC
-    ...           CATACG- \"""
-    >>> tuple_from_repr(s)
-    ('TATGCC', 'GCATAC', 1)
-    >>> t = \"""
-    ...                      -TATGCC
-    ...                      CATACG- \"""
-    >>> tuple_from_repr(s)
-    ('TATGCC', 'GCATAC', 1)
-    >>> tuple_from_repr(s) == tuple_from_repr(t)
-    True
-    """
-    assert isinstance(space, str)
-    assert isinstance(sep, str)
-
-    assert_in_alphabet(rpr, alphabet=set(table.keys()) | set(space) | set(sep) | set(" "))
-
-    rpr_dedent = dedent(sep.join(ln for ln in rpr.split(sep) if ln.strip()))
-
-    if sep not in rpr_dedent:
-        raise ValueError(f"Expected two non-empty lines separated by {sep}")
-
-    watson, crick = [x.rstrip() for x in rpr_dedent.split(sep)]
-
-    overhang = (
-        len(watson) - len(watson.lstrip(space)) - (len(crick) - len(crick.lstrip(space)))
-    )
-
-    result = watson.strip(space), crick.strip(space)[::-1], overhang
-
-    assert_anneal(*result, table=table | {c:c for c in space+sep})
-
-    return result
-
-
-def repr_from_tuple(
-    watson: str, crick: str, overhang: int
-) -> str:
-
-    assert_anneal(watson, crick, overhang)
-
-    msg = (
-        f"{overhang*chr(45)}{watson}{chr(45)*(-overhang+len(crick)-len(watson))}"
-        "\n"
-        f"{-overhang*chr(45)}{crick[::-1]}{chr(45)*(overhang+len(watson)-len(crick))}"
-    ).rstrip()
-
-    return msg
 
 
 def _seguid(seq: str,
@@ -254,7 +168,7 @@ def dlseguid(watson: str,
              table: dict = COMPLEMENT_TABLE,
              prefix="dlseguid:"
              ) -> str:
-    r"""SEGUID checksum for double stranded linear DNA (dlSEGUID)
+    r"""SEGUID checksum for double stranded linear DNA (dlSEGUID).
 
     Calculates the dlSEGUID checksum for a dsDNA sequence defined by two
     strings representing the upper (Watson) and lower (Crick) strand
@@ -334,7 +248,7 @@ def dlseguid(watson: str,
     >>> dlseguid("GCATAC", "TATGCC", 1)
     'dlseguid:E7YtPGWjj3qCaPzWurlYBaJy_X4'
     """
-
+    assert_anneal(watson, crick, overhang, table=table)
 
     w, c, o = min(
         (
@@ -353,7 +267,7 @@ def dlseguid(watson: str,
     ).rstrip()
 
     extable = table | {space: space, sep: sep}
-    # breakpoint()
+
     return slseguid(msg, table=extable, prefix=prefix)
 
 
@@ -373,6 +287,8 @@ def dcseguid(watson: str,
     """
     assert len(watson) == len(crick)
     ln = len(watson)
+
+    assert_anneal(watson, crick, 0, table=table)
 
     x = min_rotation(watson)
     y = min_rotation(crick)
