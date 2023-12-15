@@ -156,11 +156,18 @@ def test_tuple_from_repr():
         tuple_from_repr(rpr_should_err)
 
     rpr_should_err = """
-      ---TGCC-
-      -ATACGG-
+      ---TGCC
+      -ATACGG
     """
+    with pytest.raises(AssertionError):
+        tuple_from_repr(rpr_should_err)
 
-    tuple_from_repr(rpr_should_err)
+    rpr_should_err = """
+       TATGCC-
+       ATACGG-
+    """
+    with pytest.raises(AssertionError):
+        tuple_from_repr(rpr_should_err)
 
 
 def test_repr_from_tuple():
