@@ -3,7 +3,6 @@
 
 import pytest
 
-from seguid.asserts import assert_anneal
 from seguid.asserts import assert_in_alphabet
 from seguid.asserts import assert_table
 
