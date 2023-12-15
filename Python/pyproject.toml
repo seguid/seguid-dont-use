@@ -7,8 +7,8 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
-pydivsufsort = "^0.0.11"
+python = "^3.9"
+pydivsufsort = "^0.0.12"
 
 
 [build-system]
