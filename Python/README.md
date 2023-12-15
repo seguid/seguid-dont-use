@@ -1,4 +1,4 @@
-# SEGUID checksums for double stranded linear and circular DNA
+# SEGUID checksums for single or double stranded linear or circular DNA
 
 [![Documentation Status](https://readthedocs.org/projects/seguid/badge/?version=latest)](https://seguid.readthedocs.io/en/latest/?badge=latest)
 
