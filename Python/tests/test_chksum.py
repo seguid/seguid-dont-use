@@ -12,6 +12,9 @@ from seguid import scseguid
 from seguid import dlseguid
 from seguid import dcseguid
 
+from seguid.reprutils import tuple_from_repr
+from seguid.reprutils import repr_from_tuple
+
 from seguid.tables import COMPLEMENT_TABLE_DNA
 from seguid.tables import COMPLEMENT_TABLE_RNA
 from seguid.tables import COMPLEMENT_TABLE_IUPAC

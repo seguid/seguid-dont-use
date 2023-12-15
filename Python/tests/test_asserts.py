@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from pathlib import Path
-from hashlib import sha1
-from base64 import urlsafe_b64encode as b64us
+import pytest
 
 from seguid.asserts import assert_anneal
 from seguid.asserts import assert_in_alphabet
@@ -13,8 +11,6 @@ from seguid.tables import COMPLEMENT_TABLE_DNA
 from seguid.tables import COMPLEMENT_TABLE_RNA
 from seguid.tables import COMPLEMENT_TABLE_IUPAC
 from seguid.tables import TABLE_IUPAC_PROTEIN
-
-import pytest
 
 def test_assert_in_alphabet():
     """docstring."""
