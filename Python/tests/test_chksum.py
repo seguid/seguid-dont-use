@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import pytest
+
 from pathlib import Path
 from hashlib import sha1
 from base64 import urlsafe_b64encode as b64us
@@ -9,9 +11,6 @@ from seguid import slseguid
 from seguid import scseguid
 from seguid import dlseguid
 from seguid import dcseguid
-
-from seguid.reprutils import tuple_from_repr
-from seguid.reprutils import repr_from_tuple
 
 from seguid.tables import COMPLEMENT_TABLE_DNA
 from seguid.tables import COMPLEMENT_TABLE_RNA
@@ -28,8 +27,6 @@ from seguid.manip import complementary
 from seguid.manip import rotate
 
 from seguid.chksum import seguid
-
-import pytest
 
 def test_assert_anneal():
 
@@ -142,88 +139,6 @@ def test_min_rotation_py():
         smallest_rotation_py("ACAACAAACAACACAAACAAACACAAC")
         == "AAACAAACACAACACAACAAACAACAC"
     )
-
-
-def test_tuple_from_repr():
-    """docstring."""
-
-    rpr = """
-      -TATGCC
-      CATACG-
-    """
-
-    assert tuple_from_repr(rpr) == ("TATGCC", "GCATAC", 1)
-
-    rpr = """
-       TATGCC--
-       -TACGGGG
-    """
-
-    assert tuple_from_repr(rpr) == ("TATGCC", "GGGGCAT", -1)
-
-    rpr = """     # This stuff will give ValueError
-        TATGCC
-        ATACGG
-    """
-
-    with pytest.raises(ValueError):
-        tuple_from_repr(rpr)
-
-    rpr = """
-       TATGCC--
-       --ACGGGG
-    """
-
-    assert tuple_from_repr(rpr) == ("TATGCC", "GGGGCA", -2)
-
-    rpr = """
-       TATGCC
-       ATACGG
-    """
-
-    assert tuple_from_repr(rpr) == ('TATGCC', 'GGCATA', 0)
-
-    rpr_should_err = """
-       - TGCC
-       ATACGG
-    """
-
-    with pytest.raises(ValueError):
-        tuple_from_repr(rpr_should_err)
-
-    rpr_should_err = """
-        -TGCC
-       ATACGG
-    """
-
-    with pytest.raises(ValueError):
-        tuple_from_repr(rpr_should_err)
-
-    rpr_should_err = """
-      ---TGCC
-       ATACGG
-    """
-
-    with pytest.raises(ValueError):
-        tuple_from_repr(rpr_should_err)
-
-    rpr_should_err = """
-      ---TGCC
-      -ATACGG
-    """
-    with pytest.raises(AssertionError):
-        tuple_from_repr(rpr_should_err)
-
-    rpr_should_err = """
-       TATGCC-
-       ATACGG-
-    """
-    with pytest.raises(AssertionError):
-        tuple_from_repr(rpr_should_err)
-
-
-def test_repr_from_tuple():
-    assert repr_from_tuple(*("TATGCC", "GGGGCA", -2)) == "TATGCC--\n--ACGGGG"
 
 
 def test_seguid():
