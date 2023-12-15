@@ -9,5 +9,8 @@ test:
 coverage:
 	(cd Python/; python -m pytest --cov=src/)
 
+coverage-html:
+	(cd Python/; pytest --cov=src/ --cov-report=html; xdg-open htmlcov/index.html)
+
 
 
