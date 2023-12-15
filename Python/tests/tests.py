@@ -5,18 +5,43 @@ from pathlib import Path
 from hashlib import sha1
 from base64 import urlsafe_b64encode as b64us
 
-from seguid import tuple_from_repr
-from seguid import repr_from_tuple
 from seguid import slseguid
 from seguid import scseguid
 from seguid import dlseguid
 from seguid import dcseguid
 
-from seguid.manip import rc
-from seguid.manip import min_rotation_py
 from seguid.chksum import seguid
 
+from seguid.manip import rc
+from seguid.manip import min_rotation_py
+
+from seguid.reprutils import tuple_from_repr
+from seguid.reprutils import repr_from_tuple
+
+from seguid.asserts import assert_anneal
+
 import pytest
+
+def test_assert_anneal():
+
+    tuples = (("AT", "TA", 1),
+              ("CTATAG", "AT", -2),
+              ("AT", "CTATAG", 2),
+              ("AT", "AT", 0))
+
+    for watson, crick, overhang in tuples:
+        assert_anneal(watson, crick, overhang)
+
+    tuples = (("AT", "CG", 1),
+              ("CTATAG", "AT", -3),
+              ("AT", "CTATAG", 1))
+
+    for watson, crick, overhang in tuples:
+        with pytest.raises(ValueError):
+            assert_anneal(watson, crick, overhang)
+
+    with pytest.raises(AssertionError):
+        assert_anneal("AT", "AT", 4)
 
 
 def test_rc():
@@ -59,10 +84,6 @@ def test_min_rotation_py():
         smallest_rotation_py("ACAACAAACAACACAAACAAACACAAC")
         == "AAACAAACACAACACAACAAACAACAC"
     )
-
-
-def test_anneal():
-    pass
 
 
 def test_tuple_from_repr():
@@ -190,6 +211,8 @@ def test_dlseguid():
     assert dlseguid(*dlDNA5) == f"dlseguid:{dlDNA4_dlseguid}"
     assert dlDNA5_dlseguid in slseguid("--AT--\nGATATC", table = table)
     assert cs("--AT--\nGATATC") == dlDNA5_dlseguid
+
+    repr_from_tuple("AT", "CTATAG", 2)
 
 
 def test_dcseguid():
