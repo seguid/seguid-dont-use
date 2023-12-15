@@ -42,6 +42,10 @@ def test_rotate():
     assert rotate(seq, 2*n) == rotate(seq,  0)
     assert rotate(seq, n-1) == rotate(seq, -1)
 
+
+    assert rotate("", 0) == ""
+    assert rotate("", 1) == ""
+
     ## Rotate on the complementary strand
     assert complementary(rotate(complementary(seq), +1)) == rotate(seq, +1)
 
