@@ -252,10 +252,10 @@ def test_slseguid():
 
 
 def test_scseguid():
-    m13dna = Path("M13.txt").read_text().strip()
+    m13dna = Path("test_data/M13.txt").read_text().strip()
     sc = "scseguid:aAjgnsF9cPI6cu8IQ81sYnstVzU"
     assert scseguid(m13dna) == sc
-    assert cs(Path("M13msg.txt").read_text().strip()) in sc
+    assert cs(Path("test_data/M13msg.txt").read_text().strip()) in sc
 
 
 def test_dlseguid():
@@ -310,10 +310,10 @@ def test_dlseguid():
 
 
 def test_dcseguid():
-    pUC19dna = Path("puc19.txt").read_text().strip()
+    pUC19dna = Path("test_data/puc19.txt").read_text().strip()
     dcsg = "dcseguid:zhw8Yrxfo3FO5DDccx4PamBVPCQ"
     assert dcseguid(pUC19dna, rc(pUC19dna)) == dcsg
-    w, c = Path("pUC19msg.txt").read_text().splitlines()
+    w, c = Path("test_data/pUC19msg.txt").read_text().splitlines()
     assert dlseguid(w, c[::-1], 0) == "dlseguid:zhw8Yrxfo3FO5DDccx4PamBVPCQ"
 
 
