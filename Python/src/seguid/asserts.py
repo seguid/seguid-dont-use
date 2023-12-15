@@ -9,22 +9,16 @@ def assert_in_alphabet(seq: str,
     assert isinstance(seq, str), "Argument 'seq' must be an string"
     assert isinstance(alphabet, set), "Argument 'alphabet' must be a set"
     assert len(alphabet) > 0, "Argument 'alphabet' must not be empty"
-    # breakpoint()
+    first = list(alphabet)[0]
+    assert isinstance(first, str), "Argument 'alphabet' should contain 'str' elements"
+    
     # Nothing to do?
     if len(seq) == 0:
         return
 
-    first = list(alphabet)[0]
-    if isinstance(first, int):
-        unknown = set(
-            c for c in seq if c not in (chr(k) for k in alphabet)
-        )
-    elif isinstance(first, str):
-        unknown = set(
-            c for c in seq if c not in (k for k in alphabet)
-        )
-    else:
-        raise ValueError("Unknown type of the elements in 'alphabet'")
+    unknown = set(
+        c for c in seq if c not in (k for k in alphabet)
+    )
 
     if unknown:
         missing = ' '.join(unknown)
