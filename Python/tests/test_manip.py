@@ -68,7 +68,3 @@ def test_rc():
 
     with pytest.raises(ValueError):
         rc("GTZ")
-
-        
-if __name__ == "__main__":
-    pytest.main([__file__, "-vvv", "-s"])

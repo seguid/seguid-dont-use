@@ -16,8 +16,6 @@ from seguid.reprutils import tuple_from_repr
 from seguid.reprutils import repr_from_tuple
 
 from seguid.tables import COMPLEMENT_TABLE_DNA
-from seguid.tables import COMPLEMENT_TABLE_RNA
-from seguid.tables import COMPLEMENT_TABLE_IUPAC
 from seguid.tables import TABLE_IUPAC_PROTEIN
 
 from seguid.asserts import assert_anneal
@@ -242,7 +240,3 @@ def _test_speed():
     )
     print("pydivsufsort: ", end="")
     print(timeit.timeit("cseguid(dna500)", globals=globals(), number=1000))
-
-
-if __name__ == "__main__":
-    pytest.main([__file__, "-vvv", "-s"])
