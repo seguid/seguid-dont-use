@@ -2,6 +2,6 @@ SHELL=bash
 
 install:
 	python -m pip install .
-check:
+test:
 	python -m pytest
 

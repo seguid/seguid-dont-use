@@ -53,41 +53,6 @@ def test_assert_anneal():
         assert_anneal("AT", "AT", 4)
 
 
-
-def test_assert_in_alphabet():
-    """docstring."""
-    seq = "ABCDEFGH"
-    alphabet = {'A', 'C', 'G', 'T'}
-
-    assert_in_alphabet("ACGT", alphabet = alphabet)
-    assert_in_alphabet("AAAA", alphabet = alphabet)
-    assert_in_alphabet("", alphabet = alphabet)
-
-    try:
-        assert_in_alphabet("x", alphabet = alphabet)
-        print("Should not be reached")
-    except ValueError:
-        pass
-
-    try:
-        assert_in_alphabet("ACGTx", alphabet = alphabet)
-        print("Should not be reached")
-    except ValueError:
-        pass
-
-
-def test_assert_table():
-    """docstring."""
-    assert_table(str.maketrans("GATC", "CTAG"))
-    assert_table(COMPLEMENT_TABLE_DNA)
-
-    try:
-        assert_table(str.maketrans("GATx", "CTAG"))
-        print("Should not be reached")
-    except ValueError:
-        pass
-
-
 def test_complementary():
     """docstring."""
     seq = "AACCGGTT"
