@@ -1,13 +1,15 @@
 from seguid.tables import COMPLEMENT_TABLE_DNA
-from textwrap import dedent
+# from textwrap import dedent
+from inspect import cleandoc
 from seguid.asserts import assert_in_alphabet
 from seguid.asserts import assert_anneal
+from string import whitespace
+
 
 def tuple_from_repr(
     rpr: str,
     table: dict = COMPLEMENT_TABLE_DNA,
     space: str = "-",
-    sep: str = "\n"
 ) -> tuple:
     """Generate a tuple from dsDNA text representation.
 
@@ -40,40 +42,25 @@ def tuple_from_repr(
     >>> tuple_from_repr(rpr) == tuple_from_repr(rpr2)
     True
     """
-    # rpr = """
-    #   ---TGCC-
-    #   -ATACGG-
-    # """
+    space = "-"
+
     assert isinstance(space, str)
     assert len(space) == 1
-    assert isinstance(sep, str)
-    assert len(sep) == 1
 
-    ws = " "
+    assert_in_alphabet(rpr, alphabet=set(table.keys()) | set(space) | set(whitespace))
 
-    assert_in_alphabet(rpr, alphabet=set(table.keys()) | set(space) | set(sep) | set(ws))
+    watson, crickrv = cleandoc(rpr).split()
 
-    rpr_dedent = dedent(sep.join(ln for ln in rpr.split(sep) if ln.strip(ws)))
-
-    if sep not in rpr_dedent:
-        raise ValueError(f"Expected two non-empty lines separated by {sep}")
-
-    w, c = [x.strip(ws) for x in rpr_dedent.split(sep)]
-    assert not (w.startswith(space) and c.startswith(space))
-    assert not (w.endswith(space) and c.endswith(space))
-
-    watson, crick = [x.rstrip(space + ws) for x in rpr_dedent.split(sep)]
+    assert len(watson) == len(crickrv)
+    assert not (watson.startswith(space) and crickrv.startswith(space))
+    assert not (watson.endswith(space) and crickrv.endswith(space))
 
     overhang = (
-        len(watson) - len(watson.lstrip(space)) - (len(crick) - len(crick.lstrip(space)))
+        len(watson) - len(watson.lstrip(space)) - (len(crickrv) - len(crickrv.lstrip(space)))
     )
 
-    assert not (watson.startswith(space) and crick.startswith(space))
-
-
-    result = watson.strip(space), crick.strip(space)[::-1], overhang
-
-    assert_anneal(*result, table=table | {c: c for c in space + sep})
+    result = watson.strip(space), crickrv.strip(space)[::-1], overhang
+    assert_anneal(*result, table=table | {space: space})
 
     return result
 
