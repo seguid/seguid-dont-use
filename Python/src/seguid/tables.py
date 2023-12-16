@@ -3,9 +3,9 @@
 
 # Definition of Complementary DNA Symbols
 COMPLEMENT_TABLE_DNA = {"G": "C",
-                    "A": "T",
-                    "C": "G",
-                    "T": "A"}
+                        "A": "T",
+                        "C": "G",
+                        "T": "A"}
 
 
 # Definition of Complementary RNA Symbols
