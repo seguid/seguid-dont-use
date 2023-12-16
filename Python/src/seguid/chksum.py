@@ -301,8 +301,3 @@ def dcseguid(watson: str,
     )
 
     return dlseguid(w, c, overhang=0, table=table, prefix=prefix)
-
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)

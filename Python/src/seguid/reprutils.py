@@ -78,8 +78,3 @@ def repr_from_tuple(
     ).rstrip()
 
     return msg
-
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
