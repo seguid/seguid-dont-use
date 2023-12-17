@@ -99,7 +99,7 @@ lseguid_sticky <- function(watson, crick, overhang) {
   spaces_w <- if (o > 0L) space(o) else ""
   spaces_c <- if (o < 0L) space(-o) else ""
   seq_w <- paste(spaces_w, w , sep = "")
-  seq_c <- paste(spaces_c, reverse_sequence(c), sep = "")
+  seq_c <- paste(spaces_c, reverse(c), sep = "")
   seq <- paste(seq_w, seq_c, sep = "\n")
   useguid(seq)
 }
@@ -159,27 +159,6 @@ space <- function(n) {
   paste(rep(" ", times = n), collapse = "")
 }
 
-reverse_sequence <- function(sequence) {
-  sequence <- strsplit(sequence, split = "", fixed = TRUE)[[1]]
-  sequence <- rev(sequence)
-  paste(sequence, collapse = "")
-} 
-
-# Reverse complement
-reverse_complement <- function(sequence) {
-  if (!is_dna_sequence(sequence) && !is_rna_sequence(sequence)) {
-     stop("Sequence is neither a DNA sequence nor an RNA sequence: ", sQuote(sequence))
-  }
-  sequence <- toupper(sequence)
-  sequence <- strsplit(sequence, split = "", fixed = TRUE)[[1]]
-  sequence_c <- ambiguous_dna_complement[sequence]
-  stopifnot(!anyNA(sequence_c))
-  sequence_cr <- rev(sequence_c)
-  paste(sequence_cr, collapse = "")
-}
-
-rc <- reverse_complement
-
 
 tuple_from_representation <- function(bfr) {
   ## Split up into lines
@@ -208,7 +187,7 @@ tuple_from_representation <- function(bfr) {
     is_dna_sequence(toupper(ms[2])) || is_rna_sequence(toupper(ms[2]))
   )
   
-  list(watson = ms[1], crick = reverse_sequence(ms[2]), overhang = nls[1])
+  list(watson = ms[1], crick = reverse(ms[2]), overhang = nls[1])
 }  
 
 
