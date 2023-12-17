@@ -42,8 +42,6 @@ def tuple_from_repr(
     >>> tuple_from_repr(rpr) == tuple_from_repr(rpr2)
     True
     """
-    space = "-"
-
     assert isinstance(space, str)
     assert len(space) == 1
 
