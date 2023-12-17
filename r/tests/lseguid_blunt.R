@@ -1,6 +1,6 @@
 library(seguid)
 
-reverse_sequence <- seguid:::reverse_sequence
+reverse <- seguid:::reverse
 rc <- seguid:::rc
 
 x <- "tcgcgcgtttcggtgatgacggtgAAAAcctctgacacatgcagctcccggattgtactgagagtgc"
@@ -12,5 +12,5 @@ x <- toupper(x)
 
 stopifnot( 
   lseguid_blunt(x) == truth,
-  useguid(paste(rc(x), reverse_sequence(x), sep = "\n")) == truth
+  useguid(paste(rc(x), reverse(x), sep = "\n")) == truth
 )
