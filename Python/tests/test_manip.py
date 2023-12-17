@@ -4,7 +4,6 @@
 import pytest
 
 from seguid.manip import rc
-from seguid.manip import min_rotation_py
 from seguid.manip import complementary
 from seguid.manip import rotate
 
