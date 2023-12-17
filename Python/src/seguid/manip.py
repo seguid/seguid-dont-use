@@ -50,7 +50,7 @@ def rotate(seq: str, amount: int = 0) -> str:
     return seq
 
 
-def complementary(seq: str, table: tuple = COMPLEMENT_TABLE_DNA) -> str:
+def complementary(seq: str, table: dict = COMPLEMENT_TABLE_DNA) -> str:
     """Complement of a DNA sequence.
     """
     ## Validate 'table':
@@ -95,7 +95,7 @@ def rc(seq: str, table: dict = COMPLEMENT_TABLE_DNA) -> str:
 
 
 def min_rotation_py(s: str,
-                    table: tuple = COMPLEMENT_TABLE_DNA) -> int:
+                    table: dict = COMPLEMENT_TABLE_DNA) -> int:
     """Start position for the smallest rotation of a string s (pure Python).
 
     Algorithm described in:
