@@ -33,9 +33,9 @@ assert_anneal <- function(watson, crick, overhang, table = COMPLEMENT_TABLE_DNA)
 
   crick_rc <- rc(crick, table = table)
   
-  up <- substr(watson,   start = max(-overhang, 0) + 1, stop = nchar(crick) - overhang)
+  up <- substr(watson,   start = max(-overhang, 0) + 1, stop = nchar(crick)  - overhang)
   dn <- substr(crick_rc, start = max(+overhang, 0) + 1, stop = nchar(watson) + overhang)
-  
+
   if (up != dn) {
     stop("Mismatched basepairs.")
   }

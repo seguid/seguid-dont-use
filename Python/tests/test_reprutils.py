@@ -24,7 +24,7 @@ def test_tuple_from_repr():
 
     assert tuple_from_repr(rpr) == ("TATGCC", "GGGGCAT", -1)
 
-    rpr = """     # This stuff will give ValueError
+    rpr = """   # Source code comments like this one are not allowed
         TATGCC
         ATACGG
     """
