@@ -131,7 +131,7 @@ def slseguid(seq: str,
 def scseguid(seq: str,
              table: dict = COMPLEMENT_TABLE_DNA,
              min_rotation: Callable[[str], int] = min_rotation,
-             prefix="scseguid:") -> str:
+             prefix: str = "scseguid:") -> str:
     r"""SEGUID checksum for single stranded circular DNA (scSEGUID).
 
     The scSEGUID is the slSEGUID checksum calculated for the lexicographically
@@ -166,7 +166,7 @@ def dlseguid(watson: str,
              crick: str,
              overhang: int,
              table: dict = COMPLEMENT_TABLE_DNA,
-             prefix="dlseguid:"
+             prefix: str = "dlseguid:"
              ) -> str:
     r"""SEGUID checksum for double stranded linear DNA (dlSEGUID).
 
@@ -275,7 +275,7 @@ def dcseguid(watson: str,
              crick: str,
              table: dict = COMPLEMENT_TABLE_DNA,
              min_rotation: Callable[[str], int] = min_rotation,
-             prefix="dcseguid:") -> str:
+             prefix: str = "dcseguid:") -> str:
     """SEGUID checksum for double stranded circular DNA (dcSEGUID).
 
     The dcSEGUID is the slSEGUID checksum calculated for the lexicographically
