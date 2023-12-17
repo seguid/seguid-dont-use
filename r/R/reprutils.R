@@ -70,3 +70,27 @@ tuple_from_repr <- function(rpr, table = COMPLEMENT_TABLE_DNA, space = "-") {
   list(watson = watson, crick = crick, overhang = overhang)
 }
 
+
+pad <- function(n, symbol = " ") {
+  stopifnot(length(n) == 1, is.numeric(n), !is.na(n))
+  stopifnot(length(symbol) == 1, is.character(symbol), !is.na(symbol))
+  if (n > 0) paste(rep(symbol, times = n), collapse = "") else ""
+}
+
+space <- function(n) pad(n, symbol = " ")
+
+
+repr_from_tuple <- function(watson, crick, overhang, table = COMPLEMENT_TABLE_DNA, space = "-") {
+  assert_anneal(watson, crick, overhang = overhang, table = table)
+
+  roverhang <- overhang + nchar(watson) - nchar(crick)
+  rpr <- paste0(
+    paste0(pad(+overhang, symbol = space), watson,         pad(-roverhang, symbol = space)),
+    "\n",
+    paste0(pad(-overhang, symbol = space), reverse(crick), pad(+roverhang, symbol = space))
+  )
+  assert_in_alphabet(rpr, alphabet = c(names(table), space, "\n"))
+  rpr
+}
+
+  
