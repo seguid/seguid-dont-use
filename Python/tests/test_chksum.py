@@ -14,6 +14,7 @@ from seguid import dcseguid
 
 from seguid.chksum import seguid
 
+from seguid.manip import reverse
 from seguid.manip import rc
 from seguid.manip import min_rotation_py
 
@@ -144,4 +145,4 @@ def test_dcseguid():
     dcsg = "dcseguid:zhw8Yrxfo3FO5DDccx4PamBVPCQ"
     assert dcseguid(pUC19dna, rc(pUC19dna)) == dcsg
     w, c = Path("test_data/pUC19msg.txt").read_text().splitlines()
-    assert dlseguid(w, c[::-1], 0) == "dlseguid:zhw8Yrxfo3FO5DDccx4PamBVPCQ"
+    assert dlseguid(w, reverse(c), 0) == "dlseguid:zhw8Yrxfo3FO5DDccx4PamBVPCQ"
