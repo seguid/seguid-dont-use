@@ -1,5 +1,5 @@
 tuple_from_repr <- seguid:::tuple_from_repr
-# repr_from_tuple <- seguid:::repr_from_tuple
+repr_from_tuple <- seguid:::repr_from_tuple
 
 assert_equal_tuple <- function(tuple, truth) {
   res <- all.equal(tuple, truth, check.attributes = FALSE)
@@ -114,4 +114,7 @@ res <- tryCatch({
 stopifnot(inherits(res, "error"))
 
 
-#assert_equal_tuple(repr_from_tuple(*("TATGCC", "GGGGCA", -2)) == "TATGCC--\n--ACGGGG"
+truth <- "TATGCC--\n--ACGGGG"
+tuple <- list("TATGCC", "GGGGCA", -2)
+rpr <- do.call(repr_from_tuple, args = tuple)
+stopifnot(rpr == truth)

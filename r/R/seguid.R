@@ -155,11 +155,6 @@ is_amino_acid_sequence <- function(seq) {
 }
 
 
-space <- function(n) {
-  paste(rep(" ", times = n), collapse = "")
-}
-
-
 tuple_from_representation <- function(bfr) {
   ## Split up into lines
   bfr <- strsplit(bfr, split = "\n", fixed = TRUE)[[1]]
