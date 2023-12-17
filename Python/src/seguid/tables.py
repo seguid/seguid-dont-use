@@ -47,14 +47,14 @@ https://www.ncbi.nlm.nih.gov/pmc/articles/PMC341218
 """
 
 COMPLEMENT_TABLE_IUPAC = COMPLEMENT_TABLE_DNA | {"B": "V",
-                                             "D": "H",
-                                             "H": "D",
-                                             "K": "M",
-                                             "M": "K",
-                                             "S": "S",
-                                             "V": "B",
-                                             "W": "W",
-                                             "N": "N"}
+                                                 "D": "H",
+                                                 "H": "D",
+                                                 "K": "M",
+                                                 "M": "K",
+                                                 "S": "S",
+                                                 "V": "B",
+                                                 "W": "W",
+                                                 "N": "N"}
 
 
 TABLE_IUPAC_PROTEIN = {"A": "",
