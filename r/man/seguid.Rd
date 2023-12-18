@@ -4,6 +4,8 @@
 \alias{seguid}
 \alias{slseguid}
 \alias{dlseguid}
+\alias{scseguid}
+\alias{dcseguid}
 \title{The SEGUID of nucleotide and amino-acid sequences}
 \usage{
 seguid(
@@ -28,6 +30,21 @@ dlseguid(
   encoding = b64encode_urlsafe,
   prefix = "dlseguid:"
 )
+
+scseguid(
+  seq,
+  table = COMPLEMENT_TABLE_DNA,
+  min_rotation = min_rotation_R,
+  prefix = "scseguid:"
+)
+
+dcseguid(
+  watson,
+  crick,
+  table = COMPLEMENT_TABLE_DNA,
+  min_rotation = min_rotation_R,
+  prefix = "dcseguid:"
+)
 }
 \arguments{
 \item{seq}{A character string.}
@@ -42,6 +59,8 @@ dlseguid(
 
 \item{overhang}{(integer) Amount of 3' overhang in the 5' side of
 the molecule. A molecule with 5' overhang has a negative value.}
+
+\item{min_rotation}{A function.}
 }
 \value{
 A character string.

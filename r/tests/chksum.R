@@ -17,8 +17,8 @@ NP_313053_1 <- paste0(
 
 
 m13dna <- readLines("test_data/M13.txt")
-sc <- "scseguid:aAjgnsF9cPI6cu8IQ81sYnstVzU"
-#stopifnot(scseguid(m13dna) == sc)
+truth <- "scseguid:aAjgnsF9cPI6cu8IQ81sYnstVzU"
+stopifnot(scseguid(m13dna) == truth)
 
 
 dlDNA <- "AT"
@@ -45,9 +45,9 @@ truth <- "dlseguid:np3hncfQvOh8rZ8Co1Ts_02NXg4"
 stopifnot(do.call(dlseguid, args = dlDNA5) == truth)
 
 pUC19dna <- readLines("test_data/puc19.txt", warn = FALSE)
-# stopifnot(dcseguid(pUC19dna, rc(pUC19dna)) == dcsg
+truth <- "dcseguid:zhw8Yrxfo3FO5DDccx4PamBVPCQ"
+stopifnot(dcseguid(pUC19dna, rc(pUC19dna)) == truth)
 bfr <- readLines("test_data/pUC19msg.txt", warn = FALSE)
 w <- bfr[1]
 c <- bfr[2]
-truth <- "dlseguid:zhw8Yrxfo3FO5DDccx4PamBVPCQ"
-stopifnot(dlseguid(w, reverse(c), 0) == truth)
+stopifnot(dlseguid(w, reverse(c), 0) == gsub("dcseguid:", "dlseguid:", truth))
