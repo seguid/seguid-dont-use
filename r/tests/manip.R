@@ -1,7 +1,8 @@
 rc <- seguid:::rc
 complementary <- seguid:::complementary
 rotate <- seguid:::rotate
-min_rotation <- seguid:::min_rotation_R
+min_rotation <- seguid:::min_rotation
+rotate_to_min <- seguid:::rotate_to_min
 
 table <- c(G = "C", A = "T", T = "A", C = "G")
 
@@ -62,3 +63,10 @@ seq <- "ACAACAAACAACACAAACAAACACAAC"
 amount <- min_rotation(seq)
 stopifnot(amount == 14)
 stopifnot(rotate(seq, amount = amount) == "AAACAAACACAACACAACAAACAACAC")
+
+
+stopifnot(rotate_to_min("taaa") == "aaat")
+stopifnot(rotate_to_min("abaabaaabaababaaabaaababaab") == "aaabaaababaababaabaaabaabab")
+stopifnot(rotate_to_min("abaabaaabaababaaabaaaBabaab") == "Babaababaabaaabaababaaabaaa")
+stopifnot(rotate_to_min("TAAA") == "AAAT")
+stopifnot(rotate_to_min("ACAACAAACAACACAAACAAACACAAC") == "AAACAAACACAACACAACAAACAACAC")

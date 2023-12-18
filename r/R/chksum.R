@@ -92,34 +92,27 @@ dlseguid <- function(watson, crick, overhang, table = COMPLEMENT_TABLE_DNA, enco
 
 
 
-#' @param min_rotation A function.
-#' 
 #' @rdname seguid
 #' @export
-scseguid <- function(seq, table = COMPLEMENT_TABLE_DNA, min_rotation = min_rotation_R, prefix = "scseguid:") {
-  start <- min_rotation_R(seq)
-  slseguid(rotate(seq, amount = start), table = table, prefix = prefix)
+scseguid <- function(seq, table = COMPLEMENT_TABLE_DNA, prefix = "scseguid:") {
+  slseguid(rotate_to_min(seq), table = table, prefix = prefix)
 }
 
 #' @rdname seguid
 #' @export
-dcseguid <- function(watson, crick, table = COMPLEMENT_TABLE_DNA, min_rotation = min_rotation_R, prefix = "dcseguid:") {
+dcseguid <- function(watson, crick, table = COMPLEMENT_TABLE_DNA, prefix = "dcseguid:") {
   stopifnot(nchar(watson) == nchar(crick))
   assert_anneal(watson, crick, overhang = 0, table = table)
 
-  x <- min_rotation(watson)
-  y <- min_rotation(crick)
-  minwatson <- rotate(watson, amount = x)
-  mincrick <- rotate(crick, amount = y)
+  watson_min <- rotate_to_min(watson)
+  crick_min <- rotate_to_min(crick)
 
-  ln <- nchar(watson)
-  if (minwatson < mincrick) {
-    w <- minwatson
-    c <- rotate(crick, amount = ln - x)
+  ## Keep the "minimum" of the two variants
+  if (watson_min < crick_min) {
+      w <- watson_min
   } else {
-    w <- mincrick
-    c <- rotate(watson, amount = ln - y)
+      w <- crick_min
   }
 
-  dlseguid(w, c, overhang = 0, table = table, prefix = prefix)
+  dlseguid(w, rc(w), overhang = 0, table = table, prefix = prefix)
 }
