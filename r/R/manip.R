@@ -45,7 +45,7 @@ rc <- function(seq, table = COMPLEMENT_TABLE_DNA) {
 }
 
 
-min_rotation <- function(s, table = COMPLEMENT_TABLE_DNA) {
+min_rotation_R <- function(s, table = COMPLEMENT_TABLE_DNA) {
   assert_table(table)
   assert_in_alphabet(s, alphabet = names(table))
 

@@ -1,7 +1,7 @@
 rc <- seguid:::rc
 complementary <- seguid:::complementary
 rotate <- seguid:::rotate
-min_rotation <- seguid:::min_rotation
+min_rotation <- seguid:::min_rotation_R
 
 table <- c(G = "C", A = "T", T = "A", C = "G")
 

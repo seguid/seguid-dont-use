@@ -89,3 +89,37 @@ dlseguid <- function(watson, crick, overhang, table = COMPLEMENT_TABLE_DNA, enco
   table2 <- c(table, "-" = "-", "\n" = "\n")
   slseguid(msg, table = table2, encoding = encoding, prefix = prefix)
 }
+
+
+
+#' @param min_rotation A function.
+#' 
+#' @rdname seguid
+#' @export
+scseguid <- function(seq, table = COMPLEMENT_TABLE_DNA, min_rotation = min_rotation_R, prefix = "scseguid:") {
+  start <- min_rotation_R(seq)
+  slseguid(rotate(seq, amount = start), table = table, prefix = prefix)
+}
+
+#' @rdname seguid
+#' @export
+dcseguid <- function(watson, crick, table = COMPLEMENT_TABLE_DNA, min_rotation = min_rotation_R, prefix = "dcseguid:") {
+  stopifnot(nchar(watson) == nchar(crick))
+  assert_anneal(watson, crick, overhang = 0, table = table)
+
+  x <- min_rotation(watson)
+  y <- min_rotation(crick)
+  minwatson <- rotate(watson, amount = x)
+  mincrick <- rotate(crick, amount = y)
+
+  ln <- nchar(watson)
+  if (minwatson < mincrick) {
+    w <- minwatson
+    c <- rotate(crick, amount = ln - x)
+  } else {
+    w <- mincrick
+    c <- rotate(watson, amount = ln - y)
+  }
+
+  dlseguid(w, c, overhang = 0, table = table, prefix = prefix)
+}
