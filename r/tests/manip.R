@@ -1,6 +1,7 @@
 rc <- seguid:::rc
 complementary <- seguid:::complementary
 rotate <- seguid:::rotate
+min_rotation <- seguid:::min_rotation
 
 table <- c(G = "C", A = "T", T = "A", C = "G")
 
@@ -50,3 +51,14 @@ res <- tryCatch({
   rc("GTZ", table = table)
 }, error = identity)
 stopifnot(inherits(res, "error"))
+
+
+seq <- "TAAA"
+amount <- min_rotation(seq)
+stopifnot(amount == 1)
+stopifnot(rotate(seq, amount = amount) == "AAAT")
+
+seq <- "ACAACAAACAACACAAACAAACACAAC"
+amount <- min_rotation(seq)
+stopifnot(amount == 14)
+stopifnot(rotate(seq, amount = amount) == "AAACAAACACAACACAACAAACAACAC")
