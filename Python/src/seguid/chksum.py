@@ -27,6 +27,7 @@ from seguid.manip import rotate
 from seguid.tables import COMPLEMENT_TABLE_DNA
 from seguid.asserts import assert_in_alphabet
 from seguid.asserts import assert_anneal
+from seguid.reprutils import repr_from_tuple
 
 try:
     from pydivsufsort import min_rotation as mr
@@ -251,22 +252,13 @@ def dlseguid(watson: str,
     assert_anneal(watson, crick, overhang, table=table)
 
     w, c, o = min(
-        (
-            (watson, crick, overhang),
-            (crick, watson, len(watson) - len(crick) + overhang),
-        )
+        (watson, crick, overhang),
+        (crick, watson, len(watson) - len(crick) + overhang),
     )
 
-    space = "-"
-    sep = "\n"
-
-    msg = (
-        f"{o*space}{w}{space*(-o+len(c)-len(w))}"
-        f"{sep}"
-        f"{-o*space}{c[::-1]}{space*(o+len(w)-len(c))}"
-    ).rstrip()
-
-    extable = table | {space: space, sep: sep}
+    msg = repr_from_tuple(watson=w, crick=c, overhang=o, table=table, space="-")
+    
+    extable = table | {"-": "-", "\n": "\n"}
 
     return slseguid(msg, table=extable, prefix=prefix)
 
