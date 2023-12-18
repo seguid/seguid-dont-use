@@ -45,10 +45,7 @@ rc <- function(seq, table = COMPLEMENT_TABLE_DNA) {
 }
 
 
-min_rotation_R <- function(s, table = COMPLEMENT_TABLE_DNA) {
-  assert_table(table)
-  assert_in_alphabet(s, alphabet = names(table))
-
+min_rotation <- function(s) {
   ## Turn string into character vector
   s <- strsplit(s, split = "", fixed = TRUE)[[1]]
 
@@ -97,4 +94,10 @@ min_rotation_R <- function(s, table = COMPLEMENT_TABLE_DNA) {
   } ## while (k < lends)
   
   0L
+}
+
+
+rotate_to_min <- function(s) {
+  amount <- min_rotation(s)
+  rotate(s, amount = amount)
 }

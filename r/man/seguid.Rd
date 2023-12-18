@@ -31,20 +31,9 @@ dlseguid(
   prefix = "dlseguid:"
 )
 
-scseguid(
-  seq,
-  table = COMPLEMENT_TABLE_DNA,
-  min_rotation = min_rotation_R,
-  prefix = "scseguid:"
-)
+scseguid(seq, table = COMPLEMENT_TABLE_DNA, prefix = "scseguid:")
 
-dcseguid(
-  watson,
-  crick,
-  table = COMPLEMENT_TABLE_DNA,
-  min_rotation = min_rotation_R,
-  prefix = "dcseguid:"
-)
+dcseguid(watson, crick, table = COMPLEMENT_TABLE_DNA, prefix = "dcseguid:")
 }
 \arguments{
 \item{seq}{A character string.}
@@ -59,8 +48,6 @@ dcseguid(
 
 \item{overhang}{(integer) Amount of 3' overhang in the 5' side of
 the molecule. A molecule with 5' overhang has a negative value.}
-
-\item{min_rotation}{A function.}
 }
 \value{
 A character string.
