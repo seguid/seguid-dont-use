@@ -17,6 +17,7 @@ from seguid.chksum import seguid
 from seguid.manip import reverse
 from seguid.manip import rc
 from seguid.manip import min_rotation_py
+from seguid.manip import rotate_to_min
 
 from seguid.reprutils import repr_from_tuple
 
@@ -32,13 +33,13 @@ def test_min_rotation():
         i = min_rotation(s)
         return s[i:] + s[:i]
 
-    assert smallest_rotation("taaa") == "aaat"
+    assert rotate_to_min("taaa") == "aaat"
     assert (
-        smallest_rotation("abaabaaabaababaaabaaababaab")
+        rotate_to_min("abaabaaabaababaaabaaababaab")
         == "aaabaaababaababaabaaabaabab"
     )
     assert (
-        smallest_rotation("abaabaaabaababaaabaaaBabaab")
+        rotate_to_min("abaabaaabaababaaabaaaBabaab")
         == "Babaababaabaaabaababaaabaaa"
     )
 
@@ -46,13 +47,10 @@ def test_min_rotation():
 def test_min_rotation_py():
     """docstring."""
 
-    def smallest_rotation_py(s):
-        i = min_rotation_py(s)
-        return s[i:] + s[:i]
-
-    assert smallest_rotation_py("TAAA") == "AAAT"
+    assert rotate_to_min("TAAA", min_rotation = min_rotation_py) == "AAAT"
     assert (
-        smallest_rotation_py("ACAACAAACAACACAAACAAACACAAC")
+        rotate_to_min("ACAACAAACAACACAAACAAACACAAC",
+                      min_rotation = min_rotation_py)
         == "AAACAAACACAACACAACAAACAACAC"
     )
 

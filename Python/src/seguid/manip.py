@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from array import array
+from typing import Callable
 
 from seguid.asserts import assert_table
 from seguid.asserts import assert_in_alphabet
@@ -155,3 +156,10 @@ def min_rotation_py(s: str) -> int:
                 prev, rep = w, 1
             if len(w) * rep == lens:
                 return old - i
+
+            
+def rotate_to_min(s: str,
+                  min_rotation: Callable[[str], int] = min_rotation_py) -> int:
+    amount = min_rotation(s)
+    s = rotate(s, amount = amount)
+    return(s)

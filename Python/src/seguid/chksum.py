@@ -23,7 +23,8 @@ import base64
 from typing import Callable
 import warnings
 
-from seguid.manip import rotate
+from seguid.manip import rc
+from seguid.manip import rotate_to_min
 from seguid.tables import COMPLEMENT_TABLE_DNA
 from seguid.asserts import assert_in_alphabet
 from seguid.asserts import assert_anneal
@@ -156,9 +157,7 @@ def scseguid(seq: str,
     >>> slseguid("TTTA")
     'slseguid:8zCvKwyQAEsbPtC4yTV-pY0H93Q'
     """
-    start = min_rotation(seq)
-
-    return slseguid(rotate(seq, start),
+    return slseguid(rotate_to_min(seq, min_rotation=min_rotation),
                     table=table,
                     prefix=prefix)
 
@@ -282,14 +281,14 @@ def dcseguid(watson: str,
 
     assert_anneal(watson, crick, 0, table=table)
 
-    x = min_rotation(watson)
-    y = min_rotation(crick)
-    minwatson = rotate(watson, x)
-    mincrick = rotate(crick, y)
+    watson_min = rotate_to_min(watson, min_rotation = min_rotation)
+    crick_min = rotate_to_min(crick, min_rotation = min_rotation)
 
-    w, c = min(
-        (minwatson, rotate(crick, ln - x)),
-        (mincrick, rotate(watson, ln - y)),
-    )
+    ## Keep the "minimum" of the two variants
+    if watson_min < crick_min:
+        w = watson_min
+    else:
+        w = crick_min
 
-    return dlseguid(w, c, overhang=0, table=table, prefix=prefix)
+    return dlseguid(watson = w, crick = rc(w), overhang = 0, table=table, prefix=prefix)
+
