@@ -54,6 +54,10 @@ res <- tryCatch({
 stopifnot(inherits(res, "error"))
 
 
+stopifnot(
+  min_rotation("Aa") == 0
+)
+
 seq <- "TAAA"
 amount <- min_rotation(seq)
 stopifnot(amount == 1)
