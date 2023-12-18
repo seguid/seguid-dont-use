@@ -20,8 +20,6 @@ scseguid and dcseguid are considerably faster with pydivsufsort installed.
 
 import hashlib
 import base64
-from typing import Callable
-import warnings
 
 from seguid.manip import rc
 from seguid.manip import rotate_to_min
@@ -29,18 +27,6 @@ from seguid.tables import COMPLEMENT_TABLE_DNA
 from seguid.asserts import assert_in_alphabet
 from seguid.asserts import assert_anneal
 from seguid.reprutils import repr_from_tuple
-
-try:
-    from pydivsufsort import min_rotation as mr
-except ModuleNotFoundError:
-    warnings.warn("pydivsufsort not found.", ImportWarning)  # TODO Is this the right way?
-else:
-    def min_rotation(s):
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            result = mr(s)
-        return result
-
 
 def _seguid(seq: str,
             table: dict = COMPLEMENT_TABLE_DNA,
@@ -132,7 +118,6 @@ def slseguid(seq: str,
 
 def scseguid(seq: str,
              table: dict = COMPLEMENT_TABLE_DNA,
-             min_rotation: Callable[[str], int] = min_rotation,
              prefix: str = "scseguid:") -> str:
     r"""SEGUID checksum for single stranded circular DNA (scSEGUID).
 
@@ -157,7 +142,7 @@ def scseguid(seq: str,
     >>> slseguid("TTTA")
     'slseguid:8zCvKwyQAEsbPtC4yTV-pY0H93Q'
     """
-    return slseguid(rotate_to_min(seq, min_rotation=min_rotation),
+    return slseguid(rotate_to_min(seq),
                     table=table,
                     prefix=prefix)
 
@@ -265,14 +250,12 @@ def dlseguid(watson: str,
 def dcseguid(watson: str,
              crick: str,
              table: dict = COMPLEMENT_TABLE_DNA,
-             min_rotation: Callable[[str], int] = min_rotation,
              prefix: str = "dcseguid:") -> str:
     """SEGUID checksum for double stranded circular DNA (dcSEGUID).
 
     The dcSEGUID is the slSEGUID checksum calculated for the lexicographically
     smallest string rotation of a dsDNA sequence. Only defined for circular
-    sequences. The min_rotation argument is a callable that takes a string as
-    argument and returns another string.
+    sequences.
 
     The checksum is prefixed with "dcseguid:"
     """
@@ -281,8 +264,8 @@ def dcseguid(watson: str,
 
     assert_anneal(watson, crick, 0, table=table)
 
-    watson_min = rotate_to_min(watson, min_rotation = min_rotation)
-    crick_min = rotate_to_min(crick, min_rotation = min_rotation)
+    watson_min = rotate_to_min(watson)
+    crick_min = rotate_to_min(crick)
 
     ## Keep the "minimum" of the two variants
     if watson_min < crick_min:

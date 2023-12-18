@@ -16,7 +16,6 @@ from seguid.chksum import seguid
 
 from seguid.manip import reverse
 from seguid.manip import rc
-from seguid.manip import min_rotation_py
 from seguid.manip import rotate_to_min
 
 from seguid.reprutils import repr_from_tuple
@@ -24,15 +23,12 @@ from seguid.reprutils import repr_from_tuple
 from seguid.tables import COMPLEMENT_TABLE_DNA
 from seguid.tables import TABLE_IUPAC_PROTEIN
 
+from seguid.config import set_min_rotation
+
 
 def test_min_rotation():
     """Tests for the pydivsufsort min_rotation"""
-    from pydivsufsort import min_rotation
-
-    def smallest_rotation(s):
-        i = min_rotation(s)
-        return s[i:] + s[:i]
-
+    set_min_rotation("pydivsufsort")
     assert rotate_to_min("taaa") == "aaat"
     assert (
         rotate_to_min("abaabaaabaababaaabaaababaab")
@@ -42,15 +38,16 @@ def test_min_rotation():
         rotate_to_min("abaabaaabaababaaabaaaBabaab")
         == "Babaababaabaaabaababaaabaaa"
     )
+    set_min_rotation("built-in")
 
 
 def test_min_rotation_py():
     """docstring."""
 
-    assert rotate_to_min("TAAA", min_rotation = min_rotation_py) == "AAAT"
+    set_min_rotation("built-in")
+    assert rotate_to_min("TAAA") == "AAAT"
     assert (
-        rotate_to_min("ACAACAAACAACACAAACAAACACAAC",
-                      min_rotation = min_rotation_py)
+        rotate_to_min("ACAACAAACAACACAAACAAACACAAC")
         == "AAACAAACACAACACAACAAACAACAC"
     )
 

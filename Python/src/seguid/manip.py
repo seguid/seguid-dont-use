@@ -158,8 +158,8 @@ def min_rotation_py(s: str) -> int:
                 return old - i
 
             
-def rotate_to_min(s: str,
-                  min_rotation: Callable[[str], int] = min_rotation_py) -> int:
-    amount = min_rotation(s)
+def rotate_to_min(s: str) -> int:
+    from seguid.config import _min_rotation
+    amount = _min_rotation(s)
     s = rotate(s, amount = amount)
     return(s)
