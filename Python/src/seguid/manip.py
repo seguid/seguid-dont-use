@@ -94,8 +94,7 @@ def rc(seq: str, table: dict = COMPLEMENT_TABLE_DNA) -> str:
     return reverse(complementary(seq, table = table))
 
 
-def min_rotation_py(s: str,
-                    table: dict = COMPLEMENT_TABLE_DNA) -> int:
+def min_rotation_py(s: str) -> int:
     """Start position for the smallest rotation of a string s (pure Python).
 
     Algorithm described in:
@@ -132,8 +131,6 @@ def min_rotation_py(s: str,
     >>> s[14:] + s[:14]
     'AAACAAACACAACACAACAAACAACAC'
     """
-    assert_table(table)
-    assert_in_alphabet(s, alphabet=set(table.keys()))
 
     prev, rep = None, 0
     ds = array("u", 2 * s)
