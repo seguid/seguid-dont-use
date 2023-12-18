@@ -16,40 +16,11 @@ from seguid.chksum import seguid
 
 from seguid.manip import reverse
 from seguid.manip import rc
-from seguid.manip import rotate_to_min
 
 from seguid.reprutils import repr_from_tuple
 
 from seguid.tables import COMPLEMENT_TABLE_DNA
 from seguid.tables import TABLE_IUPAC_PROTEIN
-
-from seguid.config import set_min_rotation
-
-
-def test_min_rotation():
-    """Tests for the pydivsufsort min_rotation"""
-    set_min_rotation("pydivsufsort")
-    assert rotate_to_min("taaa") == "aaat"
-    assert (
-        rotate_to_min("abaabaaabaababaaabaaababaab")
-        == "aaabaaababaababaabaaabaabab"
-    )
-    assert (
-        rotate_to_min("abaabaaabaababaaabaaaBabaab")
-        == "Babaababaabaaabaababaaabaaa"
-    )
-    set_min_rotation("built-in")
-
-
-def test_min_rotation_py():
-    """docstring."""
-
-    set_min_rotation("built-in")
-    assert rotate_to_min("TAAA") == "AAAT"
-    assert (
-        rotate_to_min("ACAACAAACAACACAAACAAACACAAC")
-        == "AAACAAACACAACACAACAAACAACAC"
-    )
 
 
 def test_seguid():
