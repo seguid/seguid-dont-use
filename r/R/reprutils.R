@@ -77,8 +77,6 @@ pad <- function(n, symbol = " ") {
   if (n > 0) paste(rep(symbol, times = n), collapse = "") else ""
 }
 
-space <- function(n) pad(n, symbol = " ")
-
 
 repr_from_tuple <- function(watson, crick, overhang, table = COMPLEMENT_TABLE_DNA, space = "-") {
   assert_anneal(watson, crick, overhang = overhang, table = table)
