@@ -46,6 +46,11 @@ rc <- function(seq, table = COMPLEMENT_TABLE_DNA) {
 
 
 min_rotation <- function(s) {
+  ## Make sure to collate in the 'C' locale
+  old_locale <- Sys.getlocale("LC_COLLATE")
+  on.exit(Sys.setlocale("LC_COLLATE", old_locale))
+  Sys.setlocale("LC_COLLATE", "C")
+  
   ## Turn string into character vector
   s <- strsplit(s, split = "", fixed = TRUE)[[1]]
 
@@ -99,7 +104,7 @@ min_rotation <- function(s) {
 
 rotate_to_min <- function(s) {
   ## Assert that upper-case letters are ordered before lower-case letters
-  stopifnot("A" < "a", min_rotation("Aa") == 0)
+  stopifnot(min_rotation("Aa") == 0)
   
   amount <- min_rotation(s)
   rotate(s, amount = amount)
