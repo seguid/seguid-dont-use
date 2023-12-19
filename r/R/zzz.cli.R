@@ -33,13 +33,17 @@ cli_call_fcn <- function(..., file = NULL, debug = FALSE, fcn) {
     if (is.null(names)) names <- rep("", times = nargs) 
     ## At most one unnamed CLI option
     unnamed <- which(nchar(names) == 0)
-    if (length(unnamed) > 1) {
-      unknown <- unnamed[-length(unnamed)]
-      stop("Unknown option: ", paste(sQuote(unknown), collapse = ", "))
+    n <- length(unnamed)
+    if (n > 2) {
+      unknown <- args[seq_len(n - 2)]
+      stop("Unknown option(s): ", paste(sQuote(unknown), collapse = ", "))
     }
-    seq <- args[[unnamed]]
-    if (!is.null(file)) {
-      stop("Option --file=<filename> already specified")
+    if (n >= 1) {
+      if (!is.null(file)) {
+        stop("Option --file=<filename> already specified")
+      }
+      seq <- unlist(args[unnamed])
+      seq <- paste(seq, collapse = "\n")
     }
   }
 
@@ -50,12 +54,13 @@ cli_call_fcn <- function(..., file = NULL, debug = FALSE, fcn) {
         stop("No such file: ", sQuote(file))
       }
       seq <- readLines(file)
+      seq <- paste(seq, collapse = "\n")
     } else {
       ## Get arguments from the standard input
       seq <- readLines("stdin")
+      seq <- paste(seq, collapse = "\n")
     }
   }
-  seq <- paste(seq, collapse = "\n")
 
   if (debug) {
     message(sprintf("Sequence data:\n%s", seq))
@@ -65,17 +70,17 @@ cli_call_fcn <- function(..., file = NULL, debug = FALSE, fcn) {
   if (is.element("crick", argnames)) {
     nseq <- length(strsplit(seq, split = "\n", fixed = TRUE)[[1]])
     if (nseq == 1) {
-      args <- list(seq)
+      args <- list(watson = seq, crick = rc(seq))
     } else {
       args <- tuple_from_repr(seq)
-      if (debug) {
-        msg <- sprintf("Sequence tuple:\nwatson=%s\ncrick=%s", args[[1]], args[[2]])
-      }
-      if (!is.element("overhang", argnames)) {
-        args <- args[-3]
-      } else if (debug) {
-        msg <- sprintf("%s\noverhang=%d", msg, args[[3]])
-      }
+    }
+    if (debug) {
+      msg <- sprintf("Sequence tuple:\nwatson=%s\ncrick=%s", args[[1]], args[[2]])
+    }
+    if (!is.element("overhang", argnames)) {
+      args <- args[-3]
+    } else if (debug) {
+      msg <- sprintf("%s\noverhang=%d", msg, args[[3]])
     }
     if (debug) message(msg)
   } else {

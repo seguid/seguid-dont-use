@@ -1,25 +1,32 @@
 parse_cli_args <- function() {
   ## Parse command-line arguments
   cli_args <- commandArgs(trailingOnly = TRUE)
-  
+
+  more_opts <- TRUE
   args <- list()
   while (length(cli_args) > 0) {
     arg <- cli_args[1]
-    if (grepl(pattern <- "^--args$", arg)) {
-      ## Ignore --args
-    } else if (grepl(pattern <- "^--([[:alnum:]]+)=(.*)$", arg)) {
-      name <- gsub(pattern, "\\1", arg)
-      value <- gsub(pattern, "\\2", arg)
-      if (grepl("^[+-]?[[:digit:]]+$", value)) {
-        value_int <- suppressWarnings(as.integer(value))
-        if (!is.na(value_int)) value <- value_int
+    if (more_opts) {
+      if (grepl(pattern <- "^--args$", arg)) {
+        ## Ignore --args
+      } else if (grepl(pattern <- "^--$", arg)) {
+        more_opts <- FALSE
+      } else if (grepl(pattern <- "^--([[:alnum:]]+)=(.*)$", arg)) {
+        name <- gsub(pattern, "\\1", arg)
+        value <- gsub(pattern, "\\2", arg)
+        if (grepl("^[+-]?[[:digit:]]+$", value)) {
+          value_int <- suppressWarnings(as.integer(value))
+          if (!is.na(value_int)) value <- value_int
+        }
+        args[[name]] <- value
+      } else if (grepl(pattern <- "^--([[:alnum:]]+)$", arg)) {
+        name <- gsub(pattern, "\\1", arg)
+        args[[name]] <- I(TRUE)
+      } else if (grepl(pattern <- "^--", arg)) {
+        stop(sprintf("Unknown command-line argument: %s", arg))
+      } else {
+        args[[length(args) + 1L]] <- arg
       }
-      args[[name]] <- value
-    } else if (grepl(pattern <- "^--([[:alnum:]]+)$", arg)) {
-      name <- gsub(pattern, "\\1", arg)
-      args[[name]] <- I(TRUE)
-    } else if (grepl(pattern <- "^--", arg)) {
-      stop(sprintf("Unknown command-line argument: %s", arg))
     } else {
       args[[length(args) + 1L]] <- arg
     }
