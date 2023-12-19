@@ -100,7 +100,7 @@ scseguid <- function(seq, table = COMPLEMENT_TABLE_DNA, prefix = "scseguid:") {
 
 #' @rdname seguid
 #' @export
-dcseguid <- function(watson, crick, table = COMPLEMENT_TABLE_DNA, prefix = "dcseguid:") {
+dcseguid <- function(watson, crick = rc(watson), table = COMPLEMENT_TABLE_DNA, prefix = "dcseguid:") {
   stopifnot(nchar(watson) == nchar(crick))
   assert_anneal(watson, crick, overhang = 0, table = table)
 

@@ -33,7 +33,12 @@ dlseguid(
 
 scseguid(seq, table = COMPLEMENT_TABLE_DNA, prefix = "scseguid:")
 
-dcseguid(watson, crick, table = COMPLEMENT_TABLE_DNA, prefix = "dcseguid:")
+dcseguid(
+  watson,
+  crick = rc(watson),
+  table = COMPLEMENT_TABLE_DNA,
+  prefix = "dcseguid:"
+)
 }
 \arguments{
 \item{seq}{A character string.}

@@ -63,14 +63,19 @@ cli_call_fcn <- function(..., file = NULL, debug = FALSE, fcn) {
   
   argnames <- names(formals(fcn))
   if (is.element("crick", argnames)) {
-    args <- tuple_from_repr(seq)
-    if (debug) {
-      msg <- sprintf("Sequence tuple:\nwatson=%s\ncrick=%s", args[[1]], args[[2]])
-    }
-    if (!is.element("overhang", argnames)) {
-      args <- args[-3]
-    } else if (debug) {
-      msg <- sprintf("%s\noverhang=%d", msg, args[[3]])
+    nseq <- length(strsplit(seq, split = "\n", fixed = TRUE)[[1]])
+    if (nseq == 1) {
+      args <- list(seq)
+    } else {
+      args <- tuple_from_repr(seq)
+      if (debug) {
+        msg <- sprintf("Sequence tuple:\nwatson=%s\ncrick=%s", args[[1]], args[[2]])
+      }
+      if (!is.element("overhang", argnames)) {
+        args <- args[-3]
+      } else if (debug) {
+        msg <- sprintf("%s\noverhang=%d", msg, args[[3]])
+      }
     }
     if (debug) message(msg)
   } else {
@@ -109,5 +114,3 @@ class(dcseguid) <- c("cli_function", class(dcseguid))
 attr(dcseguid, "cli") <- function(...) {
   cli_call_fcn(..., fcn = dcseguid)
 }
-
-
