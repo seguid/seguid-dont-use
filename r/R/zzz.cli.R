@@ -17,21 +17,23 @@ Copyright: Henrik Bengtsson (2023)
 License: MIT
 '
 
-main <- function(type = c("seguid", "slseguid", "scseguid", "dlseguid", "dcseguid"), ...) {
-  type <- match.arg(type)
-  fcn <- get(type, mode = "function", envir = getNamespace(.packageName), inherits = FALSE)
+cli_call_fcn <- function(fcn, ...) {
+  if (is.character(fcn)) {
+    fcn <- get(fcn, mode = "function", envir = getNamespace(.packageName), inherits = FALSE)
+  }
 
   ## Get arguments
   seq <- readLines('stdin')
 
-  if (grepl("^d", type)) {
+  argnames <- names(formals(fcn))
+  if (is.element("crick", argnames)) {
     seq <- paste(seq, collapse = "\n")
     args <- tuple_from_repr(seq)
-    if (!is.element("overhang", names(formals(fcn)))) {
+    if (!is.element("overhang", argnames)) {
       args <- args[-3]
     }
   } else {
-    args <- seq
+    args <- list(seq)
   }
 
   res <- do.call(fcn, args = args)
@@ -40,5 +42,31 @@ main <- function(type = c("seguid", "slseguid", "scseguid", "dlseguid", "dcsegui
   cat("\n")
 }
 
+
 class(seguid) <- c("cli_function", class(seguid))
-attr(seguid, "cli") <- main
+attr(seguid, "cli") <- function(type = c("seguid", "slseguid", "scseguid", "dlseguid", "dcseguid"), ...) {
+  type <- match.arg(type)
+  cli_call_fcn(type, ...)
+}
+
+class(slseguid) <- c("cli_function", class(slseguid))
+attr(slseguid, "cli") <- function(...) {
+  cli_call_fcn(slseguid, ...)
+}
+
+class(scseguid) <- c("cli_function", class(scseguid))
+attr(scseguid, "cli") <- function(...) {
+  cli_call_fcn(scseguid, ...)
+}
+
+class(dlseguid) <- c("cli_function", class(dlseguid))
+attr(dlseguid, "cli") <- function(...) {
+  cli_call_fcn(dlseguid, ...)
+}
+
+class(dcseguid) <- c("cli_function", class(dcseguid))
+attr(dcseguid, "cli") <- function(...) {
+  cli_call_fcn(dcseguid, ...)
+}
+
+
