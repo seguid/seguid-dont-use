@@ -58,6 +58,14 @@ stopifnot(
   min_rotation("Aa") == 0
 )
 
+stopifnot(
+  min_rotation("A") == 0
+)
+
+stopifnot(
+  min_rotation("") == 0
+)
+
 seq <- "TAAA"
 amount <- min_rotation(seq)
 stopifnot(amount == 1)

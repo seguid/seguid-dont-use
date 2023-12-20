@@ -1,9 +1,16 @@
 assert_anneal <- seguid:::assert_anneal
+assert_alphabet <- seguid:::assert_alphabet
 assert_in_alphabet <- seguid:::assert_in_alphabet
 assert_table <- seguid:::assert_table
 
 seq <- "ABCDEFGH"
 alphabet <- c("A", "C", "G", "T")
+
+assert_alphabet(alphabet)
+res <- tryCatch({
+  assert_alphabet("!")
+}, error = identity)
+stopifnot(inherits(res, "error"))
 
 assert_in_alphabet("ACGT", alphabet = alphabet)
 assert_in_alphabet("AAAA", alphabet = alphabet)
