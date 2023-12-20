@@ -8,37 +8,21 @@
 \alias{dcseguid}
 \title{The SEGUID of nucleotide and amino-acid sequences}
 \usage{
-seguid(
-  seq,
-  table = COMPLEMENT_TABLE_DNA,
-  encoding = b64encode,
-  prefix = "seguid:"
-)
+seguid(seq, table = COMPLEMENT_TABLE_DNA, encoding = b64encode)
 
-slseguid(
-  seq,
-  table = COMPLEMENT_TABLE_DNA,
-  encoding = b64encode_urlsafe,
-  prefix = "slseguid:"
-)
+slseguid(seq, table = COMPLEMENT_TABLE_DNA, encoding = b64encode_urlsafe)
 
 dlseguid(
   watson,
   crick,
   overhang,
   table = COMPLEMENT_TABLE_DNA,
-  encoding = b64encode_urlsafe,
-  prefix = "dlseguid:"
+  encoding = b64encode_urlsafe
 )
 
-scseguid(seq, table = COMPLEMENT_TABLE_DNA, prefix = "scseguid:")
+scseguid(seq, table = COMPLEMENT_TABLE_DNA)
 
-dcseguid(
-  watson,
-  crick = rc(watson),
-  table = COMPLEMENT_TABLE_DNA,
-  prefix = "dcseguid:"
-)
+dcseguid(watson, crick = rc(watson), table = COMPLEMENT_TABLE_DNA)
 }
 \arguments{
 \item{seq}{A character string.}
@@ -46,8 +30,6 @@ dcseguid(
 \item{table}{A named character string.}
 
 \item{encoding}{A encoding function.}
-
-\item{prefix}{A character string prepended the checksum.}
 
 \item{watson, crick}{(character string) Two complementary DNA strands.}
 
