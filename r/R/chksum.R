@@ -39,8 +39,6 @@ with_prefix <- function(s, prefix) {
 #'
 #' @param table A named character string.
 #'
-#' @param encoding A encoding function.
-#'
 #' @return
 #' A character string.
 #'
@@ -55,15 +53,15 @@ with_prefix <- function(s, prefix) {
 #' @importFrom base64enc base64encode
 #' @importFrom digest digest
 #' @export
-seguid <- function(seq, table = COMPLEMENT_TABLE_DNA, encoding = b64encode) {
-  .seguid(seq, table = table, encoding = encoding, prefix = "seguid:")
+seguid <- function(seq, table = COMPLEMENT_TABLE_DNA) {
+  .seguid(seq, table = table, encoding = b64encode, prefix = "seguid:")
 }
 
 
 #' @rdname seguid
 #' @export
-slseguid <- function(seq, table = COMPLEMENT_TABLE_DNA, encoding = b64encode_urlsafe) {
-  .seguid(seq, table = table, encoding = encoding, prefix = "slseguid:")
+slseguid <- function(seq, table = COMPLEMENT_TABLE_DNA) {
+  .seguid(seq, table = table, encoding = b64encode_urlsafe, prefix = "slseguid:")
 }
 
 
@@ -74,7 +72,7 @@ slseguid <- function(seq, table = COMPLEMENT_TABLE_DNA, encoding = b64encode_url
 #' 
 #' @rdname seguid
 #' @export
-dlseguid <- function(watson, crick, overhang, table = COMPLEMENT_TABLE_DNA, encoding = b64encode_urlsafe) {
+dlseguid <- function(watson, crick, overhang, table = COMPLEMENT_TABLE_DNA) {
   assert_anneal(watson, crick, overhang = overhang, table = table)
 
   lw <- nchar(watson)
@@ -89,7 +87,7 @@ dlseguid <- function(watson, crick, overhang, table = COMPLEMENT_TABLE_DNA, enco
   msg <- repr_from_tuple(watson = w, crick = c, overhang = o, table = table, space = "-")
 
   table2 <- c(table, "-" = "-", "\n" = "\n")
-  with_prefix(slseguid(msg, table = table2, encoding = encoding), "dlseguid:")
+  with_prefix(slseguid(msg, table = table2), "dlseguid:")
 }
 
 
