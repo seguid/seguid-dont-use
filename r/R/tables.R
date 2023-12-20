@@ -48,7 +48,7 @@ TABLE_IUPAC_PROTEIN <- c(A="",
 
 get_table <- function(name) {
   stopifnot(length(name) == 1, is.character(name), !is.na(name))
-
+  
   ## Extras? Example: "dna+[-]+[\n]" and "dna+[-\n]"
   extras <- NULL
   pattern <- "(.*)[+][[](.*)[]]$"
