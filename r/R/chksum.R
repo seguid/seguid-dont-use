@@ -19,7 +19,7 @@ with_prefix <- function(s, prefix) {
 }
 
 #' @import digest digest
-.seguid <- function(seq, table = COMPLEMENT_TABLE_DNA, encoding = b64encode, prefix = "seguid:") {
+.seguid <- function(seq, table, encoding, prefix) {
     assert_table(table)
     assert_in_alphabet(seq, alphabet = names(table))
     stopifnot(is.function(encoding))
@@ -53,15 +53,17 @@ with_prefix <- function(s, prefix) {
 #' @importFrom base64enc base64encode
 #' @importFrom digest digest
 #' @export
-seguid <- function(seq, table = COMPLEMENT_TABLE_DNA) {
-  .seguid(seq, table = table, encoding = b64encode, prefix = "seguid:")
+seguid <- function(seq, table = "dna") {
+  table2 <- get_table(table)
+  .seguid(seq, table = table2, encoding = b64encode, prefix = "seguid:")
 }
 
 
 #' @rdname seguid
 #' @export
-slseguid <- function(seq, table = COMPLEMENT_TABLE_DNA) {
-  .seguid(seq, table = table, encoding = b64encode_urlsafe, prefix = "slseguid:")
+slseguid <- function(seq, table = "dna") {
+  table2 <- get_table(table)
+  .seguid(seq, table = table2, encoding = b64encode_urlsafe, prefix = "slseguid:")
 }
 
 
@@ -72,8 +74,9 @@ slseguid <- function(seq, table = COMPLEMENT_TABLE_DNA) {
 #' 
 #' @rdname seguid
 #' @export
-dlseguid <- function(watson, crick, overhang, table = COMPLEMENT_TABLE_DNA) {
-  assert_anneal(watson, crick, overhang = overhang, table = table)
+dlseguid <- function(watson, crick, overhang, table = "dna") {
+  table2 <- get_table(table)
+  assert_anneal(watson, crick, overhang = overhang, table = table2)
 
   lw <- nchar(watson)
   lc <- nchar(crick)
@@ -84,25 +87,25 @@ dlseguid <- function(watson, crick, overhang, table = COMPLEMENT_TABLE_DNA) {
   c <- df$B
   o <- df$C
 
-  msg <- repr_from_tuple(watson = w, crick = c, overhang = o, table = table, space = "-")
+  msg <- repr_from_tuple(watson = w, crick = c, overhang = o, table = table2, space = "-")
 
-  table2 <- c(table, "-" = "-", "\n" = "\n")
+  table2 <- paste0(table, "+[-\n]")
   with_prefix(slseguid(msg, table = table2), "dlseguid:")
 }
 
 
-
 #' @rdname seguid
 #' @export
-scseguid <- function(seq, table = COMPLEMENT_TABLE_DNA) {
+scseguid <- function(seq, table = "dna") {
   with_prefix(slseguid(rotate_to_min(seq), table = table), "scseguid:")
 }
 
+
 #' @rdname seguid
 #' @export
-dcseguid <- function(watson, crick = rc(watson), table = COMPLEMENT_TABLE_DNA) {
+dcseguid <- function(watson, crick = rc(watson), table = "dna") {
   stopifnot(nchar(watson) == nchar(crick))
-  assert_anneal(watson, crick, overhang = 0, table = table)
+  assert_anneal(watson, crick, overhang = 0, table = get_table(table))
 
   watson_min <- rotate_to_min(watson)
   crick_min <- rotate_to_min(crick)

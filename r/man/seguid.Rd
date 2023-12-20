@@ -8,15 +8,15 @@
 \alias{dcseguid}
 \title{The SEGUID of nucleotide and amino-acid sequences}
 \usage{
-seguid(seq, table = COMPLEMENT_TABLE_DNA)
+seguid(seq, table = "dna")
 
-slseguid(seq, table = COMPLEMENT_TABLE_DNA)
+slseguid(seq, table = "dna")
 
-dlseguid(watson, crick, overhang, table = COMPLEMENT_TABLE_DNA)
+dlseguid(watson, crick, overhang, table = "dna")
 
-scseguid(seq, table = COMPLEMENT_TABLE_DNA)
+scseguid(seq, table = "dna")
 
-dcseguid(watson, crick = rc(watson), table = COMPLEMENT_TABLE_DNA)
+dcseguid(watson, crick = rc(watson), table = "dna")
 }
 \arguments{
 \item{seq}{A character string.}
