@@ -29,7 +29,9 @@ with_prefix <- function(s, prefix) {
     checksum <- encoding(checksum)
     checksum <- sub("[\n]+$", "", checksum)
     checksum <- sub("[=]$", "", checksum)
-    paste(prefix, checksum, sep = "")
+    checksum <- paste(prefix, checksum, sep = "")
+    assert_checksum(checksum)
+    checksum
 }
 
 

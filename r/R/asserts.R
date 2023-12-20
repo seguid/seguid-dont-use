@@ -62,3 +62,12 @@ assert_anneal <- function(watson, crick, overhang, table = COMPLEMENT_TABLE_DNA)
     stop("Mismatched basepairs.")
   }
 }
+
+
+assert_checksum <- function(checksum) {
+  stopifnot(length(checksum) == 1L, !is.na(checksum))
+  pattern <- "^(|sl|sc|ds|dc)seguid:"
+  stopifnot(grepl(pattern, checksum))
+  checksum <- sub(pattern, "", checksum)
+  stopifnot(nchar(checksum) == 27)
+}
