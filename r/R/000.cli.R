@@ -32,7 +32,7 @@ parse_cli_args <- function() {
     }
     cli_args <- cli_args[-1]
   }
-  
+
   args
 }
 

@@ -2,15 +2,20 @@ cli_help_string <- '
 {{ package }}: {{ title }}
 
 Usage:
- Rscript -e seguid::seguid [options]
+ Rscript -e seguid::seguid [options] <<< "<sequence>"
 
 Options:  
  --help             Display the full help page with examples
  --version          Output version of this software
 
 Examples:
-Rscript -e port4me::port4me --version
-Rscript -e port4me::port4me --help
+Rscript -e seguid::seguid --version
+Rscript -e seguid::seguid --help
+
+echo "ACGT" | Rscript -e seguid::slseguid
+Rscript -e seguid::slseguid <<< "ACGT"
+Rscript -e seguid::dlseguid <<< $\'-CGT\nTGCA\'
+Rscript -e seguid::dcseguid <<< $\'ACGT\nTGCA\'
 
 Version: {{ version }}
 Copyright: Henrik Bengtsson (2023)
@@ -64,29 +69,31 @@ cli_call_fcn <- function(..., file = NULL, debug = FALSE, fcn) {
 
   if (debug) {
     message(sprintf("Sequence data:\n%s", seq))
+    message(sprintf("Arguments:\n%s", paste(utils::capture.output(str(args)), collapse = "\n")))
   }
-  
+
   argnames <- names(formals(fcn))
   if (is.element("crick", argnames)) {
     nseq <- length(strsplit(seq, split = "\n", fixed = TRUE)[[1]])
     if (nseq == 1) {
-      args <- list(watson = seq, crick = rc(seq))
+      args2 <- list(watson = seq, crick = rc(seq))
     } else {
-      args <- tuple_from_repr(seq)
+      args2 <- tuple_from_repr(seq)
     }
     if (debug) {
-      msg <- sprintf("Sequence tuple:\nwatson=%s\ncrick=%s", args[[1]], args[[2]])
+      msg <- sprintf("Sequence tuple:\nwatson=%s\ncrick=%s", args2[[1]], args2[[2]])
     }
     if (!is.element("overhang", argnames)) {
-      args <- args[-3]
+      args2 <- args2[-3]
     } else if (debug) {
-      msg <- sprintf("%s\noverhang=%d", msg, args[[3]])
+      msg <- sprintf("%s\noverhang=%d", msg, args2[[3]])
     }
     if (debug) message(msg)
   } else {
-    args <- list(seq)
+    args2 <- list(seq)
   }
-
+  args <- c(args2, args)
+  
   res <- do.call(fcn, args = args)
   
   cat(res)
