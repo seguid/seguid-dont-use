@@ -71,46 +71,34 @@ setup() {
     assert_output "scseguid:IQiZThf2zKn_I1KtqStlEdsHYDQ"
 }
 
-@test "Rscript -e seguid::seguid --type=dlseguid <<< \$'ACGT\\nTGCA'" {
-    run Rscript -e seguid::seguid --type=dlseguid <<< $'ACGT\nTGCA'
+@test "Rscript -e seguid::seguid --type=dlseguid <<< \$'AACGT\\nTTGCA'" {
+    run Rscript -e seguid::seguid --type=dlseguid <<< $'AACGT\nTTGCA'
     assert_success
-    assert_output "dlseguid:ZubWOQ_QWYz_5fy9qVNfCGXZhag"
+    assert_output "dlseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
 }
 
-@test "Rscript -e seguid::seguid --type=dcseguid <<< \$'ACGT\\nTGCA'" {
-    run Rscript -e seguid::seguid --type=dcseguid <<< $'ACGT\nTGCA'
+@test "Rscript -e seguid::seguid --type=dcseguid <<< \$'AACGT\\nTTGCA'" {
+    run Rscript -e seguid::seguid --type=dcseguid <<< $'AACGT\nTTGCA'
     assert_success
-    assert_output "dcseguid:ZubWOQ_QWYz_5fy9qVNfCGXZhag"
+    assert_output "dcseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
 }
 
-@test "Rscript -e seguid::seguid --type=dcseguid <<< \$'CGTA\\nGCAT' (rotation invariant)" {
-    run Rscript -e seguid::seguid --type=dcseguid <<< $'CGTA\nGCAT'
+@test "Rscript -e seguid::seguid --type=dcseguid <<< \$'CGTAA\\nGCATT' (rotation invariant)" {
+    run Rscript -e seguid::seguid --type=dcseguid <<< $'CGTAA\nGCATT'
     assert_success
-    assert_output "dcseguid:ZubWOQ_QWYz_5fy9qVNfCGXZhag"
+    assert_output "dcseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
 }
 
-@test "Rscript -e seguid::seguid --type=dcseguid <<< \$'GTAC\\nCATG' (rotation invariant)" {
-    run Rscript -e seguid::seguid --type=dcseguid <<< $'GTAC\nCATG'
+@test "Rscript -e seguid::seguid --type=dcseguid <<< \$'GTAAC\\nCATTG' (rotation invariant)" {
+    run Rscript -e seguid::seguid --type=dcseguid <<< $'GTAAC\nCATTG'
     assert_success
-    assert_output "dcseguid:ZubWOQ_QWYz_5fy9qVNfCGXZhag"
+    assert_output "dcseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
 }
 
-@test "Rscript -e seguid::seguid --type=dlseguid <<< \$'ACGT\nTGCA'" {
-    run Rscript -e seguid::seguid --type=dlseguid <<< $'ACGT\nTGCA'
+@test "Rscript -e seguid::seguid --type=dcseguid <<< \$'GTTAC\\nCAATG' (strand symmetry)" {
+    run Rscript -e seguid::seguid --type=dcseguid <<< $'GTTAC\nCAATG'
     assert_success
-    assert_output "dlseguid:ZubWOQ_QWYz_5fy9qVNfCGXZhag"
-}
-
-@test "Rscript -e seguid::seguid --type=dcseguid <<< \$'ACGT\nTGCA'" {
-    run Rscript -e seguid::seguid --type=dcseguid <<< $'ACGT\nTGCA'
-    assert_success
-    assert_output "dcseguid:ZubWOQ_QWYz_5fy9qVNfCGXZhag"
-}
-
-@test "Rscript -e seguid::seguid --type=dcseguid <<< \$'CGTA\nGCAT' (rotation invariant)" {
-    run Rscript -e seguid::seguid --type=dcseguid <<< $'CGTA\nGCAT'
-    assert_success
-    assert_output "dcseguid:ZubWOQ_QWYz_5fy9qVNfCGXZhag"
+    assert_output "dcseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
 }
 
 @test "Rscript -e seguid::seguid --type=dlseguid <<< \$'-CGT\\nTGCA'" {

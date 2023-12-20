@@ -44,6 +44,10 @@ dlDNA5 <- list("AT", "CTATAG", 2)
 truth <- "dlseguid:np3hncfQvOh8rZ8Co1Ts_02NXg4"
 stopifnot(do.call(dlseguid, args = dlDNA5) == truth)
 
+truth <- "dcseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
+stopifnot(dcseguid("ACGTT", "AACGT") == truth)
+stopifnot(dcseguid("AACGT", "ACGTT") == truth)
+
 pUC19dna <- readLines("test_data/puc19.txt", warn = FALSE)
 truth <- "dcseguid:zhw8Yrxfo3FO5DDccx4PamBVPCQ"
 stopifnot(dcseguid(pUC19dna, rc(pUC19dna)) == truth)
