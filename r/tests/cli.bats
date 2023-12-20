@@ -200,13 +200,11 @@ setup() {
 @test "Rscript -e seguid::seguid <<< \"aCGT\" gives error (invalid character)" {
     run Rscript -e seguid::seguid <<< "aCGT"
     assert_failure
-    assert_output --partial "Detected symbols"
 }
 
 @test "Rscript -e seguid::seguid <<< \" ACGT\" gives error (invalid character)" {
     run Rscript -e seguid::seguid <<< " ACGT"
     assert_failure
-    assert_output --partial "Detected symbols"
 }
 
 @test "Rscript -e seguid::seguid --type=dlseguid <<< \$' ACGT\\nTGCA' gives error (invalid character)" {

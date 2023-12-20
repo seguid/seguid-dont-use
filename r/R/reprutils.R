@@ -1,5 +1,5 @@
 ## Emulate Python's 'cleandoc()' in the 'inspect' module
-cleandoc_split <- function(s) {
+cleandoc <- function(s) {
   stopifnot(length(s) == 1L, is.character(s), !is.na(s))
   
   ## Split up into lines
@@ -20,18 +20,14 @@ cleandoc_split <- function(s) {
     }
   }
 
-  s
+  paste(s, collapse = "\n")
 }
 
 tuple_from_repr <- function(rpr, table = COMPLEMENT_TABLE_DNA, space = "-") {
   stopifnot(length(space) == 1, is.character(space), !is.na(space))
-
-  ## From 'from string import whitespace; set(whitespace)' in Python
-  whitespace <- c('\x0b', '\n', '\t', ' ', '\x0c', '\r')
-
-  assert_in_alphabet(rpr, alphabet = c(names(table), space, whitespace))
-
-  rpr <- cleandoc_split(rpr)
+  rpr <- cleandoc(rpr)
+  assert_in_alphabet(rpr, alphabet = c(names(table), space, "\n"))
+  rpr <- strsplit(rpr, split = "\n", fixed = TRUE)[[1]]
   watson <- rpr[[1]]
   crickrv <- rpr[[2]]
   stopifnot(nchar(watson) == nchar(crickrv))
