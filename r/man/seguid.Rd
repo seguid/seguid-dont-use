@@ -8,17 +8,11 @@
 \alias{dcseguid}
 \title{The SEGUID of nucleotide and amino-acid sequences}
 \usage{
-seguid(seq, table = COMPLEMENT_TABLE_DNA, encoding = b64encode)
+seguid(seq, table = COMPLEMENT_TABLE_DNA)
 
-slseguid(seq, table = COMPLEMENT_TABLE_DNA, encoding = b64encode_urlsafe)
+slseguid(seq, table = COMPLEMENT_TABLE_DNA)
 
-dlseguid(
-  watson,
-  crick,
-  overhang,
-  table = COMPLEMENT_TABLE_DNA,
-  encoding = b64encode_urlsafe
-)
+dlseguid(watson, crick, overhang, table = COMPLEMENT_TABLE_DNA)
 
 scseguid(seq, table = COMPLEMENT_TABLE_DNA)
 
@@ -28,8 +22,6 @@ dcseguid(watson, crick = rc(watson), table = COMPLEMENT_TABLE_DNA)
 \item{seq}{A character string.}
 
 \item{table}{A named character string.}
-
-\item{encoding}{A encoding function.}
 
 \item{watson, crick}{(character string) Two complementary DNA strands.}
 
