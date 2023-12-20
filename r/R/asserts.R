@@ -1,6 +1,28 @@
+escape_symbols <- function(s) {
+  for (kk in seq_along(s)) {
+    ch <- s[kk]
+    if (grepl("^[[:space:]]$", ch)) {
+      ch <- gsub('(^"|"$)', "", deparse(ch))
+      s[kk] <- ch;
+    }
+  }
+  s
+}
+
+assert_alphabet <- function(alphabet) {
+  stopifnot(length(alphabet) > 0, is.character(alphabet), !anyNA(alphabet), all(nchar(alphabet) == 1))
+  
+  ## Allow only for A-Z, a-Z, '-', '\n'
+  unknown <- setdiff(alphabet, c(LETTERS, letters, "-", "\n"))
+  if (length(unknown) > 0) {
+    unknown <- escape_symbols(unique(sort(unknown)))
+    stop(sprintf("Non-supported symbols in alphabet: [n=%d] %s", length(unknown), paste(sQuote(unknown), collapse = ", ")))
+  }  
+}  
+
 assert_in_alphabet <- function(seq, alphabet) {
   stopifnot(length(seq) == 1, is.character(seq), !is.na(seq))
-  stopifnot(length(alphabet) > 0, is.character(alphabet), !anyNA(alphabet))
+  assert_alphabet(alphabet)
 
   ## Nothing to do?
   if (nchar(seq) == 0) {
@@ -10,8 +32,8 @@ assert_in_alphabet <- function(seq, alphabet) {
   seq <- strsplit(seq, split = "", fixed = TRUE)[[1]]
   unknown <- setdiff(seq, alphabet)
   if (length(unknown) > 0) {
-    missing <- paste(unknown, collapse = " ")
-    stop(sprintf("Detected symbols %s in not in the 'alphabet'", missing))
+    unknown <- escape_symbols(unique(sort(unknown)))
+    stop(sprintf("Sequence symbols not in alphabet: [n=%d] %s", length(unknown), paste(sQuote(unknown), collapse = ", ")))
   }
 }
 
