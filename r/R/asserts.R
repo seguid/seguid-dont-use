@@ -33,7 +33,7 @@ assert_in_alphabet <- function(seq, alphabet) {
   unknown <- setdiff(seq, alphabet)
   if (length(unknown) > 0) {
     unknown <- escape_symbols(unique(sort(unknown)))
-    stop(sprintf("Sequence symbols not in alphabet: [n=%d] %s", length(unknown), paste(sQuote(unknown), collapse = ", ")))
+    stop(sprintf("Sequence symbols not in alphabet: [n=%d] %s (not in %s)", length(unknown), paste(sQuote(unknown), collapse = ", "), paste(sQuote(escape_symbols(alphabet)), collapse = ", ")))
   }
 }
 

@@ -105,9 +105,10 @@ scseguid <- function(seq, table = "dna") {
 
 #' @rdname seguid
 #' @export
-dcseguid <- function(watson, crick = rc(watson), table = "dna") {
+dcseguid <- function(watson, crick = rc(watson, table = get_table(table)), table = "dna") {
   stopifnot(nchar(watson) == nchar(crick))
-  assert_anneal(watson, crick, overhang = 0, table = get_table(table))
+  table2 <- get_table(table)
+  assert_anneal(watson, crick, overhang = 0, table = table2)
 
   watson_min <- rotate_to_min(watson)
   crick_min <- rotate_to_min(crick)
@@ -119,5 +120,5 @@ dcseguid <- function(watson, crick = rc(watson), table = "dna") {
       w <- crick_min
   }
 
-  with_prefix(dlseguid(w, rc(w), overhang = 0, table = table), "dcseguid:")
+  with_prefix(dlseguid(w, rc(w, table = table2), overhang = 0, table = table), "dcseguid:")
 }
