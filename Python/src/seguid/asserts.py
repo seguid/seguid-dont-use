@@ -61,8 +61,3 @@ def assert_anneal(watson: str,
 
     if up != dn:
         raise ValueError("Mismatched basepairs.")
-
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)

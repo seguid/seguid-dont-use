@@ -4,9 +4,11 @@
 import pytest
 
 from seguid.manip import rc
-from seguid.manip import min_rotation_py
 from seguid.manip import complementary
 from seguid.manip import rotate
+from seguid.manip import rotate_to_min
+from seguid.config import set_min_rotation
+from seguid.config import _min_rotation
 
 def test_complementary():
     """docstring."""
@@ -68,3 +70,30 @@ def test_rc():
 
     with pytest.raises(ValueError):
         rc("GTZ")
+
+
+def test_min_rotation_pydivsufsort():
+    """Tests for the pydivsufsort min_rotation"""
+    set_min_rotation("pydivsufsort")
+    assert _min_rotation("Aa") == 0
+    assert rotate_to_min("taaa") == "aaat"
+    assert (
+        rotate_to_min("abaabaaabaababaaabaaababaab")
+        == "aaabaaababaababaabaaabaabab"
+    )
+    assert (
+        rotate_to_min("abaabaaabaababaaabaaaBabaab")
+        == "Babaababaabaaabaababaaabaaa"
+    )
+    set_min_rotation("built-in")
+
+
+def test_min_rotation_built_in():
+    set_min_rotation("built-in")
+    assert _min_rotation("Aa") == 0
+    assert rotate_to_min("TAAA") == "AAAT"
+    assert (
+        rotate_to_min("ACAACAAACAACACAAACAAACACAAC")
+        == "AAACAAACACAACACAACAAACAACAC"
+    )
+    

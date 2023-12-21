@@ -20,25 +20,13 @@ scseguid and dcseguid are considerably faster with pydivsufsort installed.
 
 import hashlib
 import base64
-from typing import Callable
-import warnings
 
-from seguid.manip import rotate
+from seguid.manip import rc
+from seguid.manip import rotate_to_min
 from seguid.tables import COMPLEMENT_TABLE_DNA
 from seguid.asserts import assert_in_alphabet
 from seguid.asserts import assert_anneal
-
-try:
-    from pydivsufsort import min_rotation as mr
-except ModuleNotFoundError:
-    warnings.warn("pydivsufsort not found.", ImportWarning)  # TODO Is this the right way?
-else:
-    def min_rotation(s):
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore")
-            result = mr(s)
-        return result
-
+from seguid.reprutils import repr_from_tuple
 
 def _seguid(seq: str,
             table: dict = COMPLEMENT_TABLE_DNA,
@@ -130,8 +118,7 @@ def slseguid(seq: str,
 
 def scseguid(seq: str,
              table: dict = COMPLEMENT_TABLE_DNA,
-             min_rotation: Callable[[str], int] = min_rotation,
-             prefix="scseguid:") -> str:
+             prefix: str = "scseguid:") -> str:
     r"""SEGUID checksum for single stranded circular DNA (scSEGUID).
 
     The scSEGUID is the slSEGUID checksum calculated for the lexicographically
@@ -155,9 +142,7 @@ def scseguid(seq: str,
     >>> slseguid("TTTA")
     'slseguid:8zCvKwyQAEsbPtC4yTV-pY0H93Q'
     """
-    start = min_rotation(seq)
-
-    return slseguid(rotate(seq, start),
+    return slseguid(rotate_to_min(seq),
                     table=table,
                     prefix=prefix)
 
@@ -166,7 +151,7 @@ def dlseguid(watson: str,
              crick: str,
              overhang: int,
              table: dict = COMPLEMENT_TABLE_DNA,
-             prefix="dlseguid:"
+             prefix: str = "dlseguid:"
              ) -> str:
     r"""SEGUID checksum for double stranded linear DNA (dlSEGUID).
 
@@ -251,22 +236,13 @@ def dlseguid(watson: str,
     assert_anneal(watson, crick, overhang, table=table)
 
     w, c, o = min(
-        (
-            (watson, crick, overhang),
-            (crick, watson, len(watson) - len(crick) + overhang),
-        )
+        (watson, crick, overhang),
+        (crick, watson, len(watson) - len(crick) + overhang),
     )
 
-    space = "-"
-    sep = "\n"
-
-    msg = (
-        f"{o*space}{w}{space*(-o+len(c)-len(w))}"
-        f"{sep}"
-        f"{-o*space}{c[::-1]}{space*(o+len(w)-len(c))}"
-    ).rstrip()
-
-    extable = table | {space: space, sep: sep}
+    msg = repr_from_tuple(watson=w, crick=c, overhang=o, table=table, space="-")
+    
+    extable = table | {"-": "-", "\n": "\n"}
 
     return slseguid(msg, table=extable, prefix=prefix)
 
@@ -274,14 +250,12 @@ def dlseguid(watson: str,
 def dcseguid(watson: str,
              crick: str,
              table: dict = COMPLEMENT_TABLE_DNA,
-             min_rotation: Callable[[str], int] = min_rotation,
-             prefix="dcseguid:") -> str:
+             prefix: str = "dcseguid:") -> str:
     """SEGUID checksum for double stranded circular DNA (dcSEGUID).
 
     The dcSEGUID is the slSEGUID checksum calculated for the lexicographically
     smallest string rotation of a dsDNA sequence. Only defined for circular
-    sequences. The min_rotation argument is a callable that takes a string as
-    argument and returns another string.
+    sequences.
 
     The checksum is prefixed with "dcseguid:"
     """
@@ -290,19 +264,14 @@ def dcseguid(watson: str,
 
     assert_anneal(watson, crick, 0, table=table)
 
-    x = min_rotation(watson)
-    y = min_rotation(crick)
-    minwatson = rotate(watson, x)
-    mincrick = rotate(crick, y)
+    watson_min = rotate_to_min(watson)
+    crick_min = rotate_to_min(crick)
 
-    w, c = min(
-        (minwatson, rotate(crick, ln - x)),
-        (mincrick, rotate(watson, ln - y)),
-    )
+    ## Keep the "minimum" of the two variants
+    if watson_min < crick_min:
+        w = watson_min
+    else:
+        w = crick_min
 
-    return dlseguid(w, c, overhang=0, table=table, prefix=prefix)
+    return dlseguid(watson = w, crick = rc(w), overhang = 0, table=table, prefix=prefix)
 
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)
