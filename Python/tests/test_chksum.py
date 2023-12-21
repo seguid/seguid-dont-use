@@ -122,3 +122,7 @@ def test_dcseguid():
     assert dcseguid(pUC19dna, rc(pUC19dna)) == dcsg
     w, c = Path("test_data/pUC19_minimal_rotation_watson_linebreak_crick.txt").read_text().splitlines()
     assert dlseguid(w, c[::-1], 0) == "dlseguid:zhw8Yrxfo3FO5DDccx4PamBVPCQ"
+
+    truth = "dcseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
+    assert dcseguid("ACGTT", "AACGT") == truth
+    assert dcseguid("AACGT", "ACGTT") == truth
