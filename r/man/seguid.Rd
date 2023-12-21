@@ -16,7 +16,7 @@ dlseguid(watson, crick, overhang, table = "dna")
 
 scseguid(seq, table = "dna")
 
-dcseguid(watson, crick = rc(watson), table = "dna")
+dcseguid(watson, crick = rc(watson, table = get_table(table)), table = "dna")
 }
 \arguments{
 \item{seq}{A character string.}
