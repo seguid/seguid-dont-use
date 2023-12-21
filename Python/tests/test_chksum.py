@@ -54,6 +54,13 @@ def test_scseguid():
     assert scseguid(m13dna) == sc
     assert cs(Path("test_data/M13_minimal_rotation.txt").read_text().strip()) in sc
 
+    scseguid("ATTT") == 'scseguid:ot6JPLeAeMmfztW1736Kc6DAqlo'
+    slseguid("ATTT") == 'slseguid:ot6JPLeAeMmfztW1736Kc6DAqlo'
+    scseguid("TTTA") == 'scseguid:ot6JPLeAeMmfztW1736Kc6DAqlo'
+    slseguid("TTTA") == 'slseguid:8zCvKwyQAEsbPtC4yTV-pY0H93Q'
+
+
+
 
 def test_dlseguid():
     ct = COMPLEMENT_TABLE_DNA
@@ -104,6 +111,9 @@ def test_dlseguid():
     assert cs("--AT--\nGATATC") == dlDNA5_dlseguid
 
     repr_from_tuple("AT", "CTATAG", 2)
+
+    assert dlseguid("TATGCC", "GCATAC", 1) == 'dlseguid:E7YtPGWjj3qCaPzWurlYBaJy_X4'
+    assert dlseguid("GCATAC", "TATGCC", 1) == 'dlseguid:E7YtPGWjj3qCaPzWurlYBaJy_X4'
 
 
 def test_dcseguid():
