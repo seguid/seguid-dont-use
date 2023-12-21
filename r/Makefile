@@ -1,5 +1,7 @@
 SHELL=bash
 
+BROWSER=google-chrome
+
 all:
 
 requirements:
@@ -19,6 +21,10 @@ check:
 check-cli:
 	module load CBI bats-core bats-assert bats-file; \
 	(cd tests/; bats *.bats)
+
+coverage-html:
+	tf=$$(mktemp --suffix="-report.html"); \
+	Rscript -e "c <- covr::package_coverage(quiet = FALSE); print(c); r <- covr::report(c, file='$${tf}'); utils::browseURL(r, browser = '$(BROWSER)')"
 
 incl/OVERVIEW.md: vignettes/port4me-overview.Rmd
 	Rscript -e "rmarkdown::render('vignettes/port4me-overview.Rmd', rmarkdown::md_document(), output_dir = '$(@D)', output_file = '$(@F)')"

@@ -3,9 +3,9 @@
 
 # Definition of Complementary DNA Symbols
 COMPLEMENT_TABLE_DNA = {"G": "C",
-                    "A": "T",
-                    "C": "G",
-                    "T": "A"}
+                        "A": "T",
+                        "C": "G",
+                        "T": "A"}
 
 
 # Definition of Complementary RNA Symbols
@@ -47,14 +47,14 @@ https://www.ncbi.nlm.nih.gov/pmc/articles/PMC341218
 """
 
 COMPLEMENT_TABLE_IUPAC = COMPLEMENT_TABLE_DNA | {"B": "V",
-                                             "D": "H",
-                                             "H": "D",
-                                             "K": "M",
-                                             "M": "K",
-                                             "S": "S",
-                                             "V": "B",
-                                             "W": "W",
-                                             "N": "N"}
+                                                 "D": "H",
+                                                 "H": "D",
+                                                 "K": "M",
+                                                 "M": "K",
+                                                 "S": "S",
+                                                 "V": "B",
+                                                 "W": "W",
+                                                 "N": "N"}
 
 
 TABLE_IUPAC_PROTEIN = {"A": "",

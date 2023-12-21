@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from array import array
+from typing import Callable
 
 from seguid.asserts import assert_table
 from seguid.asserts import assert_in_alphabet
@@ -50,7 +51,7 @@ def rotate(seq: str, amount: int = 0) -> str:
     return seq
 
 
-def complementary(seq: str, table: tuple = COMPLEMENT_TABLE_DNA) -> str:
+def complementary(seq: str, table: dict = COMPLEMENT_TABLE_DNA) -> str:
     """Complement of a DNA sequence.
     """
     ## Validate 'table':
@@ -94,8 +95,7 @@ def rc(seq: str, table: dict = COMPLEMENT_TABLE_DNA) -> str:
     return reverse(complementary(seq, table = table))
 
 
-def min_rotation_py(s: str,
-                    table: tuple = COMPLEMENT_TABLE_DNA) -> int:
+def min_rotation_py(s: str) -> int:
     """Start position for the smallest rotation of a string s (pure Python).
 
     Algorithm described in:
@@ -132,8 +132,6 @@ def min_rotation_py(s: str,
     >>> s[14:] + s[:14]
     'AAACAAACACAACACAACAAACAACAC'
     """
-    assert_table(table)
-    assert_in_alphabet(s, alphabet=set(table.keys()))
 
     prev, rep = None, 0
     ds = array("u", 2 * s)
@@ -158,3 +156,14 @@ def min_rotation_py(s: str,
                 prev, rep = w, 1
             if len(w) * rep == lens:
                 return old - i
+
+            
+def rotate_to_min(s: str) -> int:
+    from seguid.config import _min_rotation
+
+    ## Assert upper-case letters are ordered before lower-case letters
+    assert _min_rotation("Aa") == 0
+    
+    amount = _min_rotation(s)
+    s = rotate(s, amount = amount)
+    return(s)

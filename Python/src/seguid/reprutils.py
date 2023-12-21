@@ -3,13 +3,14 @@ from seguid.tables import COMPLEMENT_TABLE_DNA
 from inspect import cleandoc
 from seguid.asserts import assert_in_alphabet
 from seguid.asserts import assert_anneal
+from seguid.manip import reverse
 from string import whitespace
 
 
 def tuple_from_repr(
     rpr: str,
     table: dict = COMPLEMENT_TABLE_DNA,
-    space: str = "-",
+    space: str = "-"
 ) -> tuple:
     """Generate a tuple from dsDNA text representation.
 
@@ -42,8 +43,6 @@ def tuple_from_repr(
     >>> tuple_from_repr(rpr) == tuple_from_repr(rpr2)
     True
     """
-    space = "-"
-
     assert isinstance(space, str)
     assert len(space) == 1
 
@@ -66,20 +65,21 @@ def tuple_from_repr(
 
 
 def repr_from_tuple(
-    watson: str, crick: str, overhang: int
+    watson: str,
+    crick: str,
+    overhang: int,
+    table: dict = COMPLEMENT_TABLE_DNA,
+    space: str = "-"
 ) -> str:
     """docstring."""
-    assert_anneal(watson, crick, overhang)
+    assert_anneal(watson, crick, overhang = overhang, table = table)
+    assert isinstance(space, str)
+    assert len(space) == 1
 
     msg = (
-        f"{overhang*chr(45)}{watson}{chr(45)*(-overhang+len(crick)-len(watson))}"
+        f"{overhang*space}{watson}{space*(-overhang+len(crick)-len(watson))}"
         "\n"
-        f"{-overhang*chr(45)}{crick[::-1]}{chr(45)*(overhang+len(watson)-len(crick))}"
+        f"{-overhang*space}{reverse(crick)}{space*(overhang+len(watson)-len(crick))}"
     ).rstrip()
 
     return msg
-
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(verbose=True, optionflags=doctest.ELLIPSIS)

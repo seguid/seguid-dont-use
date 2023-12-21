@@ -14,46 +14,13 @@ from seguid import dcseguid
 
 from seguid.chksum import seguid
 
+from seguid.manip import reverse
 from seguid.manip import rc
-from seguid.manip import min_rotation_py
 
 from seguid.reprutils import repr_from_tuple
 
 from seguid.tables import COMPLEMENT_TABLE_DNA
 from seguid.tables import TABLE_IUPAC_PROTEIN
-
-
-def test_min_rotation():
-    """Tests for the pydivsufsort min_rotation"""
-    from pydivsufsort import min_rotation
-
-    def smallest_rotation(s):
-        i = min_rotation(s)
-        return s[i:] + s[:i]
-
-    assert smallest_rotation("taaa") == "aaat"
-    assert (
-        smallest_rotation("abaabaaabaababaaabaaababaab")
-        == "aaabaaababaababaabaaabaabab"
-    )
-    assert (
-        smallest_rotation("abaabaaabaababaaabaaaBabaab")
-        == "Babaababaabaaabaababaaabaaa"
-    )
-
-
-def test_min_rotation_py():
-    """docstring."""
-
-    def smallest_rotation_py(s):
-        i = min_rotation_py(s)
-        return s[i:] + s[:i]
-
-    assert smallest_rotation_py("TAAA") == "AAAT"
-    assert (
-        smallest_rotation_py("ACAACAAACAACACAAACAAACACAAC")
-        == "AAACAAACACAACACAACAAACAACAC"
-    )
 
 
 def test_seguid():
