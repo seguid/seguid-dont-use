@@ -30,14 +30,12 @@ def tuple_from_repr(
 
     Examples
     --------
-    >>> rpr = \"""
-    ...           -TATGCC
-    ...           CATACG- \"""
+    >>> rpr = \"""-TATGCC
+    ...           CATACG-\"""
     >>> tuple_from_repr(rpr)
     ('TATGCC', 'GCATAC', 1)
-    >>> rpr2 = \"""
-    ...                      -TATGCC
-    ...                      CATACG- \"""
+    >>> rpr2 = \"""-TATGCC
+    ...            CATACG-\"""
     >>> tuple_from_repr(rpr2)
     ('TATGCC', 'GCATAC', 1)
     >>> tuple_from_repr(rpr) == tuple_from_repr(rpr2)
@@ -45,10 +43,22 @@ def tuple_from_repr(
     """
     assert isinstance(space, str)
     assert len(space) == 1
+    assert space != " ", "Space can not be 'space' (ASCII 32)"
+    linebreak = "\n"
 
-    assert_in_alphabet(rpr, alphabet=set(table.keys()) | set(space) | set(whitespace))
+    try:
+        assert_in_alphabet(space, alphabet=set(table.keys()) | set(linebreak))
+    except ValueError:
+        pass
+    else:
+        ValueError(f"space was set to {space} which is already in the alphabet")
 
-    watson, crickrv = cleandoc(rpr).split()
+    cleaned_rpr = cleandoc(rpr)
+
+    assert_in_alphabet(cleaned_rpr,
+                       alphabet=set(table.keys()) | set(space) | set(linebreak))
+
+    watson, crickrv = cleaned_rpr.splitlines()
 
     assert len(watson) == len(crickrv)
     assert not (watson.startswith(space) and crickrv.startswith(space))

@@ -59,7 +59,7 @@ def test_tuple_from_repr():
        ATACGG
     """
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValueError):
         tuple_from_repr(rpr_should_err)
 
     rpr_should_err = """
@@ -67,7 +67,7 @@ def test_tuple_from_repr():
        ATACGG
     """
 
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValueError):
         tuple_from_repr(rpr_should_err)
 
     rpr_should_err = """
