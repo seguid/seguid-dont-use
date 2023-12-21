@@ -292,3 +292,47 @@ setup() {
     assert_success
     assert_output "dlseguid:a_o4Ga8vQrhlvI_zkjUg0uu6obA"
 }
+
+
+
+## --------------------------------------------------------
+## RNA
+## --------------------------------------------------------
+@test "Rscript -e seguid::seguid --table=rna <<< \"ACGU\"" {
+    run Rscript -e seguid::seguid --table=rna  <<< "ACGU"
+    assert_success
+    assert_output "seguid:LLaWk2Jb8NGt20QXhgm+cSVat34"
+}
+
+
+@test "Rscript -e seguid::seguid--type=seguid --table=rna <<< \"ACGU\"" {
+    run Rscript -e seguid::seguid --type=seguid --table=rna <<< "ACGU"
+    assert_success
+    assert_output "seguid:LLaWk2Jb8NGt20QXhgm+cSVat34"
+}
+
+
+@test "Rscript -e seguid::seguid --type=slseguid --table=rna <<< \"ACGU\"" {
+    run Rscript -e seguid::seguid --type=slseguid --table=rna <<< "ACGU"
+    assert_success
+    assert_output "slseguid:LLaWk2Jb8NGt20QXhgm-cSVat34"
+}
+
+
+@test "Rscript -e seguid::seguid --type=scseguid --table=rna <<< \"ACGU\"" {
+    run Rscript -e seguid::seguid --type=scseguid --table=rna <<< "ACGU"
+    assert_success
+    assert_output "scseguid:LLaWk2Jb8NGt20QXhgm-cSVat34"
+}
+
+@test "Rscript -e seguid::seguid --type=dlseguid --table=rna <<< \$'AACGU\\nUUdTGCA'" {
+    run Rscript -e seguid::seguid --type=dlseguid --table=rna <<< $'AACGU\nUUGCA'
+    assert_success
+    assert_output "dlseguid:r61AxqwrG01x8RpNluuRlfoL9VY"
+}
+
+@test "Rscript -e seguid::seguid --type=dcseguid --table=rna <<< \$'AACGU\\nUUGCA'" {
+    run Rscript -e seguid::seguid --type=dcseguid --table=rna <<< $'AACGU\nUUGCA'
+    assert_success
+    assert_output "dcseguid:r61AxqwrG01x8RpNluuRlfoL9VY"
+}
