@@ -4,7 +4,6 @@ from inspect import cleandoc
 from seguid.asserts import assert_in_alphabet
 from seguid.asserts import assert_anneal
 from seguid.manip import reverse
-from string import whitespace
 
 
 def tuple_from_repr(
