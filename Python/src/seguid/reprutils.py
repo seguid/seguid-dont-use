@@ -11,34 +11,52 @@ def tuple_from_repr(
     table: dict = COMPLEMENT_TABLE_DNA,
     space: str = "-"
 ) -> tuple:
-    """Generate a tuple from dsDNA text representation.
+    """Generate a (watson, crick, overhang) tuple from dsDNA text representation.
 
     This function can generate a tuple (watson, crick, overhang)
     from a dsDNA figure such as the ones depicted below. The resulting
     tuple can be used as an argument for the lSEGUID_sticky or nseguid
     functions. See these functions for the definition of watson, crick and
-    overhang.
+    overhang. Example inputs can be:
     ::
 
               -TATGCC
-              catacg-
+              CATACG-
 
 
-    The three figures above represent the same dsDNA molecule.
+              GTATGCC
+              CATACGG
+
+
+              GTATGC-
+              -ATACGG
+
+
+    The first and last figure above represent DNA with single
+    stranded ends, 3' and 5' respectively. The dash represent
+    an empty space in the DNA sequence. This is only allowed
+    on one of the adjacent positions. The following is *not*
+    allowed:
+    ::
+
+              -TATGCC
+              -ATACGG
 
 
     Examples
     --------
-    >>> rpr = \"""-TATGCC
+    >>> rpr1 = \"""-TATGCC
     ...           CATACG-\"""
-    >>> tuple_from_repr(rpr)
+    >>> tuple_from_repr(rpr1)
     ('TATGCC', 'GCATAC', 1)
-    >>> rpr2 = \"""-TATGCC
-    ...            CATACG-\"""
+    >>> rpr2 = \"""GTATGCC
+    ...            CATACGG\"""
     >>> tuple_from_repr(rpr2)
-    ('TATGCC', 'GCATAC', 1)
-    >>> tuple_from_repr(rpr) == tuple_from_repr(rpr2)
-    True
+    ('GTATGCC', 'GGCATAC', 0)
+    >>> rpr3 = \"""GTATGC-
+    ...            -ATACGG\"""
+    >>> tuple_from_repr(rpr3)
+    ('GTATGC', 'GGCATA', -1)
     """
     assert isinstance(space, str)
     assert len(space) == 1
