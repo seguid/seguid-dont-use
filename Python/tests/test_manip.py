@@ -10,6 +10,7 @@ from seguid.manip import rotate_to_min
 from seguid.config import set_min_rotation
 from seguid.config import _min_rotation
 
+
 def test_complementary():
     """docstring."""
     seq = "AACCGGTT"
@@ -75,6 +76,7 @@ def test_rc():
 def test_min_rotation_pydivsufsort():
     """Tests for the pydivsufsort min_rotation"""
     set_min_rotation("pydivsufsort")
+    assert _min_rotation("") == 0
     assert _min_rotation("Aa") == 0
     assert rotate_to_min("taaa") == "aaat"
     assert (
@@ -96,4 +98,4 @@ def test_min_rotation_built_in():
         rotate_to_min("ACAACAAACAACACAAACAAACACAAC")
         == "AAACAAACACAACACAACAAACAACAC"
     )
-    
+    assert _min_rotation("") == 0

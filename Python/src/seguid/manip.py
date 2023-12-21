@@ -156,14 +156,14 @@ def min_rotation_py(s: str) -> int:
                 prev, rep = w, 1
             if len(w) * rep == lens:
                 return old - i
+    return 0
 
-            
 def rotate_to_min(s: str) -> int:
     from seguid.config import _min_rotation
 
     ## Assert upper-case letters are ordered before lower-case letters
     assert _min_rotation("Aa") == 0
-    
+
     amount = _min_rotation(s)
     s = rotate(s, amount = amount)
     return(s)
