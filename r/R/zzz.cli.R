@@ -22,7 +22,7 @@ Copyright: Henrik Bengtsson (2023)
 License: MIT
 '
 
-#' @importFrom utils file_test
+#' @importFrom utils capture.output file_test str
 cli_call_fcn <- function(..., table = "dna", file = NULL, debug = FALSE, fcn) {
   if (is.character(fcn)) {
     fcn <- get(fcn, mode = "function", envir = getNamespace(.packageName), inherits = FALSE)
@@ -71,7 +71,7 @@ cli_call_fcn <- function(..., table = "dna", file = NULL, debug = FALSE, fcn) {
 
   if (debug) {
     message(sprintf("Sequence data:\n%s", seq))
-    message(sprintf("Arguments:\n%s", paste(utils::capture.output(str(args)), collapse = "\n")))
+    message(sprintf("Arguments:\n%s", paste(capture.output(str(args)), collapse = "\n")))
   }
 
   argnames <- names(formals(fcn))
