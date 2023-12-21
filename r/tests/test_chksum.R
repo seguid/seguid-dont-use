@@ -48,10 +48,10 @@ truth <- "dcseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
 stopifnot(dcseguid("ACGTT", "AACGT") == truth)
 stopifnot(dcseguid("AACGT", "ACGTT") == truth)
 
-pUC19dna <- readLines("test_data/puc19.txt", warn = FALSE)
+pUC19dna <- readLines("test_data/pUC19.txt", warn = FALSE)
 truth <- "dcseguid:zhw8Yrxfo3FO5DDccx4PamBVPCQ"
 stopifnot(dcseguid(pUC19dna, rc(pUC19dna)) == truth)
-bfr <- readLines("test_data/pUC19msg.txt", warn = FALSE)
+bfr <- readLines("test_data/pUC19_minimal_rotation_watson_linebreak_crick.txt", warn = FALSE)
 w <- bfr[1]
 c <- bfr[2]
 stopifnot(dlseguid(w, reverse(c), 0) == gsub("dcseguid:", "dlseguid:", truth))
