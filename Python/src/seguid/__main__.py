@@ -31,6 +31,10 @@ else:
         res=slseguid(seq)
     elif type == "scseguid":
         res=scseguid(seq)
+    elif type == "dlseguid":
+        repr=seq + "\n" + input()
+        tuple=tuple_from_repr(repr)
+        res=dlseguid(watson = tuple[0], crick = tuple[1], overhang = tuple[2])
     elif type == "dcseguid":
         watson=seq
         seq=input()

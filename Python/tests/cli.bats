@@ -74,7 +74,6 @@ setup() {
 }
 
 @test "<CLI call> --type=dlseguid <<< \$'AACGT\\nTTGCA'" {
-    skip "To be implemented"
     run "${cli_call[@]}" --type=dlseguid <<< $'AACGT\nTTGCA'
     assert_success
     assert_output "dlseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
@@ -105,14 +104,12 @@ setup() {
 }
 
 @test "<CLI call> --type=dlseguid <<< \$'-CGT\\nTGCA'" {
-    skip "To be implemented"
     run "${cli_call[@]}" --type=dlseguid <<< $'-CGT\nTGCA'
     assert_success
     assert_output "dlseguid:MpPe6pJoya3CoRh3BAw2qgEOcKI"
 }
 
 @test "<CLI call> --type=dlseguid <<< \$'-CGT\nTGC-'" {
-    skip "To be implemented"
     run "${cli_call[@]}" --type=dlseguid <<< $'-CGT\nTGC-'
     assert_success
     assert_output "dlseguid:a_o4Ga8vQrhlvI_zkjUg0uu6obA"
@@ -141,7 +138,6 @@ setup() {
 }
 
 @test "<CLI call> --type=dlseguid <<< \$'A\nT' (single-symbol input)" {
-    skip "To be implemented"
     run "${cli_call[@]}" --type=dlseguid <<< $'A\nT'
     assert_success
     assert_output "dlseguid:S4AfmFCoHYVrWNQ_d7-lVVF2t20"
@@ -202,19 +198,16 @@ setup() {
 }
 
 @test "<CLI call> --type=dlseguid <<< \$' ACGT\\nTGCA' gives error (invalid character)" {
-    skip "To be implemented"
     run "${cli_call[@]}" --type=dlseguid <<< $' ACGT\nTGCA '
     assert_failure
 }
 
 @test "<CLI call> --type=dlseguid <<< \$'ACGT\\nTGC' gives error (unbalanced lengths)" {
-    skip "To be implemented"
     run "${cli_call[@]}" --type=dlseguid <<< $'ACGT\nTGC'
     assert_failure
 }
 
 @test "<CLI call> --type=dlseguid <<< \$'ACGT\\nTGCC' gives error (incompatible sequences)" {
-    skip "To be implemented"
     run "${cli_call[@]}" --type=dlseguid <<< $'ACGT\nTGCC'
     assert_failure
 }
