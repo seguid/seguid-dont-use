@@ -158,11 +158,13 @@ def test_with_tables():
     assert dlseguid("AT", "AT", 0, table=COMPLEMENT_TABLE_DNA) == result
     assert dlseguid("AU", "AU", 0, table=COMPLEMENT_TABLE_RNA) == result_rna
     assert dlseguid("AT", "AT", 0, table=COMPLEMENT_TABLE_IUPAC) == result
-    # assert dlseguid("AT", "AT", 0, table=TABLE_IUPAC_PROTEIN) == result
+    with pytest.raises(AssertionError):
+        dlseguid("AT", "AT", 0, table=TABLE_IUPAC_PROTEIN)
 
     result = 'dcseguid:AWD-dt5-TEua8RbOWfnctJIu9nA'
     result_rna = 'dcseguid:1jgY1uMadj9rCRXKjeFDBK2jI44'
     assert dcseguid("AT", "AT", table=COMPLEMENT_TABLE_DNA) == result
     assert dcseguid("AU", "AU", table=COMPLEMENT_TABLE_RNA) == result_rna
     assert dcseguid("AT", "AT", table=COMPLEMENT_TABLE_IUPAC) == result
-    # assert dcseguid("AT", "AT", table=TABLE_IUPAC_PROTEIN) == result
+    with pytest.raises(AssertionError):
+        assert dcseguid("AT", "AT", table=TABLE_IUPAC_PROTEIN) == result

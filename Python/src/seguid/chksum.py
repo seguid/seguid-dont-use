@@ -234,6 +234,7 @@ def dlseguid(watson: str,
     >>> dlseguid("GCATAC", "TATGCC", 1)
     'dlseguid:E7YtPGWjj3qCaPzWurlYBaJy_X4'
     """
+    assert len(set(table.values())) > 1, "Was a protein table used by mistake?"
     assert_anneal(watson, crick, overhang, table=table)
 
     w, c, o = min(
@@ -260,20 +261,20 @@ def dcseguid(watson: str,
 
     The checksum is prefixed with "dcseguid:"
     """
+    assert len(set(table.values())) > 1, "Was a protein table used by mistake?"
     assert len(watson) == len(crick)
-    ln = len(watson)
 
     assert_anneal(watson, crick, 0, table=table)
 
     watson_min = rotate_to_min(watson)
     crick_min = rotate_to_min(crick)
 
-    ## Keep the "minimum" of the two variants
+    # Keep the "minimum" of the two variants
     if watson_min < crick_min:
         w = watson_min
     else:
         w = crick_min
 
-    return dlseguid(watson = w,
-                    crick = rc(w, table=table),
-                    overhang = 0, table=table, prefix=prefix)
+    return dlseguid(watson=w,
+                    crick=rc(w, table=table),
+                    overhang=0, table=table, prefix=prefix)
