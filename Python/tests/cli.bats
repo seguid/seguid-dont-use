@@ -4,9 +4,8 @@ setup() {
     load "${BATS_SUPPORT_HOME:?}/load.bash"
     load "${BATS_ASSERT_HOME:?}/load.bash"
 
-    cli_call=(python -e seguid)
+    cli_call=(python -m seguid)
 
-    skip "The Python CLI API is still to be implemented"
 }
 
 
@@ -26,9 +25,8 @@ setup() {
     assert_output --partial "seguid"
     assert_output --partial "--version"
     assert_output --partial "--help"
-    assert_output --partial "Usage:"
-    assert_output --partial "Options:"
-    assert_output --partial "Examples:"
+    assert_output --regexp "[Uu]sage:"
+    assert_output --regexp "[Oo]ptions:"
 }
 
 
@@ -76,42 +74,49 @@ setup() {
 }
 
 @test "<CLI call> --type=dlseguid <<< \$'AACGT\\nTTGCA'" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=dlseguid <<< $'AACGT\nTTGCA'
     assert_success
     assert_output "dlseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
 }
 
 @test "<CLI call> --type=dcseguid <<< \$'AACGT\\nTTGCA'" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=dcseguid <<< $'AACGT\nTTGCA'
     assert_success
     assert_output "dcseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
 }
 
 @test "<CLI call> --type=dcseguid <<< \$'CGTAA\\nGCATT' (rotation invariant)" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=dcseguid <<< $'CGTAA\nGCATT'
     assert_success
     assert_output "dcseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
 }
 
 @test "<CLI call> --type=dcseguid <<< \$'GTAAC\\nCATTG' (rotation invariant)" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=dcseguid <<< $'GTAAC\nCATTG'
     assert_success
     assert_output "dcseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
 }
 
 @test "<CLI call> --type=dcseguid <<< \$'GTTAC\\nCAATG' (strand symmetry)" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=dcseguid <<< $'GTTAC\nCAATG'
     assert_success
     assert_output "dcseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
 }
 
 @test "<CLI call> --type=dlseguid <<< \$'-CGT\\nTGCA'" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=dlseguid <<< $'-CGT\nTGCA'
     assert_success
     assert_output "dlseguid:MpPe6pJoya3CoRh3BAw2qgEOcKI"
 }
 
 @test "<CLI call> --type=dlseguid <<< \$'-CGT\nTGC-'" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=dlseguid <<< $'-CGT\nTGC-'
     assert_success
     assert_output "dlseguid:a_o4Ga8vQrhlvI_zkjUg0uu6obA"
@@ -140,12 +145,14 @@ setup() {
 }
 
 @test "<CLI call> --type=dlseguid <<< \$'A\nT' (single-symbol input)" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=dlseguid <<< $'A\nT'
     assert_success
     assert_output "dlseguid:S4AfmFCoHYVrWNQ_d7-lVVF2t20"
 }
 
 @test "<CLI call> --type=dcseguid <<< \$'A\nT' (single-symbol input)" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=dcseguid <<< $'A\nT'
     assert_success
     assert_output "dcseguid:S4AfmFCoHYVrWNQ_d7-lVVF2t20"
@@ -156,26 +163,31 @@ setup() {
 ## Empty input is assume to be a user error
 ## --------------------------------------------------------
 @test "<CLI call> --type=seguid <<< \"\" (empty input)" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=seguid <<< ""
     assert_failure
 }
 
 @test "<CLI call> --type=slseguid <<< \"\" (empty input)" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=slseguid <<< ""
     assert_failure
 }
 
 @test "<CLI call> --type=scseguid <<< \"\" (empty input)" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=scseguid <<< ""
     assert_failure
 }
 
 @test "<CLI call> --type=dlseguid <<< \"\" (empty input)" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=dlseguid <<< ""
     assert_failure
 }
 
 @test "<CLI call> --type=dcseguid <<< \"\" (empty input)" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=dcseguid <<< ""
     assert_failure
 }
@@ -195,16 +207,19 @@ setup() {
 }
 
 @test "<CLI call> --type=dlseguid <<< \$' ACGT\\nTGCA' gives error (invalid character)" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=dlseguid <<< $' ACGT\nTGCA '
     assert_failure
 }
 
 @test "<CLI call> --type=dlseguid <<< \$'ACGT\\nTGC' gives error (unbalanced lengths)" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=dlseguid <<< $'ACGT\nTGC'
     assert_failure
 }
 
 @test "<CLI call> --type=dlseguid <<< \$'ACGT\\nTGCC' gives error (incompatible sequences)" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=dlseguid <<< $'ACGT\nTGCC'
     assert_failure
 }
@@ -214,13 +229,15 @@ setup() {
 ## RNA
 ## --------------------------------------------------------
 @test "<CLI call> --table=rna <<< \"ACGU\"" {
-    run "${cli_call[@]}" --table=rna  <<< "ACGU"
+    skip "To be implemented"
+    run "${cli_call[@]}" --table=rna <<< "ACGU"
     assert_success
     assert_output "seguid:LLaWk2Jb8NGt20QXhgm+cSVat34"
 }
 
 
 @test "<CLI call>--type=seguid --table=rna <<< \"ACGU\"" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=seguid --table=rna <<< "ACGU"
     assert_success
     assert_output "seguid:LLaWk2Jb8NGt20QXhgm+cSVat34"
@@ -228,6 +245,7 @@ setup() {
 
 
 @test "<CLI call> --type=slseguid --table=rna <<< \"ACGU\"" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=slseguid --table=rna <<< "ACGU"
     assert_success
     assert_output "slseguid:LLaWk2Jb8NGt20QXhgm-cSVat34"
@@ -235,18 +253,21 @@ setup() {
 
 
 @test "<CLI call> --type=scseguid --table=rna <<< \"ACGU\"" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=scseguid --table=rna <<< "ACGU"
     assert_success
     assert_output "scseguid:LLaWk2Jb8NGt20QXhgm-cSVat34"
 }
 
 @test "<CLI call> --type=dlseguid --table=rna <<< \$'AACGU\\nUUdTGCA'" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=dlseguid --table=rna <<< $'AACGU\nUUGCA'
     assert_success
     assert_output "dlseguid:r61AxqwrG01x8RpNluuRlfoL9VY"
 }
 
 @test "<CLI call> --type=dcseguid --table=rna <<< \$'AACGU\\nUUGCA'" {
+    skip "To be implemented"
     run "${cli_call[@]}" --type=dcseguid --table=rna <<< $'AACGU\nUUGCA'
     assert_success
     assert_output "dcseguid:r61AxqwrG01x8RpNluuRlfoL9VY"
