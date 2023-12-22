@@ -29,12 +29,16 @@ from seguid.asserts import assert_in_alphabet
 from seguid.asserts import assert_anneal
 from seguid.reprutils import repr_from_tuple
 
+seguid_prefix: str = "seguid:"
+slseguid_prefix: str = "slseguid:"
+scseguid_prefix: str = "scseguid:"
+dlseguid_prefix: str = "dlseguid:"
+dcseguid_prefix: str = "dcseguid:"
+
 def _seguid(seq: str,
             table: dict = COMPLEMENT_TABLE_DNA,
-            encoding: callable = base64.standard_b64encode,
-            prefix: str = "seguid:") -> str:
+            encoding: callable = base64.standard_b64encode) -> str:
 
-    assert isinstance(prefix, str)
     assert callable(encoding)
 
     assert_in_alphabet(seq, alphabet=set(table.keys()))
@@ -42,12 +46,11 @@ def _seguid(seq: str,
     m.update(seq.encode("ASCII").upper())
     hs = encoding(m.digest())
 
-    return f"{prefix}{hs.decode('ASCII').rstrip('=')}"
+    return f"{hs.decode('ASCII').rstrip('=')}"
 
 
 def seguid(seq: str,
-           table: dict = COMPLEMENT_TABLE_DNA,
-           prefix: str = "seguid:") -> str:
+           table: dict = COMPLEMENT_TABLE_DNA) -> str:
     """SEGUID checksum for protein or single stranded linear DNA.
 
     OBSOLETE, use slseguid instead.
@@ -84,15 +87,13 @@ def seguid(seq: str,
     >>> seguid("AT")
     'seguid:Ax/RG6hzSrMEEWoCO1IWMGska+4'
     """
-    return _seguid(seq,
-                   table=table,
-                   encoding=base64.standard_b64encode,
-                   prefix=prefix)
+    return seguid_prefix + _seguid(seq,
+                                   table=table,
+                                   encoding=base64.standard_b64encode)
 
 
 def slseguid(seq: str,
-             table: dict = COMPLEMENT_TABLE_DNA,
-             prefix: str = "slseguid:") -> str:
+             table: dict = COMPLEMENT_TABLE_DNA) -> str:
     """SEGUID checksum for single stranded linear DNA (slSEGUID).
 
     Identical to the seguid function except for that the '+' and '/' characters
@@ -111,15 +112,13 @@ def slseguid(seq: str,
     >>> slseguid("AT")
     'slseguid:Ax_RG6hzSrMEEWoCO1IWMGska-4'
     """
-    return _seguid(seq,
-                   table=table,
-                   encoding=base64.urlsafe_b64encode,
-                   prefix=prefix)
+    return slseguid_prefix + _seguid(seq,
+                                     table=table,
+                                     encoding=base64.urlsafe_b64encode)
 
 
 def scseguid(seq: str,
-             table: dict = COMPLEMENT_TABLE_DNA,
-             prefix: str = "scseguid:") -> str:
+             table: dict = COMPLEMENT_TABLE_DNA) -> str:
     r"""SEGUID checksum for single stranded circular DNA (scSEGUID).
 
     The scSEGUID is the slSEGUID checksum calculated for the lexicographically
@@ -143,17 +142,15 @@ def scseguid(seq: str,
     >>> slseguid("TTTA")
     'slseguid:8zCvKwyQAEsbPtC4yTV-pY0H93Q'
     """
-    return slseguid(rotate_to_min(seq),
-                    table=table,
-                    prefix=prefix)
+    return scseguid_prefix + _seguid(rotate_to_min(seq),
+                                     table=table,
+                                     encoding=base64.urlsafe_b64encode)
 
 
 def dlseguid(watson: str,
              crick: str,
              overhang: int,
-             table: dict = COMPLEMENT_TABLE_DNA,
-             prefix: str = "dlseguid:"
-             ) -> str:
+             table: dict = COMPLEMENT_TABLE_DNA) -> str:
     r"""SEGUID checksum for double stranded linear DNA (dlSEGUID).
 
     Calculates the dlSEGUID checksum for a dsDNA sequence defined by two
@@ -246,13 +243,14 @@ def dlseguid(watson: str,
 
     extable = table | {"-": "-", "\n": "\n"}
 
-    return slseguid(msg, table=extable, prefix=prefix)
+    return dlseguid_prefix + _seguid(msg,
+                                     table=extable,
+                                     encoding=base64.urlsafe_b64encode)
 
 
 def dcseguid(watson: str,
              crick: str,
-             table: dict = COMPLEMENT_TABLE_DNA,
-             prefix: str = "dcseguid:") -> str:
+             table: dict = COMPLEMENT_TABLE_DNA) -> str:
     """SEGUID checksum for double stranded circular DNA (dcSEGUID).
 
     The dcSEGUID is the slSEGUID checksum calculated for the lexicographically
@@ -275,6 +273,6 @@ def dcseguid(watson: str,
     else:
         w = crick_min
 
-    return dlseguid(watson=w,
-                    crick=rc(w, table=table),
-                    overhang=0, table=table, prefix=prefix)
+    return dcseguid_prefix + dlseguid(watson=w,
+                                      crick=rc(w, table=table),
+                                      overhang=0, table=table)[len(dlseguid_prefix):]
