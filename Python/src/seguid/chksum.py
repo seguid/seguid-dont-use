@@ -41,7 +41,7 @@ def _seguid(seq: str,
             encoding: callable = base64.standard_b64encode) -> str:
 
     assert callable(encoding)
-
+    assert seq, "A sequence must not be empty"
     assert_in_alphabet(seq, alphabet=set(table.keys()))
     m = hashlib.sha1()
     m.update(seq.encode("ASCII").upper())
@@ -234,6 +234,8 @@ def dlseguid(watson: str,
     >>> dlseguid("GCATAC", "TATGCC", 1)
     'dlseguid:E7YtPGWjj3qCaPzWurlYBaJy_X4'
     """
+    assert watson, "Watson sequence must not be empty"
+    assert crick, "Crick sequence must not be empty"
     assert len(set(table.values())) > 1, "Was a protein table used by mistake?"
     assert_anneal(watson, crick, overhang, table=table)
 
@@ -262,6 +264,8 @@ def dcseguid(watson: str,
 
     The checksum is prefixed with "dcseguid:"
     """
+    assert watson, "Watson sequence must not be empty"
+    assert crick, "Crick sequence must not be empty"
     assert len(set(table.values())) > 1, "Was a protein table used by mistake?"
     assert len(watson) == len(crick)
 
