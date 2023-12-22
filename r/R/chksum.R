@@ -134,7 +134,7 @@ dcseguid <- function(watson, crick = rc(watson, table = get_table(table)), table
   crick_min <- rotate_to_min(crick)
 
   ## Keep the "minimum" of the two variants
-  if (watson_min < crick_min) {
+  if (is_seq_less_than(watson_min, crick_min)) {
       w <- watson_min
   } else {
       w <- crick_min

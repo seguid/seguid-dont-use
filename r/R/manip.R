@@ -45,6 +45,14 @@ rc <- function(seq, table = COMPLEMENT_TABLE_DNA) {
 }
 
 
+is_seq_less_than <- function(a, b) {
+  ## Make sure to collate in the 'C' locale
+  old_locale <- Sys.getlocale("LC_COLLATE")
+  on.exit(Sys.setlocale("LC_COLLATE", old_locale))
+  Sys.setlocale("LC_COLLATE", "C")
+  (a < b)
+}
+
 min_rotation <- function(s) {
   ## Make sure to collate in the 'C' locale
   old_locale <- Sys.getlocale("LC_COLLATE")
