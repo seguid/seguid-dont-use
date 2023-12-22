@@ -169,13 +169,11 @@ setup() {
 }
 
 @test "<CLI call> --type=dlseguid <<< \"\" (empty input)" {
-    skip "dlseguid() does not support empty input for now"
     run "${cli_call[@]}" --type=dlseguid <<< ""
     assert_failure
 }
 
 @test "<CLI call> --type=dcseguid <<< \"\" (empty input)" {
-    skip "dcseguid() does not support empty input for now"
     run "${cli_call[@]}" --type=dcseguid <<< ""
     assert_failure
 }
