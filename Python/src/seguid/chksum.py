@@ -34,6 +34,7 @@ slseguid_prefix: str = "slseguid:"
 scseguid_prefix: str = "scseguid:"
 dlseguid_prefix: str = "dlseguid:"
 dcseguid_prefix: str = "dcseguid:"
+b64abet = set('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/_-')
 
 def _seguid(seq: str,
             table: dict = COMPLEMENT_TABLE_DNA,
@@ -45,8 +46,10 @@ def _seguid(seq: str,
     m = hashlib.sha1()
     m.update(seq.encode("ASCII").upper())
     hs = encoding(m.digest())
-
-    return f"{hs.decode('ASCII').rstrip('=')}"
+    csum = f"{hs.decode('ASCII').rstrip('=')}"
+    assert len(csum) == 27
+    assert set(csum).issubset(b64abet)
+    return csum
 
 
 def seguid(seq: str,

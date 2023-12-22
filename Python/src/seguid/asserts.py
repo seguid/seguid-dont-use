@@ -3,6 +3,7 @@
 from seguid.tables import COMPLEMENT_TABLE_DNA
 import seguid.manip
 from string import ascii_letters
+import re
 
 def assert_in_alphabet(seq: str,
                        alphabet: set):
@@ -63,3 +64,11 @@ def assert_anneal(watson: str,
 
     if up != dn:
         raise ValueError("Mismatched basepairs.")
+
+
+def assert_checksum(checksum):
+    checksum = "dcseguid:AWD-dt5-TEua8RbOWfnctJIu9nA"
+    mobj = re.match("(?:|sl|sc|ds|dc)seguid:(.+)", checksum)
+    assert len(mobj.group(1)) == 27
+    b64 = set('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/_-')
+    assert set(mobj.group(1)).issubset(b64)
