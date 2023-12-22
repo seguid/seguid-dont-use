@@ -151,36 +151,33 @@ setup() {
 
 
 ## --------------------------------------------------------
-## Corner cases (empty input)
+## Empty input is assume to be a user error
 ## --------------------------------------------------------
 @test "<CLI call> --type=seguid <<< \"\" (empty input)" {
     run "${cli_call[@]}" --type=seguid <<< ""
-    assert_success
-    assert_output "seguid:2jmj7l5rSw0yVb/vlWAYkK/YBwk"
+    assert_failure
 }
 
 @test "<CLI call> --type=slseguid <<< \"\" (empty input)" {
     run "${cli_call[@]}" --type=slseguid <<< ""
-    assert_success
-    assert_output "slseguid:2jmj7l5rSw0yVb_vlWAYkK_YBwk"
+    assert_failure
 }
 
 @test "<CLI call> --type=scseguid <<< \"\" (empty input)" {
     run "${cli_call[@]}" --type=scseguid <<< ""
-    assert_success
-    assert_output "scseguid:2jmj7l5rSw0yVb_vlWAYkK_YBwk"
+    assert_failure
 }
 
 @test "<CLI call> --type=dlseguid <<< \"\" (empty input)" {
     skip "dlseguid() does not support empty input for now"
     run "${cli_call[@]}" --type=dlseguid <<< ""
-    assert_success
+    assert_failure
 }
 
 @test "<CLI call> --type=dcseguid <<< \"\" (empty input)" {
     skip "dcseguid() does not support empty input for now"
     run "${cli_call[@]}" --type=dcseguid <<< ""
-    assert_success
+    assert_failure
 }
 
 
