@@ -56,6 +56,10 @@ with_prefix <- function(s, prefix) {
 #' @importFrom digest digest
 #' @export
 seguid <- function(seq, table = "dna") {
+  if (nchar(seq) == 0) {
+    stop("A sequence must not be empty")
+  }
+  
   table2 <- get_table(table)
   .seguid(seq, table = table2, encoding = b64encode, prefix = "seguid:")
 }
@@ -64,6 +68,10 @@ seguid <- function(seq, table = "dna") {
 #' @rdname seguid
 #' @export
 slseguid <- function(seq, table = "dna") {
+  if (nchar(seq) == 0) {
+    stop("A sequence must not be empty")
+  }
+  
   table2 <- get_table(table)
   .seguid(seq, table = table2, encoding = b64encode_urlsafe, prefix = "slseguid:")
 }
@@ -77,6 +85,10 @@ slseguid <- function(seq, table = "dna") {
 #' @rdname seguid
 #' @export
 dlseguid <- function(watson, crick, overhang, table = "dna") {
+  if (nchar(watson) == 0 || nchar(crick) == 0) {
+    stop("A sequence must not be empty")
+  }
+  
   table2 <- get_table(table)
   assert_anneal(watson, crick, overhang = overhang, table = table2)
 
@@ -99,6 +111,10 @@ dlseguid <- function(watson, crick, overhang, table = "dna") {
 #' @rdname seguid
 #' @export
 scseguid <- function(seq, table = "dna") {
+  if (nchar(seq) == 0) {
+    stop("A sequence must not be empty")
+  }
+  
   with_prefix(slseguid(rotate_to_min(seq), table = table), "scseguid:")
 }
 
@@ -106,6 +122,10 @@ scseguid <- function(seq, table = "dna") {
 #' @rdname seguid
 #' @export
 dcseguid <- function(watson, crick = rc(watson, table = get_table(table)), table = "dna") {
+  if (nchar(watson) == 0 || nchar(crick) == 0) {
+    stop("A sequence must not be empty")
+  }
+  
   stopifnot(nchar(watson) == nchar(crick))
   table2 <- get_table(table)
   assert_anneal(watson, crick, overhang = 0, table = table2)

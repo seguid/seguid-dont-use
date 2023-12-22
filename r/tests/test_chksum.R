@@ -4,6 +4,15 @@ TABLE_IUPAC_PROTEIN <- seguid:::TABLE_IUPAC_PROTEIN
 rc <- seguid:::rc
 reverse <- seguid:::reverse
 
+assert_error <- function(expr, envir = parent.frame()) {
+  expr <- substitute(expr)
+  res <- tryCatch(eval(expr, envir = envir), error = identity)
+  if (!inherits(res, "error")) {
+    stop("Call did not result in an error: ", deparse(expr))
+  }
+}
+
+
 stopifnot(  seguid("AT") ==   "seguid:Ax/RG6hzSrMEEWoCO1IWMGska+4")
 stopifnot(slseguid("AT") == "slseguid:Ax_RG6hzSrMEEWoCO1IWMGska-4")
 
@@ -55,3 +64,11 @@ bfr <- readLines("test_data/pUC19_minimal_rotation_watson_linebreak_crick.txt", 
 w <- bfr[1]
 c <- bfr[2]
 stopifnot(dlseguid(w, reverse(c), 0) == gsub("dcseguid:", "dlseguid:", truth))
+
+
+## Empty input is considered an error
+assert_error(seguid::seguid(""))
+assert_error(seguid::slseguid(""))
+assert_error(seguid::scseguid(""))
+assert_error(seguid::dlseguid("", "", overhang = 0))
+assert_error(seguid::dcseguid("", ""))

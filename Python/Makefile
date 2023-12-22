@@ -8,6 +8,10 @@ install:
 test:
 	python -m pytest
 
+check-cli:
+	module load CBI bats-core bats-assert bats-file; \
+	(cd tests/; bats *.bats)
+
 coverage:
 	python -m pytest --cov=src/
 
