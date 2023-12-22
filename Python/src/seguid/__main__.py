@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-from . import __version__
+from seguid import __version__
 
 from seguid.chksum import seguid
 from seguid.chksum import slseguid
