@@ -9,81 +9,81 @@ setup() {
 ## --------------------------------------------------------
 ## The follow CLI calls are specific to R
 ## --------------------------------------------------------
-@test "Rscript -e seguid::slseguid <<< \"ACGT\"" {
-    run Rscript -e seguid::slseguid <<< "ACGT"
+@test "Rscript -e seguid::slseguid --args <<< \"ACGT\"" {
+    run Rscript -e seguid::slseguid --args <<< "ACGT"
     assert_success
     assert_output "slseguid:IQiZThf2zKn_I1KtqStlEdsHYDQ"
 }
 
 
-@test "Rscript -e seguid::scseguid <<< \"ACGT\"" {
-    run Rscript -e seguid::scseguid <<< "ACGT"
+@test "Rscript -e seguid::scseguid --args <<< \"ACGT\"" {
+    run Rscript -e seguid::scseguid --args <<< "ACGT"
     assert_success
     assert_output "scseguid:IQiZThf2zKn_I1KtqStlEdsHYDQ"
 }
 
-@test "Rscript -e seguid::scseguid <<< \"CGTA\" (rotation invariant)" {
-    run Rscript -e seguid::scseguid <<< "CGTA"
+@test "Rscript -e seguid::scseguid --args <<< \"CGTA\" (rotation invariant)" {
+    run Rscript -e seguid::scseguid --args <<< "CGTA"
     assert_success
     assert_output "scseguid:IQiZThf2zKn_I1KtqStlEdsHYDQ"
 }
 
-@test "Rscript -e seguid::scseguid <<< \"GTAC\" (rotation invariant)" {
-    run Rscript -e seguid::scseguid <<< "GTAC"
+@test "Rscript -e seguid::scseguid --args <<< \"GTAC\" (rotation invariant)" {
+    run Rscript -e seguid::scseguid --args <<< "GTAC"
     assert_success
     assert_output "scseguid:IQiZThf2zKn_I1KtqStlEdsHYDQ"
 }
 
-@test "Rscript -e seguid::dlseguid <<< \$'ACGT\\nTGCA'" {
-    run Rscript -e seguid::dlseguid <<< $'ACGT\nTGCA'
+@test "Rscript -e seguid::dlseguid --args <<< \$'ACGT\\nTGCA'" {
+    run Rscript -e seguid::dlseguid --args <<< $'ACGT\nTGCA'
     assert_success
     assert_output "dlseguid:ZubWOQ_QWYz_5fy9qVNfCGXZhag"
 }
 
-@test "Rscript -e seguid::dcseguid <<< \$'ACGT\\nTGCA'" {
-    run Rscript -e seguid::dcseguid <<< $'ACGT\nTGCA'
+@test "Rscript -e seguid::dcseguid --args <<< \$'ACGT\\nTGCA'" {
+    run Rscript -e seguid::dcseguid --args <<< $'ACGT\nTGCA'
     assert_success
     assert_output "dcseguid:ZubWOQ_QWYz_5fy9qVNfCGXZhag"
 }
 
-@test "Rscript -e seguid::dcseguid <<< \$'CGTA\\nGCAT' (rotation invariant)" {
-    run Rscript -e seguid::dcseguid <<< $'CGTA\nGCAT'
+@test "Rscript -e seguid::dcseguid --args <<< \$'CGTA\\nGCAT' (rotation invariant)" {
+    run Rscript -e seguid::dcseguid --args <<< $'CGTA\nGCAT'
     assert_success
     assert_output "dcseguid:ZubWOQ_QWYz_5fy9qVNfCGXZhag"
 }
 
-@test "Rscript -e seguid::dcseguid <<< \$'GTAC\\nCATG' (rotation invariant)" {
-    run Rscript -e seguid::dcseguid <<< $'GTAC\nCATG'
+@test "Rscript -e seguid::dcseguid --args <<< \$'GTAC\\nCATG' (rotation invariant)" {
+    run Rscript -e seguid::dcseguid --args <<< $'GTAC\nCATG'
     assert_success
     assert_output "dcseguid:ZubWOQ_QWYz_5fy9qVNfCGXZhag"
 }
 
-@test "Rscript -e seguid::dlseguid <<< \$'ACGT\nTGCA'" {
-    run Rscript -e seguid::dlseguid <<< $'ACGT\nTGCA'
+@test "Rscript -e seguid::dlseguid --args <<< \$'ACGT\nTGCA'" {
+    run Rscript -e seguid::dlseguid --args <<< $'ACGT\nTGCA'
     assert_success
     assert_output "dlseguid:ZubWOQ_QWYz_5fy9qVNfCGXZhag"
 }
 
-@test "Rscript -e seguid::dcseguid <<< \$'ACGT\nTGCA'" {
-    run Rscript -e seguid::dcseguid <<< $'ACGT\nTGCA'
+@test "Rscript -e seguid::dcseguid --args <<< \$'ACGT\nTGCA'" {
+    run Rscript -e seguid::dcseguid --args <<< $'ACGT\nTGCA'
     assert_success
     assert_output "dcseguid:ZubWOQ_QWYz_5fy9qVNfCGXZhag"
 }
 
-@test "Rscript -e seguid::dcseguid <<< \$'CGTA\nGCAT' (rotation invariant)" {
-    run Rscript -e seguid::dcseguid <<< $'CGTA\nGCAT'
+@test "Rscript -e seguid::dcseguid --args <<< \$'CGTA\nGCAT' (rotation invariant)" {
+    run Rscript -e seguid::dcseguid --args <<< $'CGTA\nGCAT'
     assert_success
     assert_output "dcseguid:ZubWOQ_QWYz_5fy9qVNfCGXZhag"
 }
 
-@test "Rscript -e seguid::dlseguid <<< \$'-CGT\\nTGCA'" {
-    run Rscript -e seguid::dlseguid <<< $'-CGT\nTGCA'
+@test "Rscript -e seguid::dlseguid --args <<< \$'-CGT\\nTGCA'" {
+    run Rscript -e seguid::dlseguid --args <<< $'-CGT\nTGCA'
     assert_success
     assert_output "dlseguid:MpPe6pJoya3CoRh3BAw2qgEOcKI"
 }
 
-@test "Rscript -e seguid::dlseguid <<< \$'-CGT\nTGC-'" {
-    run Rscript -e seguid::dlseguid <<< $'-CGT\nTGC-'
+@test "Rscript -e seguid::dlseguid --args <<< \$'-CGT\nTGC-'" {
+    run Rscript -e seguid::dlseguid --args <<< $'-CGT\nTGC-'
     assert_success
     assert_output "dlseguid:a_o4Ga8vQrhlvI_zkjUg0uu6obA"
 }
