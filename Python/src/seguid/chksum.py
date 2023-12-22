@@ -23,6 +23,7 @@ import base64
 
 from seguid.manip import rc
 from seguid.manip import rotate_to_min
+# from seguid.manip import linearize_circular_dsDNA
 from seguid.tables import COMPLEMENT_TABLE_DNA
 from seguid.asserts import assert_in_alphabet
 from seguid.asserts import assert_anneal
@@ -241,7 +242,7 @@ def dlseguid(watson: str,
     )
 
     msg = repr_from_tuple(watson=w, crick=c, overhang=o, table=table, space="-")
-    
+
     extable = table | {"-": "-", "\n": "\n"}
 
     return slseguid(msg, table=extable, prefix=prefix)
@@ -273,5 +274,6 @@ def dcseguid(watson: str,
     else:
         w = crick_min
 
-    return dlseguid(watson = w, crick = rc(w), overhang = 0, table=table, prefix=prefix)
-
+    return dlseguid(watson = w,
+                    crick = rc(w, table=table),
+                    overhang = 0, table=table, prefix=prefix)
