@@ -1,3 +1,5 @@
+__version__ = "0.0.1.9012"
+
 from seguid.chksum import slseguid
 from seguid.chksum import scseguid
 from seguid.chksum import dlseguid
