@@ -154,31 +154,26 @@ setup() {
 ## Empty input is assume to be a user error
 ## --------------------------------------------------------
 @test "<CLI call> --type=seguid <<< \"\" (empty input)" {
-    skip "To be implemented"
     run "${cli_call[@]}" --type=seguid <<< ""
     assert_failure
 }
 
 @test "<CLI call> --type=slseguid <<< \"\" (empty input)" {
-    skip "To be implemented"
     run "${cli_call[@]}" --type=slseguid <<< ""
     assert_failure
 }
 
 @test "<CLI call> --type=scseguid <<< \"\" (empty input)" {
-    skip "To be implemented"
     run "${cli_call[@]}" --type=scseguid <<< ""
     assert_failure
 }
 
 @test "<CLI call> --type=dlseguid <<< \"\" (empty input)" {
-    skip "To be implemented"
     run "${cli_call[@]}" --type=dlseguid <<< ""
     assert_failure
 }
 
 @test "<CLI call> --type=dcseguid <<< \"\" (empty input)" {
-    skip "To be implemented"
     run "${cli_call[@]}" --type=dcseguid <<< ""
     assert_failure
 }
