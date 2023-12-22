@@ -81,28 +81,24 @@ setup() {
 }
 
 @test "<CLI call> --type=dcseguid <<< \$'AACGT\\nTTGCA'" {
-    skip "To be implemented"
     run "${cli_call[@]}" --type=dcseguid <<< $'AACGT\nTTGCA'
     assert_success
     assert_output "dcseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
 }
 
 @test "<CLI call> --type=dcseguid <<< \$'CGTAA\\nGCATT' (rotation invariant)" {
-    skip "To be implemented"
     run "${cli_call[@]}" --type=dcseguid <<< $'CGTAA\nGCATT'
     assert_success
     assert_output "dcseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
 }
 
 @test "<CLI call> --type=dcseguid <<< \$'GTAAC\\nCATTG' (rotation invariant)" {
-    skip "To be implemented"
     run "${cli_call[@]}" --type=dcseguid <<< $'GTAAC\nCATTG'
     assert_success
     assert_output "dcseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
 }
 
 @test "<CLI call> --type=dcseguid <<< \$'GTTAC\\nCAATG' (strand symmetry)" {
-    skip "To be implemented"
     run "${cli_call[@]}" --type=dcseguid <<< $'GTTAC\nCAATG'
     assert_success
     assert_output "dcseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
@@ -152,7 +148,6 @@ setup() {
 }
 
 @test "<CLI call> --type=dcseguid <<< \$'A\nT' (single-symbol input)" {
-    skip "To be implemented"
     run "${cli_call[@]}" --type=dcseguid <<< $'A\nT'
     assert_success
     assert_output "dcseguid:S4AfmFCoHYVrWNQ_d7-lVVF2t20"
