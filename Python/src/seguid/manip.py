@@ -8,6 +8,7 @@ from seguid.asserts import assert_table
 from seguid.asserts import assert_in_alphabet
 from seguid.tables import COMPLEMENT_TABLE_DNA
 
+
 def rotate(seq: str, amount: int = 0) -> str:
     """Rotates a circular, DNA sequence a certain amount.
 
@@ -158,6 +159,7 @@ def min_rotation_py(s: str) -> int:
                 return old - i
     return 0
 
+
 def rotate_to_min(s: str) -> int:
     from seguid.config import _min_rotation
 
@@ -167,3 +169,10 @@ def rotate_to_min(s: str) -> int:
     amount = _min_rotation(s)
     s = rotate(s, amount = amount)
     return(s)
+
+
+# def linearize_circular_dsDNA(watson, crick, position):
+#     cposition = len(watson) - position
+#     swatson = watson[position:] + watson[:position]
+#     scrick = watson[cposition:] + watson[:cposition]
+#     return (swatson, scrick, 0)
