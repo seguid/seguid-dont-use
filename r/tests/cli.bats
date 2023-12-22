@@ -5,6 +5,7 @@ setup() {
     load "${BATS_ASSERT_HOME:?}/load.bash"
 
     cli_call=(Rscript -e seguid::seguid --args)
+
 }
 
 
@@ -24,9 +25,8 @@ setup() {
     assert_output --partial "seguid"
     assert_output --partial "--version"
     assert_output --partial "--help"
-    assert_output --partial "Usage:"
-    assert_output --partial "Options:"
-    assert_output --partial "Examples:"
+    assert_output --regexp "[Uu]sage:"
+    assert_output --regexp "[Oo]ptions:"
 }
 
 
@@ -180,6 +180,31 @@ setup() {
 
 
 ## --------------------------------------------------------
+## Too many lines of input data
+## --------------------------------------------------------
+@test "<CLI call> --type=seguid <<< \$'ACTG\\nTGCA' (too many lines)" {
+    run "${cli_call[@]}" --type=seguid <<< $'ACTG\nTGCA'
+    assert_failure
+}
+
+@test "<CLI call> --type=slseguid <<< \$'ACTG\nTGCA' (too many lines)" {
+    run "${cli_call[@]}" --type=slseguid <<< $'ACTG\nTGCA'
+    assert_failure
+}
+
+@test "<CLI call> --type=dlseguid <<< \$'ACTG\\nTGCA\\nTGCA' (too many lines)" {
+    run "${cli_call[@]}" --type=dlseguid <<< $'ACTG\nTGCA\nTGCA'
+    assert_failure
+}
+
+@test "<CLI call> --type=dcseguid <<< \$'ACTG\\nTGCA\\nTGCA' (too many lines)" {
+    run "${cli_call[@]}" --type=dcseguid <<< $'ACTG\nTGCA\nTGCA'
+    assert_failure
+}
+
+
+
+## --------------------------------------------------------
 ## Failing cases
 ## --------------------------------------------------------
 @test "<CLI call> <<< \"aCGT\" gives error (invalid character)" {
@@ -212,7 +237,7 @@ setup() {
 ## RNA
 ## --------------------------------------------------------
 @test "<CLI call> --table=rna <<< \"ACGU\"" {
-    run "${cli_call[@]}" --table=rna  <<< "ACGU"
+    run "${cli_call[@]}" --table=rna <<< "ACGU"
     assert_success
     assert_output "seguid:LLaWk2Jb8NGt20QXhgm+cSVat34"
 }
