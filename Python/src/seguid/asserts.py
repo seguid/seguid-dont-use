@@ -66,9 +66,9 @@ def assert_anneal(watson: str,
         raise ValueError("Mismatched basepairs.")
 
 
-def assert_checksum(checksum):
-    checksum = "dcseguid:AWD-dt5-TEua8RbOWfnctJIu9nA"
-    mobj = re.match("(?:|sl|sc|ds|dc)seguid:(.+)", checksum)
-    assert len(mobj.group(1)) == 27
-    b64 = set('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/_-')
-    assert set(mobj.group(1)).issubset(b64)
+# def assert_checksum(checksum):
+#     checksum = "dcseguid:AWD-dt5-TEua8RbOWfnctJIu9nA"
+#     mobj = re.match("(?:|sl|sc|ds|dc)seguid:(.+)", checksum)
+#     assert len(mobj.group(1)) == 27
+#     b64 = set('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/_-')
+#     assert set(mobj.group(1)).issubset(b64)
