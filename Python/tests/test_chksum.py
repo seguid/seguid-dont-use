@@ -20,6 +20,8 @@ from seguid.manip import rc
 from seguid.reprutils import repr_from_tuple
 
 from seguid.tables import COMPLEMENT_TABLE_DNA
+from seguid.tables import COMPLEMENT_TABLE_RNA
+from seguid.tables import COMPLEMENT_TABLE_IUPAC
 from seguid.tables import TABLE_IUPAC_PROTEIN
 
 
@@ -126,3 +128,41 @@ def test_dcseguid():
     truth = "dcseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
     assert dcseguid("ACGTT", "AACGT") == truth
     assert dcseguid("AACGT", "ACGTT") == truth
+
+
+def test_with_tables():
+
+    result = 'seguid:Ax/RG6hzSrMEEWoCO1IWMGska+4'
+    result_rna = 'seguid:rN9Bc195AlLq45vug03K0N5Yfj0'
+    assert seguid("AT", table=COMPLEMENT_TABLE_DNA) == result
+    assert seguid("AU", table=COMPLEMENT_TABLE_RNA) == result_rna
+    assert seguid("AT", table=COMPLEMENT_TABLE_IUPAC) == result
+    assert seguid("AT", table=TABLE_IUPAC_PROTEIN) == result
+
+    result = 'slseguid:Ax_RG6hzSrMEEWoCO1IWMGska-4'
+    result_rna = 'slseguid:rN9Bc195AlLq45vug03K0N5Yfj0'
+    assert slseguid("AT", table=COMPLEMENT_TABLE_DNA) == result
+    assert slseguid("AU", table=COMPLEMENT_TABLE_RNA) == result_rna
+    assert slseguid("AT", table=COMPLEMENT_TABLE_IUPAC) == result
+    assert slseguid("AT", table=TABLE_IUPAC_PROTEIN) == result
+
+    result = 'scseguid:Ax_RG6hzSrMEEWoCO1IWMGska-4'
+    result_rna = 'scseguid:rN9Bc195AlLq45vug03K0N5Yfj0'
+    assert scseguid("AT", table=COMPLEMENT_TABLE_DNA) == result
+    assert scseguid("AU", table=COMPLEMENT_TABLE_RNA) == result_rna
+    assert scseguid("AT", table=COMPLEMENT_TABLE_IUPAC) == result
+    assert scseguid("AT", table=TABLE_IUPAC_PROTEIN) == result
+
+    result = 'dlseguid:AWD-dt5-TEua8RbOWfnctJIu9nA'
+    result_rna = 'dlseguid:1jgY1uMadj9rCRXKjeFDBK2jI44'
+    assert dlseguid("AT", "AT", 0, table=COMPLEMENT_TABLE_DNA) == result
+    assert dlseguid("AU", "AU", 0, table=COMPLEMENT_TABLE_RNA) == result_rna
+    assert dlseguid("AT", "AT", 0, table=COMPLEMENT_TABLE_IUPAC) == result
+    # assert dlseguid("AT", "AT", 0, table=TABLE_IUPAC_PROTEIN) == result
+
+    result = 'dcseguid:AWD-dt5-TEua8RbOWfnctJIu9nA'
+    result_rna = 'dcseguid:1jgY1uMadj9rCRXKjeFDBK2jI44'
+    assert dcseguid("AT", "AT", table=COMPLEMENT_TABLE_DNA) == result
+    assert dcseguid("AU", "AU", table=COMPLEMENT_TABLE_RNA) == result_rna
+    assert dcseguid("AT", "AT", table=COMPLEMENT_TABLE_IUPAC) == result
+    # assert dcseguid("AT", "AT", table=TABLE_IUPAC_PROTEIN) == result
