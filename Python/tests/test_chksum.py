@@ -168,3 +168,20 @@ def test_with_tables():
     assert dcseguid("AT", "AT", table=COMPLEMENT_TABLE_IUPAC) == result
     with pytest.raises(AssertionError):
         assert dcseguid("AT", "AT", table=TABLE_IUPAC_PROTEIN) == result
+
+def test_empty():
+
+    with pytest.raises(AssertionError):
+        seguid("")
+
+    with pytest.raises(AssertionError):
+        slseguid("")
+
+    with pytest.raises(AssertionError):
+        scseguid("")
+
+    with pytest.raises(AssertionError):
+        dlseguid("", "", overhang=0)
+
+    with pytest.raises(AssertionError):
+        dcseguid("", "")
