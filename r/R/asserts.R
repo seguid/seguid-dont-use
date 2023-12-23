@@ -39,6 +39,17 @@ assert_in_alphabet <- function(seq, alphabet) {
 
 assert_table <- function(table) {
   stopifnot(is.character(table), !anyNA(table), is.character(names(table)))
+  
+  dups <- names(table)[duplicated(names(table))]
+  if (length(dups) > 0) {
+    dups <- paste(dups, collapse = " ")
+    stop(sprintf("Detected duplicated names (%s) in 'table'", dups))
+  }
+  
+  if (all(nchar(table) == 0)) {
+    return()
+  }
+
   unknown <- setdiff(table, names(table))
   if (length(unknown) > 0) {
     missing <- paste(unknown, collapse = " ")
