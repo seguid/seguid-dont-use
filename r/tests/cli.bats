@@ -274,3 +274,30 @@ setup() {
     assert_success
     assert_output "dcseguid:r61AxqwrG01x8RpNluuRlfoL9VY"
 }
+
+
+
+## --------------------------------------------------------
+## Protein
+## --------------------------------------------------------
+## Source: http://bioinformatics.anl.gov/seguid/ftp.aspx
+@test "<CLI call> --table="protein" <<< 'PQITLWQRPIATIKVGGQLKEALLDTGADDTVLEEMNLPGRWKPKLIGGIGGFVKVRQYDQIPIEICGHQAIGTVLVGPTPANIIGRNLLTQIGCTLNF'" {
+    run "${cli_call[@]}" --table="protein" <<< "PQITLWQRPIATIKVGGQLKEALLDTGADDTVLEEMNLPGRWKPKLIGGIGGFVKVRQYDQIPIEICGHQAIGTVLVGPTPANIIGRNLLTQIGCTLNF"
+    assert_success
+    assert_output "seguid:N4/z+gxAPfkFozbb3f3vStDB/5g"
+}
+
+
+@test "<CLI call> --table="protein" <<< 'MTEYKLVVVGAGGVGKSALTIQLTQNHFVDEYDPTIE'" {
+    run "${cli_call[@]}" --table="protein" <<< "MTEYKLVVVGAGGVGKSALTIQLTQNHFVDEYDPTIE"
+    assert_success
+    assert_output "seguid:PdwDBhhFjE6qlPmSWCJCOjKIDeA"
+}
+
+
+@test "<CLI call> --table="protein" <<< 'ARDNAKNTLYLQMSRLRSEDTAMYYCAR'" {
+    run "${cli_call[@]}" --table="protein" <<< "ARDNAKNTLYLQMSRLRSEDTAMYYCAR"
+    assert_success
+    assert_output "seguid:IdtGC8ZYgDbkA0i4u4n0tiAQwng"
+}
+
