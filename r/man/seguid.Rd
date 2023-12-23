@@ -3,45 +3,116 @@
 \name{seguid}
 \alias{seguid}
 \alias{slseguid}
-\alias{dlseguid}
 \alias{scseguid}
+\alias{dlseguid}
 \alias{dcseguid}
-\title{The SEGUID of nucleotide and amino-acid sequences}
+\title{SEGUID checksum for protein and single-stranded linear DNA}
 \usage{
 seguid(seq, table = "dna")
 
 slseguid(seq, table = "dna")
 
-dlseguid(watson, crick, overhang, table = "dna")
-
 scseguid(seq, table = "dna")
+
+dlseguid(watson, crick, overhang, table = "dna")
 
 dcseguid(watson, crick = rc(watson, table = get_table(table)), table = "dna")
 }
 \arguments{
-\item{seq}{A character string.}
+\item{seq}{(character string) The sequence for which the checksum
+should be calculated.  The sequence may only comprise of characters
+in the alphabet specified by the \code{table} argument.}
 
-\item{table}{A named character string.}
+\item{table}{(character string) The type of sequence used.
+If \code{"dna"} (default), then the input is a DNA sequence.
+If \code{"iupac"}, then the input is a DNA sequence specified with
+IUPAC ambigous DNA symbols (3).
+If \code{"rna"}, then the input is an RNA sequence.
+If \code{"protein"}, then the input is an amino-acid sequence.}
 
-\item{watson, crick}{(character string) Two complementary DNA strands.}
+\item{watson, crick}{(character string) Two reverse-complementary DNA strands.}
 
 \item{overhang}{(integer) Amount of 3' overhang in the 5' side of
 the molecule. A molecule with 5' overhang has a negative value.}
 }
 \value{
-A character string.
+\code{seguid()} returns a character string composed of the prefix \verb{seguid:}
+followed by a \emph{base64} encoding (2) ("Base 64 Encoding").
+A base64 encoding is always 27-character long, and may comprise
+non-URL-safe characters.
+
+\code{slseguid()} returns a character string composed of the prefix \verb{slseguid:}
+followed by a \emph{base64url} encoding (2) ("Base 64 Encoding with URL and
+Filename Safe Alphabet").
+The base64url encoding is the base64 encoding with non-URL-safe characters
+substituted with URL-safe ones. Specifically, the plus symbol (\code{+}) is
+replaced by the minus symbol (\code{-}), and the forward slash (\code{/}) is
+replaced by the underscore symbol (\verb{_}).
+
+\code{scseguid()} returns a character string composed of the prefix \verb{scseguid:}
+followed by a \emph{base64url} encoding.
+
+\code{dcseguid()} returns a character string composed of the prefix \verb{dcseguid:}
+followed by a \emph{base64url} encoding.
 }
 \description{
-The SEGUID of nucleotide and amino-acid sequences
+SEGUID checksum for protein and single-stranded linear DNA
 }
+\details{
+The Sequence Globally Unique Identifiers (SEGUID) (1) is defined as the
+Base64-encoded SHA-1 checksum (4) calculated for the sequence in
+uppercase with the trailing pad character \code{=} removed.
+In contrast to the original implementation (1), this function returns
+the SEGUID checksum prefixed with \verb{seguid:}.
+}
+\section{Known limitations}{
+
+The Base64 checksum is not guaranteed to comprise symbols that can
+safely be used as-is in Uniform Resource Locator (URL). For instance,
+it may consist of forward slashes (\code{/}) and plus symbols (\code{+}), which
+are characters that carry special meaning in a URL.
+}
+
 \examples{
-seguid("ACGTACGTACGT")
+## Linear single-stranded DNA:
+## GATTACA
+seguid("GATTACA")
+#> seguid:tp2jzeCM2e3W4yxtrrx09CMKa/8
+
+## Linear single-stranded DNA
+## GATTACA
+slseguid("GATTACA")
+#> slseguid:tp2jzeCM2e3W4yxtrrx09CMKa_8
+
+## Circular single-stranded DNA
+## GATTACA = ATTACAG = ... = AGATTAC
+scseguid("GATTACA")
+#> scseguid:mtrvbtuwr6_MoBxvtm4BEpv-jKQ
+
+## Linear double-stranded DNA
+## GATTACA
+## CTAATGT
+seguid::dlseguid("GATTACA", "TGTAATC", overhang = 0)
+#> dlseguid:XscjVNyZarYrROVgGXUCleJcMC
+
+## Circular double-stranded DNA
+## GATTACA = ATTACAG = ... = AGATTAC
+## CTAATGT = TAATGTC = ... = TCTAATG
+seguid::dcseguid("GATTACA", "TGTAATC")
+#> dcseguid:zCuq031K3_-40pArbl-Y4N9RLnA
 
 }
 \references{
 \enumerate{
-\item Babnigg G, Giometti CS. A database of unique protein sequence
+\item Babnigg, G., Giometti, CS. A database of unique protein sequence
 identifiers for proteome studies. Proteomics.
 2006 Aug;6(16):4514-22. \doi{10.1002/pmic.200600032}.
+\item Josefsson, S., The Base16, Base32, and Base64 Data Encodings,
+RFC 4648, \doi{10.17487/RFC4648}, October 2006,
+\url{https://www.rfc-editor.org/info/rfc4648}.
+\item Wikpedia article 'Nucleic acid notation', December 2023.
+\url{https://en.wikipedia.org/wiki/Nucleic_acid_notation}.
+\item Wikipedia article 'SHA-1' (Secure Hash Algorithm 1), December 2023.
+\url{https://en.wikipedia.org/wiki/SHA-1}.
 }
 }
