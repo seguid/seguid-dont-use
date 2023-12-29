@@ -16,7 +16,7 @@ scseguid(seq, table = "dna")
 
 dlseguid(watson, crick, overhang, table = "dna")
 
-dcseguid(watson, crick = rc(watson, table = get_table(table)), table = "dna")
+dcseguid(watson, crick, table = "dna")
 }
 \arguments{
 \item{seq}{(character string) The sequence for which the checksum

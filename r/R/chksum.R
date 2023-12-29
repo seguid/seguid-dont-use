@@ -193,7 +193,7 @@ dlseguid <- function(watson, crick, overhang, table = "dna") {
 #'
 #' @rdname seguid
 #' @export
-dcseguid <- function(watson, crick = rc(watson, table = get_table(table)), table = "dna") {
+dcseguid <- function(watson, crick, table = "dna") {
   if (nchar(watson) == 0 || nchar(crick) == 0) {
     stop("A sequence must not be empty")
   }
