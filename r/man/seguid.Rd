@@ -36,12 +36,12 @@ If \code{"protein"}, then the input is an amino-acid sequence.}
 the molecule. A molecule with 5' overhang has a negative value.}
 }
 \value{
-\code{seguid()} returns a character string composed of the prefix \verb{seguid:}
+\code{seguid()} returns a character string composed of the prefix \verb{seguid-}
 followed by a \emph{base64} encoding (2) ("Base 64 Encoding").
 A base64 encoding is always 27-character long, and may comprise
 non-URL-safe characters.
 
-\code{slseguid()} returns a character string composed of the prefix \verb{slseguid:}
+\code{slseguid()} returns a character string composed of the prefix \verb{slseguid-}
 followed by a \emph{base64url} encoding (2) ("Base 64 Encoding with URL and
 Filename Safe Alphabet").
 The base64url encoding is the base64 encoding with non-URL-safe characters
@@ -49,10 +49,10 @@ substituted with URL-safe ones. Specifically, the plus symbol (\code{+}) is
 replaced by the minus symbol (\code{-}), and the forward slash (\code{/}) is
 replaced by the underscore symbol (\verb{_}).
 
-\code{scseguid()} returns a character string composed of the prefix \verb{scseguid:}
+\code{scseguid()} returns a character string composed of the prefix \verb{scseguid-}
 followed by a \emph{base64url} encoding.
 
-\code{dcseguid()} returns a character string composed of the prefix \verb{dcseguid:}
+\code{dcseguid()} returns a character string composed of the prefix \verb{dcseguid-}
 followed by a \emph{base64url} encoding.
 }
 \description{
@@ -63,7 +63,7 @@ The Sequence Globally Unique Identifiers (SEGUID) (1) is defined as the
 Base64-encoded SHA-1 checksum (4) calculated for the sequence in
 uppercase with the trailing pad character \code{=} removed.
 In contrast to the original implementation (1), this function returns
-the SEGUID checksum prefixed with \verb{seguid:}.
+the SEGUID checksum prefixed with \verb{seguid-}.
 }
 \section{Known limitations}{
 
@@ -77,29 +77,29 @@ are characters that carry special meaning in a URL.
 ## Linear single-stranded DNA:
 ## GATTACA
 seguid("GATTACA")
-#> seguid:tp2jzeCM2e3W4yxtrrx09CMKa/8
+#> seguid-tp2jzeCM2e3W4yxtrrx09CMKa/8
 
 ## Linear single-stranded DNA
 ## GATTACA
 slseguid("GATTACA")
-#> slseguid:tp2jzeCM2e3W4yxtrrx09CMKa_8
+#> slseguid-tp2jzeCM2e3W4yxtrrx09CMKa_8
 
 ## Circular single-stranded DNA
 ## GATTACA = ATTACAG = ... = AGATTAC
 scseguid("GATTACA")
-#> scseguid:mtrvbtuwr6_MoBxvtm4BEpv-jKQ
+#> scseguid-mtrvbtuwr6_MoBxvtm4BEpv-jKQ
 
 ## Linear double-stranded DNA
 ## GATTACA
 ## CTAATGT
 seguid::dlseguid("GATTACA", "TGTAATC", overhang = 0)
-#> dlseguid:XscjVNyZarYrROVgGXUCleJcMC
+#> dlseguid-XscjVNyZarYrROVgGXUCleJcMC
 
 ## Circular double-stranded DNA
 ## GATTACA = ATTACAG = ... = AGATTAC
 ## CTAATGT = TAATGTC = ... = TCTAATG
 seguid::dcseguid("GATTACA", "TGTAATC")
-#> dcseguid:zCuq031K3_-40pArbl-Y4N9RLnA
+#> dcseguid-zCuq031K3_-40pArbl-Y4N9RLnA
 
 }
 \references{

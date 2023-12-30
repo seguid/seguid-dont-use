@@ -15,7 +15,7 @@ b64encode_urlsafe <- function(s) {
 
 
 with_prefix <- function(s, prefix) {
-  sub("^(|sl|sc|dl|dc)*seguid:", prefix, s)
+  sub("^(|sl|sc|dl|dc)*seguid-", prefix, s)
 }
 
 #' @import digest digest
@@ -49,7 +49,7 @@ with_prefix <- function(s, prefix) {
 #' If `"protein"`, then the input is an amino-acid sequence.
 #'
 #' @return
-#' `seguid()` returns a character string composed of the prefix `seguid:`
+#' `seguid()` returns a character string composed of the prefix `seguid-`
 #' followed by a _base64_ encoding (2) ("Base 64 Encoding").
 #' A base64 encoding is always 27-character long, and may comprise
 #' non-URL-safe characters.
@@ -59,7 +59,7 @@ with_prefix <- function(s, prefix) {
 #' Base64-encoded SHA-1 checksum (4) calculated for the sequence in
 #' uppercase with the trailing pad character `=` removed.
 #' In contrast to the original implementation (1), this function returns
-#' the SEGUID checksum prefixed with `seguid:`.
+#' the SEGUID checksum prefixed with `seguid-`.
 #'
 #' @section Known limitations:
 #' The Base64 checksum is not guaranteed to comprise symbols that can
@@ -71,29 +71,29 @@ with_prefix <- function(s, prefix) {
 #' ## Linear single-stranded DNA:
 #' ## GATTACA
 #' seguid("GATTACA")
-#' #> seguid:tp2jzeCM2e3W4yxtrrx09CMKa/8
+#' #> seguid-tp2jzeCM2e3W4yxtrrx09CMKa/8
 #'
 #' ## Linear single-stranded DNA
 #' ## GATTACA
 #' slseguid("GATTACA")
-#' #> slseguid:tp2jzeCM2e3W4yxtrrx09CMKa_8
+#' #> slseguid-tp2jzeCM2e3W4yxtrrx09CMKa_8
 #'
 #' ## Circular single-stranded DNA
 #' ## GATTACA = ATTACAG = ... = AGATTAC
 #' scseguid("GATTACA")
-#' #> scseguid:mtrvbtuwr6_MoBxvtm4BEpv-jKQ
+#' #> scseguid-mtrvbtuwr6_MoBxvtm4BEpv-jKQ
 #'
 #' ## Linear double-stranded DNA
 #' ## GATTACA
 #' ## CTAATGT
 #' seguid::dlseguid("GATTACA", "TGTAATC", overhang = 0)
-#' #> dlseguid:XscjVNyZarYrROVgGXUCleJcMC
+#' #> dlseguid-XscjVNyZarYrROVgGXUCleJcMC
 #'
 #' ## Circular double-stranded DNA
 #' ## GATTACA = ATTACAG = ... = AGATTAC
 #' ## CTAATGT = TAATGTC = ... = TCTAATG
 #' seguid::dcseguid("GATTACA", "TGTAATC")
-#' #> dcseguid:zCuq031K3_-40pArbl-Y4N9RLnA
+#' #> dcseguid-zCuq031K3_-40pArbl-Y4N9RLnA
 #'
 #' @references
 #' 1. Babnigg, G., Giometti, CS. A database of unique protein sequence
@@ -116,12 +116,12 @@ seguid <- function(seq, table = "dna") {
   }
   
   table2 <- get_table(table)
-  .seguid(seq, table = table2, encoding = b64encode, prefix = "seguid:")
+  .seguid(seq, table = table2, encoding = b64encode, prefix = "seguid-")
 }
 
 
 #' @return
-#' `slseguid()` returns a character string composed of the prefix `slseguid:`
+#' `slseguid()` returns a character string composed of the prefix `slseguid-`
 #' followed by a _base64url_ encoding (2) ("Base 64 Encoding with URL and
 #' Filename Safe Alphabet").
 #' The base64url encoding is the base64 encoding with non-URL-safe characters
@@ -137,12 +137,12 @@ slseguid <- function(seq, table = "dna") {
   }
   
   table2 <- get_table(table)
-  .seguid(seq, table = table2, encoding = b64encode_urlsafe, prefix = "slseguid:")
+  .seguid(seq, table = table2, encoding = b64encode_urlsafe, prefix = "slseguid-")
 }
 
 
 #' @return
-#' `scseguid()` returns a character string composed of the prefix `scseguid:`
+#' `scseguid()` returns a character string composed of the prefix `scseguid-`
 #' followed by a _base64url_ encoding.
 #'
 #' @rdname seguid
@@ -152,7 +152,7 @@ scseguid <- function(seq, table = "dna") {
     stop("A sequence must not be empty")
   }
   
-  with_prefix(slseguid(rotate_to_min(seq), table = table), "scseguid:")
+  with_prefix(slseguid(rotate_to_min(seq), table = table), "scseguid-")
 }
 
 
@@ -183,12 +183,12 @@ dlseguid <- function(watson, crick, overhang, table = "dna") {
   msg <- repr_from_tuple(watson = w, crick = c, overhang = o, table = table2, space = "-")
 
   table2 <- paste0(table, "+[-\n]")
-  with_prefix(slseguid(msg, table = table2), "dlseguid:")
+  with_prefix(slseguid(msg, table = table2), "dlseguid-")
 }
 
 
 #' @return
-#' `dcseguid()` returns a character string composed of the prefix `dcseguid:`
+#' `dcseguid()` returns a character string composed of the prefix `dcseguid-`
 #' followed by a _base64url_ encoding.
 #'
 #' @rdname seguid
@@ -212,5 +212,5 @@ dcseguid <- function(watson, crick, table = "dna") {
       w <- crick_min
   }
 
-  with_prefix(dlseguid(w, rc(w, table = table2), overhang = 0, table = table), "dcseguid:")
+  with_prefix(dlseguid(w, rc(w, table = table2), overhang = 0, table = table), "dcseguid-")
 }

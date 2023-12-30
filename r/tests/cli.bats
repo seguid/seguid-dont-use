@@ -37,82 +37,82 @@ setup() {
 @test "<CLI call> <<< \"ACGT\"" {
     run "${cli_call[@]}" <<< "ACGT"
     assert_success
-    assert_output "seguid:IQiZThf2zKn/I1KtqStlEdsHYDQ"
+    assert_output "seguid-IQiZThf2zKn/I1KtqStlEdsHYDQ"
 }
 
 
 @test "<CLI call> --type=seguid <<< \"ACGT\"" {
     run "${cli_call[@]}" --type=seguid <<< "ACGT"
     assert_success
-    assert_output "seguid:IQiZThf2zKn/I1KtqStlEdsHYDQ"
+    assert_output "seguid-IQiZThf2zKn/I1KtqStlEdsHYDQ"
 }
 
 
 @test "<CLI call> --type=slseguid <<< \"ACGT\"" {
     run "${cli_call[@]}" --type=slseguid <<< "ACGT"
     assert_success
-    assert_output "slseguid:IQiZThf2zKn_I1KtqStlEdsHYDQ"
+    assert_output "slseguid-IQiZThf2zKn_I1KtqStlEdsHYDQ"
 }
 
 
 @test "<CLI call> --type=scseguid <<< \"ACGT\"" {
     run "${cli_call[@]}" --type=scseguid <<< "ACGT"
     assert_success
-    assert_output "scseguid:IQiZThf2zKn_I1KtqStlEdsHYDQ"
+    assert_output "scseguid-IQiZThf2zKn_I1KtqStlEdsHYDQ"
 }
 
 @test "<CLI call> --type=scseguid <<< \"CGTA\" (rotation invariant)" {
     run "${cli_call[@]}" --type=scseguid <<< "CGTA"
     assert_success
-    assert_output "scseguid:IQiZThf2zKn_I1KtqStlEdsHYDQ"
+    assert_output "scseguid-IQiZThf2zKn_I1KtqStlEdsHYDQ"
 }
 
 @test "<CLI call> --type=scseguid <<< \"GTAC\" (rotation invariant)" {
     run "${cli_call[@]}" --type=scseguid <<< "GTAC"
     assert_success
-    assert_output "scseguid:IQiZThf2zKn_I1KtqStlEdsHYDQ"
+    assert_output "scseguid-IQiZThf2zKn_I1KtqStlEdsHYDQ"
 }
 
 @test "<CLI call> --type=dlseguid <<< \$'AACGT\\nTTGCA'" {
     run "${cli_call[@]}" --type=dlseguid <<< $'AACGT\nTTGCA'
     assert_success
-    assert_output "dlseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
+    assert_output "dlseguid-tYeHZYwxQGDHTqGDcrebERag0AU"
 }
 
 @test "<CLI call> --type=dcseguid <<< \$'AACGT\\nTTGCA'" {
     run "${cli_call[@]}" --type=dcseguid <<< $'AACGT\nTTGCA'
     assert_success
-    assert_output "dcseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
+    assert_output "dcseguid-tYeHZYwxQGDHTqGDcrebERag0AU"
 }
 
 @test "<CLI call> --type=dcseguid <<< \$'CGTAA\\nGCATT' (rotation invariant)" {
     run "${cli_call[@]}" --type=dcseguid <<< $'CGTAA\nGCATT'
     assert_success
-    assert_output "dcseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
+    assert_output "dcseguid-tYeHZYwxQGDHTqGDcrebERag0AU"
 }
 
 @test "<CLI call> --type=dcseguid <<< \$'GTAAC\\nCATTG' (rotation invariant)" {
     run "${cli_call[@]}" --type=dcseguid <<< $'GTAAC\nCATTG'
     assert_success
-    assert_output "dcseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
+    assert_output "dcseguid-tYeHZYwxQGDHTqGDcrebERag0AU"
 }
 
 @test "<CLI call> --type=dcseguid <<< \$'GTTAC\\nCAATG' (strand symmetry)" {
     run "${cli_call[@]}" --type=dcseguid <<< $'GTTAC\nCAATG'
     assert_success
-    assert_output "dcseguid:tYeHZYwxQGDHTqGDcrebERag0AU"
+    assert_output "dcseguid-tYeHZYwxQGDHTqGDcrebERag0AU"
 }
 
 @test "<CLI call> --type=dlseguid <<< \$'-CGT\\nTGCA'" {
     run "${cli_call[@]}" --type=dlseguid <<< $'-CGT\nTGCA'
     assert_success
-    assert_output "dlseguid:MpPe6pJoya3CoRh3BAw2qgEOcKI"
+    assert_output "dlseguid-MpPe6pJoya3CoRh3BAw2qgEOcKI"
 }
 
 @test "<CLI call> --type=dlseguid <<< \$'-CGT\nTGC-'" {
     run "${cli_call[@]}" --type=dlseguid <<< $'-CGT\nTGC-'
     assert_success
-    assert_output "dlseguid:a_o4Ga8vQrhlvI_zkjUg0uu6obA"
+    assert_output "dlseguid-a_o4Ga8vQrhlvI_zkjUg0uu6obA"
 }
 
 
@@ -122,31 +122,31 @@ setup() {
 @test "<CLI call> --type=seguid <<< \"\" (single-symbol input)" {
     run "${cli_call[@]}" --type=seguid <<< "A"
     assert_success
-    assert_output "seguid:bc1M4j2I4u6VaLpUbAB8Y9kTHBs"
+    assert_output "seguid-bc1M4j2I4u6VaLpUbAB8Y9kTHBs"
 }
 
 @test "<CLI call> --type=slseguid <<< \"\" (single-symbol input)" {
     run "${cli_call[@]}" --type=slseguid <<< "A"
     assert_success
-    assert_output "slseguid:bc1M4j2I4u6VaLpUbAB8Y9kTHBs"
+    assert_output "slseguid-bc1M4j2I4u6VaLpUbAB8Y9kTHBs"
 }
 
 @test "<CLI call> --type=scseguid <<< \"\" (single-symbol input)" {
     run "${cli_call[@]}" --type=scseguid <<< "A"
     assert_success
-    assert_output "scseguid:bc1M4j2I4u6VaLpUbAB8Y9kTHBs"
+    assert_output "scseguid-bc1M4j2I4u6VaLpUbAB8Y9kTHBs"
 }
 
 @test "<CLI call> --type=dlseguid <<< \$'A\nT' (single-symbol input)" {
     run "${cli_call[@]}" --type=dlseguid <<< $'A\nT'
     assert_success
-    assert_output "dlseguid:S4AfmFCoHYVrWNQ_d7-lVVF2t20"
+    assert_output "dlseguid-S4AfmFCoHYVrWNQ_d7-lVVF2t20"
 }
 
 @test "<CLI call> --type=dcseguid <<< \$'A\nT' (single-symbol input)" {
     run "${cli_call[@]}" --type=dcseguid <<< $'A\nT'
     assert_success
-    assert_output "dcseguid:S4AfmFCoHYVrWNQ_d7-lVVF2t20"
+    assert_output "dcseguid-S4AfmFCoHYVrWNQ_d7-lVVF2t20"
 }
 
 
@@ -239,40 +239,40 @@ setup() {
 @test "<CLI call> --table=rna <<< \"ACGU\"" {
     run "${cli_call[@]}" --table=rna <<< "ACGU"
     assert_success
-    assert_output "seguid:LLaWk2Jb8NGt20QXhgm+cSVat34"
+    assert_output "seguid-LLaWk2Jb8NGt20QXhgm+cSVat34"
 }
 
 
 @test "<CLI call>--type=seguid --table=rna <<< \"ACGU\"" {
     run "${cli_call[@]}" --type=seguid --table=rna <<< "ACGU"
     assert_success
-    assert_output "seguid:LLaWk2Jb8NGt20QXhgm+cSVat34"
+    assert_output "seguid-LLaWk2Jb8NGt20QXhgm+cSVat34"
 }
 
 
 @test "<CLI call> --type=slseguid --table=rna <<< \"ACGU\"" {
     run "${cli_call[@]}" --type=slseguid --table=rna <<< "ACGU"
     assert_success
-    assert_output "slseguid:LLaWk2Jb8NGt20QXhgm-cSVat34"
+    assert_output "slseguid-LLaWk2Jb8NGt20QXhgm-cSVat34"
 }
 
 
 @test "<CLI call> --type=scseguid --table=rna <<< \"ACGU\"" {
     run "${cli_call[@]}" --type=scseguid --table=rna <<< "ACGU"
     assert_success
-    assert_output "scseguid:LLaWk2Jb8NGt20QXhgm-cSVat34"
+    assert_output "scseguid-LLaWk2Jb8NGt20QXhgm-cSVat34"
 }
 
 @test "<CLI call> --type=dlseguid --table=rna <<< \$'AACGU\\nUUdTGCA'" {
     run "${cli_call[@]}" --type=dlseguid --table=rna <<< $'AACGU\nUUGCA'
     assert_success
-    assert_output "dlseguid:r61AxqwrG01x8RpNluuRlfoL9VY"
+    assert_output "dlseguid-r61AxqwrG01x8RpNluuRlfoL9VY"
 }
 
 @test "<CLI call> --type=dcseguid --table=rna <<< \$'AACGU\\nUUGCA'" {
     run "${cli_call[@]}" --type=dcseguid --table=rna <<< $'AACGU\nUUGCA'
     assert_success
-    assert_output "dcseguid:r61AxqwrG01x8RpNluuRlfoL9VY"
+    assert_output "dcseguid-r61AxqwrG01x8RpNluuRlfoL9VY"
 }
 
 
@@ -284,20 +284,20 @@ setup() {
 @test "<CLI call> --table="protein" <<< 'PQITLWQRPIATIKVGGQLKEALLDTGADDTVLEEMNLPGRWKPKLIGGIGGFVKVRQYDQIPIEICGHQAIGTVLVGPTPANIIGRNLLTQIGCTLNF'" {
     run "${cli_call[@]}" --table="protein" <<< "PQITLWQRPIATIKVGGQLKEALLDTGADDTVLEEMNLPGRWKPKLIGGIGGFVKVRQYDQIPIEICGHQAIGTVLVGPTPANIIGRNLLTQIGCTLNF"
     assert_success
-    assert_output "seguid:N4/z+gxAPfkFozbb3f3vStDB/5g"
+    assert_output "seguid-N4/z+gxAPfkFozbb3f3vStDB/5g"
 }
 
 
 @test "<CLI call> --table="protein" <<< 'MTEYKLVVVGAGGVGKSALTIQLTQNHFVDEYDPTIE'" {
     run "${cli_call[@]}" --table="protein" <<< "MTEYKLVVVGAGGVGKSALTIQLTQNHFVDEYDPTIE"
     assert_success
-    assert_output "seguid:PdwDBhhFjE6qlPmSWCJCOjKIDeA"
+    assert_output "seguid-PdwDBhhFjE6qlPmSWCJCOjKIDeA"
 }
 
 
 @test "<CLI call> --table="protein" <<< 'ARDNAKNTLYLQMSRLRSEDTAMYYCAR'" {
     run "${cli_call[@]}" --table="protein" <<< "ARDNAKNTLYLQMSRLRSEDTAMYYCAR"
     assert_success
-    assert_output "seguid:IdtGC8ZYgDbkA0i4u4n0tiAQwng"
+    assert_output "seguid-IdtGC8ZYgDbkA0i4u4n0tiAQwng"
 }
 
