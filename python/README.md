@@ -70,9 +70,9 @@ Type "help", "copyright", "credits" or "license" for more information.
 'dcseguid:AWD-dt5-TEua8RbOWfnctJIu9nA'
 ```
 
-Run tests with pytest without arguments in the Python directory;
+Run tests with pytest without arguments in the python/ directory;
 
 ```sh
-$ cd Python/
+$ cd python/
 $ pytest
 ```
