@@ -36,6 +36,7 @@ dlseguid_prefix: str = "dlseguid:"
 dcseguid_prefix: str = "dcseguid:"
 b64abet = set('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/_-')
 
+
 def _seguid(seq: str,
             table: dict = COMPLEMENT_TABLE_DNA,
             encoding: callable = base64.standard_b64encode) -> str:
