@@ -1,54 +1,62 @@
 ### How to generate docs from docstrings with Sphinx
 
-	mamba install numpydoc
+in terminal:
 
-	pip install --editable . --no-deps
+`micromamba install spinx numpydoc # or install with conda, mamba`
 
-Make an empty doc folder, then:
+`pip install --editable . --no-deps # the project to be documented must be installed`
 
-	sphinx-quickstart
 
-This should only be done once and generates lots of files including the conf.py
+
+In the root of the project (location of setup.py or pyproject.toml)
+
+    sphinx-quickstart docs
+
+This should only be done once and generates the docs directory and some files, including the conf.py
 
 Add this to conf.py:
 
-	extensions = ['sphinx.ext.autodoc',
-		          'sphinx.ext.coverage',
-		          'sphinx.ext.napoleon',
-		          "sphinx.ext.doctest",
-		          "sphinx.ext.viewcode",
-		          "sphinx.ext.autosummary",
-		          "numpydoc",
-		          "sphinx.ext.intersphinx",]
+    import os
+    import sys
+    sys.path.insert(0, os.path.abspath("../src"))
 
-	intersphinx_mapping = {
-		"biopython": ("https://biopython.org/docs/latest/api/", None),
-		"python": ("http://docs.python.org/3.8", None),
-	}
+    extensions = ['sphinx.ext.autodoc',
+                  'sphinx.ext.coverage',
+                  'sphinx.ext.napoleon',
+                  "sphinx.ext.doctest",
+                  "sphinx.ext.viewcode",
+                  "sphinx.ext.autosummary",
+                  "numpydoc",
+                  "sphinx.ext.intersphinx",]
 
-	autodoc_member_order = 'bysource'
-	autodoc_preserve_defaults = True
+    intersphinx_mapping = {
+        "biopython": ("https://biopython.org/docs/latest/api/", None),
+        "python": ("http://docs.python.org/3.8", None),
+    }
+
+    autodoc_member_order = 'bysource'
+    autodoc_preserve_defaults = True
 
 Then:
 
-	sphinx-apidoc --force --no-toc --no-headings --output-dir . ..
+    sphinx-apidoc --force --no-toc --no-headings --output-dir docs .
 
 This will generate several .rst files. For small projects, all content can be put in the
 index.rst file:
 
-		.. seguid documentation master file, created by
-		   sphinx-quickstart on Thu Oct 19 14:14:11 2023.
-		   You can adapt this file completely to your liking, but it should at least
-		   contain the root `toctree` directive.
+        .. seguid documentation master file, created by
+           sphinx-quickstart on Thu Oct 19 14:14:11 2023.
+           You can adapt this file completely to your liking, but it should at least
+           contain the root `toctree` directive.
 
-		seguid module
-		=============
+        seguid module
+        =============
 
-		.. automodule:: seguid
-		   :members:
-		   :undoc-members:
-		   :show-inheritance:
+        .. automodule:: seguid
+           :members:
+           :undoc-members:
+           :show-inheritance:
 
 Finally, to build or rebuild:
 
-	sphinx-build . _build/html&&xdg-open _build/html/index.html
+    sphinx-build . _build/html&&xdg-open _build/html/index.html

@@ -8,7 +8,10 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-pydivsufsort = "^0.0.12"
+pydivsufsort = { version = "^0.0.12", optional = true }
+
+[tool.poetry.extras]
+pydivsufsort =  ["pydivsufsort"]
 
 
 [build-system]
