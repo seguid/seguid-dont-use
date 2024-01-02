@@ -8,15 +8,15 @@
 \alias{dcseguid}
 \title{SEGUID checksum for protein and single-stranded linear DNA}
 \usage{
-seguid(seq, table = "dna")
+seguid(seq, table = "{DNA}")
 
-slseguid(seq, table = "dna")
+slseguid(seq, table = "{DNA}")
 
-scseguid(seq, table = "dna")
+scseguid(seq, table = "{DNA}")
 
-dlseguid(watson, crick, overhang, table = "dna")
+dlseguid(watson, crick, overhang, table = "{DNA}")
 
-dcseguid(watson, crick, table = "dna")
+dcseguid(watson, crick, table = "{DNA}")
 }
 \arguments{
 \item{seq}{(character string) The sequence for which the checksum
@@ -24,11 +24,11 @@ should be calculated.  The sequence may only comprise of characters
 in the alphabet specified by the \code{table} argument.}
 
 \item{table}{(character string) The type of sequence used.
-If \code{"dna"} (default), then the input is a DNA sequence.
+If \code{"{DNA}"} (default), then the input is a DNA sequence.
 If \code{"iupac"}, then the input is a DNA sequence specified with
 IUPAC ambigous DNA symbols (3).
-If \code{"rna"}, then the input is an RNA sequence.
-If \code{"protein"}, then the input is an amino-acid sequence.}
+If \code{"{RNA}"}, then the input is an RNA sequence.
+If \code{"{protein}"}, then the input is an amino-acid sequence.}
 
 \item{watson, crick}{(character string) Two reverse-complementary DNA strands.}
 

@@ -42,11 +42,11 @@ with_prefix <- function(s, prefix) {
 #' in the alphabet specified by the `table` argument.
 #'
 #' @param table (character string) The type of sequence used.
-#' If `"dna"` (default), then the input is a DNA sequence.
+#' If `"{DNA}"` (default), then the input is a DNA sequence.
 #' If `"iupac"`, then the input is a DNA sequence specified with
 #' IUPAC ambigous DNA symbols (3).
-#' If `"rna"`, then the input is an RNA sequence.
-#' If `"protein"`, then the input is an amino-acid sequence.
+#' If `"{RNA}"`, then the input is an RNA sequence.
+#' If `"{protein}"`, then the input is an amino-acid sequence.
 #'
 #' @return
 #' `seguid()` returns a character string composed of the prefix `seguid-`
@@ -110,7 +110,7 @@ with_prefix <- function(s, prefix) {
 #' @importFrom base64enc base64encode
 #' @importFrom digest digest
 #' @export
-seguid <- function(seq, table = "dna") {
+seguid <- function(seq, table = "{DNA}") {
   if (nchar(seq) == 0) {
     stop("A sequence must not be empty")
   }
@@ -131,7 +131,7 @@ seguid <- function(seq, table = "dna") {
 #'
 #' @rdname seguid
 #' @export
-slseguid <- function(seq, table = "dna") {
+slseguid <- function(seq, table = "{DNA}") {
   if (nchar(seq) == 0) {
     stop("A sequence must not be empty")
   }
@@ -147,7 +147,7 @@ slseguid <- function(seq, table = "dna") {
 #'
 #' @rdname seguid
 #' @export
-scseguid <- function(seq, table = "dna") {
+scseguid <- function(seq, table = "{DNA}") {
   if (nchar(seq) == 0) {
     stop("A sequence must not be empty")
   }
@@ -163,7 +163,7 @@ scseguid <- function(seq, table = "dna") {
 #' 
 #' @rdname seguid
 #' @export
-dlseguid <- function(watson, crick, overhang, table = "dna") {
+dlseguid <- function(watson, crick, overhang, table = "{DNA}") {
   if (nchar(watson) == 0 || nchar(crick) == 0) {
     stop("A sequence must not be empty")
   }
@@ -193,7 +193,7 @@ dlseguid <- function(watson, crick, overhang, table = "dna") {
 #'
 #' @rdname seguid
 #' @export
-dcseguid <- function(watson, crick, table = "dna") {
+dcseguid <- function(watson, crick, table = "{DNA}") {
   if (nchar(watson) == 0 || nchar(crick) == 0) {
     stop("A sequence must not be empty")
   }

@@ -1,9 +1,9 @@
 get_table <- seguid:::get_table
 
-table <- get_table("dna")
-table <- get_table("rna")
-table <- get_table("iupac")
-table <- get_table("protein")
+table <- get_table("{DNA}")
+table <- get_table("{RNA}")
+table <- get_table("{IUPAC}")
+table <- get_table("{protein}")
 
 res <- tryCatch({
   table <- get_table("unknown")

@@ -1,6 +1,5 @@
 library(seguid)
 
-TABLE_IUPAC_PROTEIN <- seguid:::TABLE_IUPAC_PROTEIN
 rc <- seguid:::rc
 reverse <- seguid:::reverse
 
@@ -22,7 +21,7 @@ NP_313053_1 <- paste0(
   "IGIMDGDLLAVHKTQDVRNGQVVVARIDDEVTVKRLKKQGNKVELLPENSEFKPIVVDLRQ",
   "QSFTIEGLAVGVIRNGDWL"
 )
-#stopifnot(seguid(NP_313053_1, table=TABLE_IUPAC_PROTEIN) == "seguid-2c4yjE+JqjvzYF1d0OmUh8pCpz8")
+#stopifnot(seguid(NP_313053_1, table="{IUPAC}") == "seguid-2c4yjE+JqjvzYF1d0OmUh8pCpz8")
 
 
 m13dna <- readLines("test_data/M13.txt")

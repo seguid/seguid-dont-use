@@ -23,7 +23,7 @@ License: MIT
 '
 
 #' @importFrom utils capture.output file_test str
-cli_call_fcn <- function(..., table = "dna", file = NULL, debug = FALSE, fcn) {
+cli_call_fcn <- function(..., table = "{DNA}", file = NULL, debug = FALSE, fcn) {
   if (is.character(fcn)) {
     fcn <- get(fcn, mode = "function", envir = getNamespace(.packageName), inherits = FALSE)
   }
