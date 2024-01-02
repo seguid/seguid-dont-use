@@ -49,7 +49,7 @@ TABLE_IUPAC_PROTEIN <- c(A="",
 get_table <- function(name) {
   stopifnot(length(name) == 1, is.character(name), !is.na(name))
   
-  ## Extras? Example: "dna+[-]+[\n]" and "dna+[-\n]"
+  ## Extras? Example: "{DNA}+[-]+[\n]" and "{DNA}+[-\n]"
   extras <- NULL
   pattern <- "(.*)[+][[](.*)[]]$"
   while (grepl(pattern, name)) {
@@ -60,13 +60,13 @@ get_table <- function(name) {
     extras <- c(extras, extra)
   }
   
-  if (name == "dna") {
+  if (name == "{DNA}") {
     table <- COMPLEMENT_TABLE_DNA
-  } else if (name == "rna") {
+  } else if (name == "{RNA}") {
     table <- COMPLEMENT_TABLE_RNA
-  } else if (name == "iupac") {
+  } else if (name == "{IUPAC}") {
     table <- COMPLEMENT_TABLE_IUPAC
-  } else if (name == "protein") {
+  } else if (name == "{protein}") {
     table <- TABLE_IUPAC_PROTEIN
   } else {
     stop("Unknown table: ", sQuote(name))
