@@ -1,16 +1,6 @@
 #' @importFrom base64enc base64encode
 b64encode <- function(s) {
-  s <- base64encode(s)
-  
-  ## SHA-1 (160 bits = 20 bytes = 40 hexadecimal character) needs
-  ## at most 160/log2(64) = 26.6667 = 27 symbols. Base64 pads to
-  ## multiples of 4 symbols, i.e. 28 symbols.  Thus, the last
-  ## symbol is always a pad symbol, when using SHA-1. This is
-  ## why we drop the last symbol.
-  s <- sub("[=]$", "", s)
-  
-  s <- sub("[\n]+$", "", s)
-  s
+  base64encode(s) 
 }
 
 b64encode_urlsafe <- function(s) {
@@ -20,22 +10,55 @@ b64encode_urlsafe <- function(s) {
   s
 }
 
+#' @import digest digest
+sha1_b64encode <- function(seq) {
+  checksum <- digest(seq, algo = "sha1", serialize = FALSE, raw = TRUE)
+  checksum <- b64encode(checksum)
+
+  ## Drop newlines (just in case)
+  checksum <- sub("[\n]+$", "", checksum)
+
+  ## SHA-1 (160 bits = 20 bytes = 40 hexadecimal character) needs
+  ## at most 160/log2(64) = 26.6667 = 27 symbols. Base64 pads to
+  ## multiples of 4 symbols, i.e. 28 symbols.  Thus, the last
+  ## symbol is always a pad symbol, when using SHA-1. This is
+  ## why we drop the last symbol.
+  checksum <- sub("[=]$", "", checksum)
+
+  checksum
+}    
+
+#' @import digest digest
+sha1_b64encode_urlsafe <- function(seq) {
+  checksum <- digest(seq, algo = "sha1", serialize = FALSE, raw = TRUE)
+  checksum <- b64encode_urlsafe(checksum)
+
+  ## Drop newlines (just in case)
+  checksum <- sub("[\n]+$", "", checksum)
+
+  ## SHA-1 (160 bits = 20 bytes = 40 hexadecimal character) needs
+  ## at most 160/log2(64) = 26.6667 = 27 symbols. Base64 pads to
+  ## multiples of 4 symbols, i.e. 28 symbols.  Thus, the last
+  ## symbol is always a pad symbol, when using SHA-1. This is
+  ## why we drop the last symbol.
+  checksum <- sub("[=]$", "", checksum)
+
+  checksum
+}    
+
 
 with_prefix <- function(s, prefix) {
   sub("^(|sl|sc|dl|dc)*seguid-", prefix, s)
 }
 
-#' @import digest digest
 .seguid <- function(seq, table, encoding, prefix) {
     assert_table(table)
     assert_in_alphabet(seq, alphabet = names(table))
     stopifnot(is.function(encoding))
     stopifnot(length(prefix) == 1, is.character(prefix), !is.na(prefix))
 
-    checksum <- digest(seq, algo = "sha1", serialize = FALSE, raw = TRUE)
-    checksum <- encoding(checksum)
-    checksum <- sub("[\n]+$", "", checksum)
-    checksum <- sub("[=]$", "", checksum)
+    checksum <- encoding(seq)
+
     checksum <- paste(prefix, checksum, sep = "")
     assert_checksum(checksum)
     checksum
@@ -123,7 +146,7 @@ seguid <- function(seq, table = "{DNA}") {
   }
   
   table2 <- get_table(table)
-  .seguid(seq, table = table2, encoding = b64encode, prefix = "seguid-")
+  .seguid(seq, table = table2, encoding = sha1_b64encode, prefix = "seguid-")
 }
 
 
@@ -144,7 +167,7 @@ slseguid <- function(seq, table = "{DNA}") {
   }
   
   table2 <- get_table(table)
-  .seguid(seq, table = table2, encoding = b64encode_urlsafe, prefix = "slseguid-")
+  .seguid(seq, table = table2, encoding = sha1_b64encode_urlsafe, prefix = "slseguid-")
 }
 
 
