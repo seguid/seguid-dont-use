@@ -68,31 +68,41 @@ make_table <- function(definition) {
   values
 }
 
-get_table <- function(name) {
-  stopifnot(length(name) == 1, is.character(name), !is.na(name))
+get_table <- function(spec) {
+  stopifnot(length(spec) == 1, is.character(spec), !is.na(spec))
   
   ## Extras? Example: "{DNA}+[-]+[\n]" and "{DNA}+[-\n]"
   extras <- NULL
   pattern <- "(.*)[+][[](.*)[]]$"
-  while (grepl(pattern, name)) {
-    name0 <- name
-    extra <- sub(pattern, "\\2", name)
-    name <- sub(pattern, "\\1", name)
+  while (grepl(pattern, spec)) {
+    spec0 <- spec
+    extra <- sub(pattern, "\\2", spec)
+    spec <- sub(pattern, "\\1", spec)
     extra <- strsplit(extra, split = "", fixed = TRUE)[[1]]
     extras <- c(extras, extra)
   }
-  
-  if (name == "{DNA}") {
-    table <- COMPLEMENT_TABLE_DNA
-  } else if (name == "{RNA}") {
-    table <- COMPLEMENT_TABLE_RNA
-  } else if (name == "{IUPAC}") {
-    table <- COMPLEMENT_TABLE_IUPAC
-  } else if (name == "{protein}") {
-    table <- TABLE_IUPAC_PROTEIN
-  } else {
-    stop("Unknown table: ", sQuote(name))
+
+  parts <- strsplit(spec, split = ",", fixed = TRUE)[[1]]
+  for (kk in seq_along(parts)) {
+    part <- parts[kk]
+    if (grepl("^[{][[:alpha:]][[:alnum:]]+[}]$", part)) {
+      if (part == "{DNA}") {
+        table <- COMPLEMENT_TABLE_DNA
+      } else if (part == "{RNA}") {
+        table <- COMPLEMENT_TABLE_RNA
+      } else if (part == "{IUPAC}") {
+        table <- COMPLEMENT_TABLE_IUPAC
+      } else if (part == "{protein}") {
+        table <- TABLE_IUPAC_PROTEIN
+      } else {
+        stop("Unknown table: ", sQuote(part))
+      }
+      part <- paste(sprintf("%s%s", names(table), table), collapse = ",")
+      parts[kk] <- part
+    }
   }
+  parts <- paste(parts, collapse = ",")
+  table <- make_table(parts)
 
   ## Add extras?
   if (length(extras) > 0) {
