@@ -1,7 +1,14 @@
 #' @importFrom base64enc base64encode
 b64encode <- function(s) {
   s <- base64encode(s)
+  
+  ## SHA-1 (160 bits = 20 bytes = 40 hexadecimal character) needs
+  ## at most 160/log2(64) = 26.6667 = 27 symbols. Base64 pads to
+  ## multiples of 4 symbols, i.e. 28 symbols.  Thus, the last
+  ## symbol is always a pad symbol, when using SHA-1. This is
+  ## why we drop the last symbol.
   s <- sub("[=]$", "", s)
+  
   s <- sub("[\n]+$", "", s)
   s
 }
