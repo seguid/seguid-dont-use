@@ -52,3 +52,8 @@ res <- tryCatch({
   table <- make_table("AT,AT,TA,TA")
 }, error = identity)
 stopifnot(inherits(res, "error"))
+
+
+truth <- c(get_table("{DNA}"), a = "u", u = "a")
+table <- get_table("{DNA},au,ua")
+stopifnot(identical(sort(table), sort(truth)))
