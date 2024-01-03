@@ -46,6 +46,28 @@ TABLE_IUPAC_PROTEIN <- c(A="",
                          Y="")
 
 
+make_table <- function(definition) {
+  stopifnot(length(definition) == 1, is.character(definition), !is.na(definition))
+  table <- strsplit(definition, split = ",", fixed = TRUE)[[1]]
+  n <- nchar(table)[1]
+  stopifnot(nchar(table) == n, n %in% 1:2)
+  
+  table <- strsplit(table, split = "", fixed = TRUE)
+  keys <- vapply(table, FUN = function(x) x[1], FUN.VALUE = NA_character_)
+  assert_alphabet(keys)
+  
+  if (n == 1L) {
+    values <- rep("", times = length(keys))
+    names(values) <- keys
+  } else if (n == 2L) {
+    values <- vapply(table, FUN = function(x) x[2], FUN.VALUE = NA_character_)
+    assert_alphabet(values)
+    names(values) <- keys
+    assert_table(values)
+  }
+  values
+}
+
 get_table <- function(name) {
   stopifnot(length(name) == 1, is.character(name), !is.na(name))
   
