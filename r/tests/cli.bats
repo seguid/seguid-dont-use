@@ -324,3 +324,9 @@ setup() {
     assert_success
     assert_output "seguid-IQiZThf2zKn/I1KtqStlEdsHYDQ"
 }
+
+@test "<CLI call> --table='A,C,D,E,F,G,H,I,K,L,M,N,P,Q,R,S,T,V,W,Y' <<< 'ARDNAKNTLYLQMSRLRSEDTAMYYCAR'" {
+    run "${cli_call[@]}" --table='A,C,D,E,F,G,H,I,K,L,M,N,P,Q,R,S,T,V,W,Y' <<< "ARDNAKNTLYLQMSRLRSEDTAMYYCAR"
+    assert_success
+    assert_output "seguid-IdtGC8ZYgDbkA0i4u4n0tiAQwng"
+}
