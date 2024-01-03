@@ -12,8 +12,8 @@ escape_symbols <- function(s) {
 assert_alphabet <- function(alphabet) {
   stopifnot(length(alphabet) > 0, is.character(alphabet), !anyNA(alphabet), all(nchar(alphabet) == 1))
   
-  ## Allow only for A-Z, a-Z, '-', '\n'
-  unknown <- setdiff(alphabet, c(LETTERS, letters, "-", "\n"))
+  ## Allow only for 0-9, A-Z, a-Z, '-', '\n'
+  unknown <- setdiff(alphabet, c(0:9, LETTERS, letters, "-", "\n"))
   if (length(unknown) > 0) {
     unknown <- escape_symbols(unique(sort(unknown)))
     stop(sprintf("Non-supported symbols in alphabet: [n=%d] %s", length(unknown), paste(sQuote(unknown), collapse = ", ")))

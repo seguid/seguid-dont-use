@@ -1,5 +1,5 @@
 Package: seguid
-Version: 0.0.0-9036
+Version: 0.0.0-9037
 Title: Sequence Globally Unique Identifier (SEGUID) for Nucleotide and Amino-Acid Sequences
 Authors@R: c(
     person("Henrik", "Bengtsson",
