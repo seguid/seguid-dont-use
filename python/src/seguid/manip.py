@@ -9,52 +9,67 @@ from seguid.asserts import assert_in_alphabet
 from seguid.tables import COMPLEMENT_TABLE_DNA
 
 
-def rotate(seq: str, amount: int = 0) -> str:
-    """Rotates a circular, DNA sequence a certain amount.
+def rotate(watson: str, crick: str = "", amount: int = 0) -> str:
+    """Left rotation of a double stranded circular DNA sequence.
 
-    Rotates sequence 'seq', 'amount' number of symbols to the right.
+    Rotates sequence repreented by strings 'watson' and 'crick' 'amount'
+    number of symbols to the left.
+
     A rotation 'amount' is the same as a rotation 'amount + n * len(seq)'
     for any integer 'n'.
 
-    Returns the rotated sequence as a string of length 'len(seq)'.
+    Returns the rotated sequence as two strings of equal length to the
+    argument strings.
 
     Examples
     --------
-    >>> seq = "ABCDEFGH"
-    >>> rotate(seq, 0)
-    'ABCDEFGH'
-
-    >>> rotate(seq, +1)
-    'BCDEFGHA'
-
-    >>> rotate(seq, +7)
-    'HABCDEFG'
-
-    >>> rotate(seq, -1)
-    'HABCDEFG'
-
-    >>> rotate(seq, +8)
-    'ABCDEFGH'
+    >>> watson = "GATACCA"
+    >>> crick  = "CTATGGT"[::-1]
+    >>> w, c = rotate(watson, crick, 0)
+    >>> print(w + "\\n" + c[::-1])
+    GATACCA
+    CTATGGT
+    >>> w, c = rotate(watson, crick, +1)
+    >>> print(w + "\\n" + c[::-1])
+    ATACCAG
+    TATGGTC
+    >>> w, c = rotate(watson, crick, +7)
+    >>> print(w + "\\n" + c[::-1])
+    GATACCA
+    CTATGGT
+    >>> w, c = rotate(watson, crick, -1)
+    >>> print(w + "\\n" + c[::-1])
+    AGATACC
+    TCTATGG
+    >>> w, c = rotate(watson, crick, +8)
+    >>> print(w + "\\n" + c[::-1])
+    ATACCAG
+    TATGGTC
     """
-    assert isinstance(seq, str),    "Argument 'seq' must be an string"
+    assert isinstance(watson, str), "Argument 'watson' must be an string"
     assert isinstance(amount, int), "Argument 'amount' must be an integer"
 
-    ## Nothing to rotate?
-    if len(seq) == 0:
-        return seq
+    # Nothing to rotate?
+    if len(watson) == 0:
+        return watson, crick
 
-    amount = amount % len(seq)
+    if crick:
+        assert len(crick) == len(watson)
 
-    ## Rotate?
+    ln = len(watson)
+
+    amount = amount % ln
+
+    # Rotate?
     if amount > 0:
-        seq = seq[amount:] + seq[:amount]
+        watson = watson[amount:] + watson[:amount]
+        crick = crick[ln - amount:] + crick[:ln - amount]
 
-    return seq
+    return watson, crick
 
 
 def complementary(seq: str, table: dict = COMPLEMENT_TABLE_DNA) -> str:
-    """Complement of a DNA sequence.
-    """
+    """Complement of a DNA sequence."""
     ## Validate 'table':
     assert_table(table)
 
@@ -160,15 +175,15 @@ def min_rotation_py(s: str) -> int:
     return 0
 
 
-def rotate_to_min(s: str) -> int:
+def rotate_to_min(watson: str, crick: str = "") -> int:
     from seguid.config import _min_rotation
 
-    ## Assert upper-case letters are ordered before lower-case letters
+    # Assert upper-case letters are ordered before lower-case letters
     assert _min_rotation("Aa") == 0
 
-    amount = _min_rotation(s)
-    s = rotate(s, amount = amount)
-    return(s)
+    amount = _min_rotation(watson)
+
+    return rotate(watson, crick, amount=amount)
 
 
 # def linearize_circular_dsDNA(watson, crick, position):
