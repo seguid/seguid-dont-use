@@ -146,7 +146,8 @@ def scseguid(seq: str,
     >>> slseguid("TTTA")
     'slseguid-8zCvKwyQAEsbPtC4yTV-pY0H93Q'
     """
-    return scseguid_prefix + _seguid(rotate_to_min(seq),
+    mseq, _ = rotate_to_min(seq)
+    return scseguid_prefix + _seguid(mseq,
                                      table=table,
                                      encoding=base64.urlsafe_b64encode)
 
@@ -272,15 +273,15 @@ def dcseguid(watson: str,
 
     assert_anneal(watson, crick, 0, table=table)
 
-    watson_min = rotate_to_min(watson)
-    crick_min = rotate_to_min(crick)
+    watson_min = rotate_to_min(watson, crick)
+    crick_min = rotate_to_min(crick, watson)
 
     # Keep the "minimum" of the two variants
     if watson_min < crick_min:
-        w = watson_min
+        w, c = watson_min
     else:
-        w = crick_min
+        w, c = crick_min
 
     return dcseguid_prefix + dlseguid(watson=w,
-                                      crick=rc(w, table=table),
+                                      crick=c,
                                       overhang=0, table=table)[len(dlseguid_prefix):]
