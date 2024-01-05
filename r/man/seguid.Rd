@@ -44,10 +44,6 @@ non-URL-safe characters.
 \code{slseguid()} returns a character string composed of the prefix \verb{slseguid-}
 followed by a \emph{base64url} encoding (2) ("Base 64 Encoding with URL and
 Filename Safe Alphabet").
-The base64url encoding is the base64 encoding with non-URL-safe characters
-substituted with URL-safe ones. Specifically, the plus symbol (\code{+}) is
-replaced by the minus symbol (\code{-}), and the forward slash (\code{/}) is
-replaced by the underscore symbol (\verb{_}).
 
 \code{scseguid()} returns a character string composed of the prefix \verb{scseguid-}
 followed by a \emph{base64url} encoding.
@@ -65,12 +61,22 @@ uppercase with the trailing pad character \code{=} removed.
 In contrast to the original implementation (1), this function returns
 the SEGUID checksum prefixed with \verb{seguid-}.
 }
-\section{Known limitations}{
+\section{Base64 checksums are neither filename nor URL safe}{
 
 The Base64 checksum is not guaranteed to comprise symbols that can
-safely be used as-is in Uniform Resource Locator (URL). For instance,
+safely be used as-is in Uniform Resource Locator (URL). Specifically,
 it may consist of forward slashes (\code{/}) and plus symbols (\code{+}), which
 are characters that carry special meaning in a URL.
+For the same reason, a Base64 checksum can be guaranteed to be used
+as a file or directory name, because it may have a forward slash.
+}
+
+\section{Base64url checksums are filename and URL safe}{
+
+The base64url encoding is the base64 encoding with non-URL-safe characters
+substituted with URL-safe ones. Specifically, the plus symbol (\code{+}) is
+replaced by the minus symbol (\code{-}), and the forward slash (\code{/}) is
+replaced by the underscore symbol (\verb{_}).
 }
 
 \examples{

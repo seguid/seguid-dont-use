@@ -91,11 +91,13 @@ with_prefix <- function(s, prefix) {
 #' In contrast to the original implementation (1), this function returns
 #' the SEGUID checksum prefixed with `seguid-`.
 #'
-#' @section Known limitations:
+#' @section Base64 checksums are neither filename nor URL safe:
 #' The Base64 checksum is not guaranteed to comprise symbols that can
-#' safely be used as-is in Uniform Resource Locator (URL). For instance,
+#' safely be used as-is in Uniform Resource Locator (URL). Specifically,
 #' it may consist of forward slashes (`/`) and plus symbols (`+`), which
 #' are characters that carry special meaning in a URL.
+#' For the same reason, a Base64 checksum can be guaranteed to be used
+#' as a file or directory name, because it may have a forward slash.
 #'
 #' @examples
 #' ## Linear single-stranded DNA:
@@ -154,6 +156,8 @@ seguid <- function(seq, table = "{DNA}") {
 #' `slseguid()` returns a character string composed of the prefix `slseguid-`
 #' followed by a _base64url_ encoding (2) ("Base 64 Encoding with URL and
 #' Filename Safe Alphabet").
+#'
+#' @section Base64url checksums are filename and URL safe:
 #' The base64url encoding is the base64 encoding with non-URL-safe characters
 #' substituted with URL-safe ones. Specifically, the plus symbol (`+`) is
 #' replaced by the minus symbol (`-`), and the forward slash (`/`) is
