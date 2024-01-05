@@ -5,7 +5,6 @@ setup() {
     load "${BATS_ASSERT_HOME:?}/load.bash"
 
     cli_call=(Rscript -e seguid::seguid --args)
-
 }
 
 
@@ -330,3 +329,25 @@ setup() {
     assert_success
     assert_output "seguid-IdtGC8ZYgDbkA0i4u4n0tiAQwng"
 }
+
+
+## --------------------------------------------------------
+## Use checksums as filenames
+## --------------------------------------------------------
+@test "<CLI call> --type='slseguid' <<< \"GATTACA\" checksum can be used as a filename" {
+    seq="GATTACA"
+    ## Comment:
+    ## The   SEGUID check is seguid-tp2jzeCM2e3W4yxtrrx09CMKa/8
+    ## The slSEGUID check is seguid-tp2jzeCM2e3W4yxtrrx09CMKa_8
+    td=$(mktemp -d)
+    filename=$("${cli_call[@]}" --type='slseguid' <<< "${seq}")
+    pathname="${td}/${filename}"
+    echo "${seq}" > "${pathname}"
+    [[ -f "${pathname}" ]]
+    run cat "${pathname}"
+    assert_success
+    assert_output "${seq}"
+    rm "${pathname}"
+    rmdir "${td}"
+}
+

@@ -71,3 +71,20 @@ assert_error(seguid::slseguid(""))
 assert_error(seguid::scseguid(""))
 assert_error(seguid::dlseguid("", "", overhang = 0))
 assert_error(seguid::dcseguid("", ""))
+
+
+
+## Use checksums as filenames
+seq <- "GATTACA"
+## Comment:
+## The   SEGUID check is seguid-tp2jzeCM2e3W4yxtrrx09CMKa/8
+## The slSEGUID check is seguid-tp2jzeCM2e3W4yxtrrx09CMKa_8
+td <- tempdir()
+filename <- seguid::slseguid(seq)
+pathname <- file.path(td, filename)
+cat(seq, file = pathname)
+stopifnot(utils::file_test("-f", pathname))
+content <- readLines(pathname, warn = FALSE)
+stopifnot(identical(content, seq))
+file.remove(pathname)
+unlink(td)
