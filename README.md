@@ -3,7 +3,7 @@
 [![R checks](https://github.com/MetabolicEngineeringGroupCBMA/seguid/actions/workflows/check-r.yml/badge.svg)](https://github.com/MetabolicEngineeringGroupCBMA/seguid/actions/workflows/check-r.yml)
 
 
-# SEGUID v2 checksums for single or double stranded linear or circular DNA
+# SEGUID v2 checksums for linear, circular, single- and double-stranded sequences
 
 This repository contains implementations of SEGUID v2 and the original SEGUID for legacy reasons.
 
@@ -11,8 +11,8 @@ SEGUID v2 consists of four separate functions (see table below). SEGUID v2 is us
 
 |          | ssDNA     | dsDNA     |
 |----------|-----------|-----------|
-| linear   | slSEGUID  | dlSEGUID  |
-| circular | scSEGUID  | dcSEGUID  |
+| linear   | lsSEGUID  | ldSEGUID  |
+| circular | csSEGUID  | cdSEGUID  |
 
 
 ## R
