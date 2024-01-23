@@ -1,6 +1,3 @@
-# Version 0.0.0-9004
+# Version 0.0.0-9038
 
-## New Features
-
- * Add `seguid()`, `useguid()`, `lseguid_blunt()`, and
-   `lseguid_sticky()`.
+ * ...

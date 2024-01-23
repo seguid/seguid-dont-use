@@ -48,7 +48,7 @@ sha1_b64encode_urlsafe <- function(seq) {
 
 
 with_prefix <- function(s, prefix) {
-  sub("^(|sl|sc|dl|dc)*seguid-", prefix, s)
+  sub("^(|(l|c)(s|d))*seguid-", prefix, s)
 }
 
 .seguid <- function(seq, table, encoding, prefix) {
@@ -65,7 +65,7 @@ with_prefix <- function(s, prefix) {
 }
 
 
-#' SEGUID checksum for protein and single-stranded linear DNA
+#' SEGUID checksum for protein and linear single-stranded DNA
 #'
 #' @param seq (character string) The sequence for which the checksum
 #' should be calculated.  The sequence may only comprise of characters
@@ -107,25 +107,25 @@ with_prefix <- function(s, prefix) {
 #'
 #' ## Linear single-stranded DNA
 #' ## GATTACA
-#' slseguid("GATTACA")
-#' #> slseguid-tp2jzeCM2e3W4yxtrrx09CMKa_8
+#' lsseguid("GATTACA")
+#' #> lsseguid-tp2jzeCM2e3W4yxtrrx09CMKa_8
 #'
 #' ## Circular single-stranded DNA
 #' ## GATTACA = ATTACAG = ... = AGATTAC
-#' scseguid("GATTACA")
-#' #> scseguid-mtrvbtuwr6_MoBxvtm4BEpv-jKQ
+#' csseguid("GATTACA")
+#' #> csseguid-mtrvbtuwr6_MoBxvtm4BEpv-jKQ
 #'
 #' ## Linear double-stranded DNA
 #' ## GATTACA
 #' ## CTAATGT
-#' seguid::dlseguid("GATTACA", "TGTAATC", overhang = 0)
-#' #> dlseguid-XscjVNyZarYrROVgGXUCleJcMC
+#' seguid::ldseguid("GATTACA", "TGTAATC", overhang = 0)
+#' #> ldseguid-XscjVNyZarYrROVgGXUCleJcMC
 #'
 #' ## Circular double-stranded DNA
 #' ## GATTACA = ATTACAG = ... = AGATTAC
 #' ## CTAATGT = TAATGTC = ... = TCTAATG
-#' seguid::dcseguid("GATTACA", "TGTAATC")
-#' #> dcseguid-zCuq031K3_-40pArbl-Y4N9RLnA
+#' seguid::cdseguid("GATTACA", "TGTAATC")
+#' #> cdseguid-zCuq031K3_-40pArbl-Y4N9RLnA
 #'
 #' @references
 #' 1. Babnigg, G., Giometti, CS. A database of unique protein sequence
@@ -153,7 +153,7 @@ seguid <- function(seq, table = "{DNA}") {
 
 
 #' @return
-#' `slseguid()` returns a character string composed of the prefix `slseguid-`
+#' `lsseguid()` returns a character string composed of the prefix `lsseguid-`
 #' followed by a _base64url_ encoding (2) ("Base 64 Encoding with URL and
 #' Filename Safe Alphabet").
 #'
@@ -165,28 +165,28 @@ seguid <- function(seq, table = "{DNA}") {
 #'
 #' @rdname seguid
 #' @export
-slseguid <- function(seq, table = "{DNA}") {
+lsseguid <- function(seq, table = "{DNA}") {
   if (nchar(seq) == 0) {
     stop("A sequence must not be empty")
   }
   
   table2 <- get_table(table)
-  .seguid(seq, table = table2, encoding = sha1_b64encode_urlsafe, prefix = "slseguid-")
+  .seguid(seq, table = table2, encoding = sha1_b64encode_urlsafe, prefix = "lsseguid-")
 }
 
 
 #' @return
-#' `scseguid()` returns a character string composed of the prefix `scseguid-`
+#' `csseguid()` returns a character string composed of the prefix `csseguid-`
 #' followed by a _base64url_ encoding.
 #'
 #' @rdname seguid
 #' @export
-scseguid <- function(seq, table = "{DNA}") {
+csseguid <- function(seq, table = "{DNA}") {
   if (nchar(seq) == 0) {
     stop("A sequence must not be empty")
   }
   
-  with_prefix(slseguid(rotate_to_min(seq), table = table), "scseguid-")
+  with_prefix(lsseguid(rotate_to_min(seq), table = table), "csseguid-")
 }
 
 
@@ -197,7 +197,7 @@ scseguid <- function(seq, table = "{DNA}") {
 #' 
 #' @rdname seguid
 #' @export
-dlseguid <- function(watson, crick, overhang, table = "{DNA}") {
+ldseguid <- function(watson, crick, overhang, table = "{DNA}") {
   if (nchar(watson) == 0 || nchar(crick) == 0) {
     stop("A sequence must not be empty")
   }
@@ -217,17 +217,17 @@ dlseguid <- function(watson, crick, overhang, table = "{DNA}") {
   msg <- repr_from_tuple(watson = w, crick = c, overhang = o, table = table2, space = "-")
 
   table2 <- paste0(table, "+[-\n]")
-  with_prefix(slseguid(msg, table = table2), "dlseguid-")
+  with_prefix(lsseguid(msg, table = table2), "ldseguid-")
 }
 
 
 #' @return
-#' `dcseguid()` returns a character string composed of the prefix `dcseguid-`
+#' `cdseguid()` returns a character string composed of the prefix `cdseguid-`
 #' followed by a _base64url_ encoding.
 #'
 #' @rdname seguid
 #' @export
-dcseguid <- function(watson, crick, table = "{DNA}") {
+cdseguid <- function(watson, crick, table = "{DNA}") {
   if (nchar(watson) == 0 || nchar(crick) == 0) {
     stop("A sequence must not be empty")
   }
@@ -246,5 +246,5 @@ dcseguid <- function(watson, crick, table = "{DNA}") {
       w <- crick_min
   }
 
-  with_prefix(dlseguid(w, rc(w, table = table2), overhang = 0, table = table), "dcseguid-")
+  with_prefix(ldseguid(w, rc(w, table = table2), overhang = 0, table = table), "cdseguid-")
 }

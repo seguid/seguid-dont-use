@@ -2,21 +2,21 @@
 % Please edit documentation in R/chksum.R
 \name{seguid}
 \alias{seguid}
-\alias{slseguid}
-\alias{scseguid}
-\alias{dlseguid}
-\alias{dcseguid}
-\title{SEGUID checksum for protein and single-stranded linear DNA}
+\alias{lsseguid}
+\alias{csseguid}
+\alias{ldseguid}
+\alias{cdseguid}
+\title{SEGUID checksum for protein and linear single-stranded DNA}
 \usage{
 seguid(seq, table = "{DNA}")
 
-slseguid(seq, table = "{DNA}")
+lsseguid(seq, table = "{DNA}")
 
-scseguid(seq, table = "{DNA}")
+csseguid(seq, table = "{DNA}")
 
-dlseguid(watson, crick, overhang, table = "{DNA}")
+ldseguid(watson, crick, overhang, table = "{DNA}")
 
-dcseguid(watson, crick, table = "{DNA}")
+cdseguid(watson, crick, table = "{DNA}")
 }
 \arguments{
 \item{seq}{(character string) The sequence for which the checksum
@@ -41,18 +41,18 @@ followed by a \emph{base64} encoding (2) ("Base 64 Encoding").
 A base64 encoding is always 27-character long, and may comprise
 non-URL-safe characters.
 
-\code{slseguid()} returns a character string composed of the prefix \verb{slseguid-}
+\code{lsseguid()} returns a character string composed of the prefix \verb{lsseguid-}
 followed by a \emph{base64url} encoding (2) ("Base 64 Encoding with URL and
 Filename Safe Alphabet").
 
-\code{scseguid()} returns a character string composed of the prefix \verb{scseguid-}
+\code{csseguid()} returns a character string composed of the prefix \verb{csseguid-}
 followed by a \emph{base64url} encoding.
 
-\code{dcseguid()} returns a character string composed of the prefix \verb{dcseguid-}
+\code{cdseguid()} returns a character string composed of the prefix \verb{cdseguid-}
 followed by a \emph{base64url} encoding.
 }
 \description{
-SEGUID checksum for protein and single-stranded linear DNA
+SEGUID checksum for protein and linear single-stranded DNA
 }
 \details{
 The Sequence Globally Unique Identifiers (SEGUID) (1) is defined as the
@@ -87,25 +87,25 @@ seguid("GATTACA")
 
 ## Linear single-stranded DNA
 ## GATTACA
-slseguid("GATTACA")
-#> slseguid-tp2jzeCM2e3W4yxtrrx09CMKa_8
+lsseguid("GATTACA")
+#> lsseguid-tp2jzeCM2e3W4yxtrrx09CMKa_8
 
 ## Circular single-stranded DNA
 ## GATTACA = ATTACAG = ... = AGATTAC
-scseguid("GATTACA")
-#> scseguid-mtrvbtuwr6_MoBxvtm4BEpv-jKQ
+csseguid("GATTACA")
+#> csseguid-mtrvbtuwr6_MoBxvtm4BEpv-jKQ
 
 ## Linear double-stranded DNA
 ## GATTACA
 ## CTAATGT
-seguid::dlseguid("GATTACA", "TGTAATC", overhang = 0)
-#> dlseguid-XscjVNyZarYrROVgGXUCleJcMC
+seguid::ldseguid("GATTACA", "TGTAATC", overhang = 0)
+#> ldseguid-XscjVNyZarYrROVgGXUCleJcMC
 
 ## Circular double-stranded DNA
 ## GATTACA = ATTACAG = ... = AGATTAC
 ## CTAATGT = TAATGTC = ... = TCTAATG
-seguid::dcseguid("GATTACA", "TGTAATC")
-#> dcseguid-zCuq031K3_-40pArbl-Y4N9RLnA
+seguid::cdseguid("GATTACA", "TGTAATC")
+#> cdseguid-zCuq031K3_-40pArbl-Y4N9RLnA
 
 }
 \references{

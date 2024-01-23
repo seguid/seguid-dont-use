@@ -12,10 +12,10 @@ Examples:
 Rscript -e seguid::seguid --version
 Rscript -e seguid::seguid --help
 
-echo "ACGT" | Rscript -e seguid::slseguid
-Rscript -e seguid::slseguid <<< "ACGT"
-Rscript -e seguid::dlseguid <<< $\'-CGT\nTGCA\'
-Rscript -e seguid::dcseguid <<< $\'ACGT\nTGCA\'
+echo "ACGT" | Rscript -e seguid::lsseguid
+Rscript -e seguid::lsseguid <<< "ACGT"
+Rscript -e seguid::ldseguid <<< $\'-CGT\nTGCA\'
+Rscript -e seguid::cdseguid <<< $\'ACGT\nTGCA\'
 
 Version: {{ version }}
 Copyright: Henrik Bengtsson (2023)
@@ -104,27 +104,27 @@ cli_call_fcn <- function(..., table = "{DNA}", file = NULL, debug = FALSE, fcn) 
 
 
 class(seguid) <- c("cli_function", class(seguid))
-attr(seguid, "cli") <- function(..., type = c("seguid", "slseguid", "scseguid", "dlseguid", "dcseguid")) {
+attr(seguid, "cli") <- function(..., type = c("seguid", "lsseguid", "csseguid", "ldseguid", "cdseguid")) {
   type <- match.arg(type)
   cli_call_fcn(..., fcn = type)
 }
 
-class(slseguid) <- c("cli_function", class(slseguid))
-attr(slseguid, "cli") <- function(...) {
-  cli_call_fcn(..., fcn = slseguid)
+class(lsseguid) <- c("cli_function", class(lsseguid))
+attr(lsseguid, "cli") <- function(...) {
+  cli_call_fcn(..., fcn = lsseguid)
 }
 
-class(scseguid) <- c("cli_function", class(scseguid))
-attr(scseguid, "cli") <- function(...) {
-  cli_call_fcn(..., fcn = scseguid)
+class(csseguid) <- c("cli_function", class(csseguid))
+attr(csseguid, "cli") <- function(...) {
+  cli_call_fcn(..., fcn = csseguid)
 }
 
-class(dlseguid) <- c("cli_function", class(dlseguid))
-attr(dlseguid, "cli") <- function(...) {
-  cli_call_fcn(..., fcn = dlseguid)
+class(ldseguid) <- c("cli_function", class(ldseguid))
+attr(ldseguid, "cli") <- function(...) {
+  cli_call_fcn(..., fcn = ldseguid)
 }
 
-class(dcseguid) <- c("cli_function", class(dcseguid))
-attr(dcseguid, "cli") <- function(...) {
-  cli_call_fcn(..., fcn = dcseguid)
+class(cdseguid) <- c("cli_function", class(cdseguid))
+attr(cdseguid, "cli") <- function(...) {
+  cli_call_fcn(..., fcn = cdseguid)
 }
