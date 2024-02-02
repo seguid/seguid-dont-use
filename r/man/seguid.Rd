@@ -36,6 +36,10 @@ IUPAC ambigous DNA symbols (3).
 If \code{"{RNA}"}, then the input is an RNA sequence.
 If \code{"{protein}"}, then the input is an amino-acid sequence.}
 
+\item{form}{(character string) How the checksum is presented.
+If \verb{"long" (default), the full-length checksum is outputted. If }"short", the short, six-digit checksum is outputted.
+If `"both", both the short and the long checksums are outputted.}
+
 \item{watson, crick}{(character string) Two reverse-complementary DNA strands.}
 
 \item{overhang}{(integer) Amount of 3' overhang in the 5' side of

@@ -94,6 +94,11 @@ with_prefix <- function(s, prefix, form = c("long", "short", "both")) {
 #' If `"{RNA}"`, then the input is an RNA sequence.
 #' If `"{protein}"`, then the input is an amino-acid sequence.
 #'
+#' @param form (character string) How the checksum is presented.
+#' If `"long" (default), the full-length checksum is outputted.
+#' If `"short", the short, six-digit checksum is outputted.
+#' If `"both", both the short and the long checksums are outputted.
+#'
 #' @return
 #' `seguid()` returns a character string composed of the prefix `seguid-`
 #' followed by a _base64_ encoding (2) ("Base 64 Encoding").
