@@ -95,11 +95,17 @@ cli_call_fcn <- function(..., table = "{DNA}", file = NULL, debug = FALSE, fcn) 
     args2 <- list(seq)
   }
   args <- c(args2, args, table = table)
+  if (debug) {
+    message(sprintf("Arguments:\n%s", paste(capture.output(str(args)), collapse = "\n")))
+  }
 
   res <- do.call(fcn, args = args)
-  
-  cat(res)
-  cat("\n")
+  if (debug) {
+    message(sprintf("Result:\n%s", paste(capture.output(str(res)), collapse = "\n")))
+  }
+
+  res <- paste(res, collapse = " ")
+  cat(res, "\n", sep = "")
 }
 
 

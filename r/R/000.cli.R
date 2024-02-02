@@ -60,8 +60,9 @@ print.cli_function <- function(x, ..., envir = parent.frame()) {
     ## Is there a custom function?
     fcn <- attr(x, "cli", exact = TRUE)
     if (is.null(fcn)) fcn <- x
+
     res <- withVisible(do.call(fcn, args = args, envir = envir))
-    
+
     # Should the result be printed?
     if (res$visible) {
       value <- res$value

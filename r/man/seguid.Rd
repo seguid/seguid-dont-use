@@ -46,47 +46,56 @@ If `"both", both the short and the long checksums are outputted.}
 the molecule. A molecule with 5' overhang has a negative value.}
 }
 \value{
-\code{seguid()} returns a character string composed of the prefix \verb{seguid-}
-followed by a \emph{base64} encoding (2) ("Base 64 Encoding").
-A base64 encoding is always 27-character long, and may comprise
-non-URL-safe characters.
+The SEGUID functions return a single character string, if \code{form} is
+either \code{"long"} or \code{"short"}. If \code{form} is \code{"both"}, then a character
+vector of length two is return, where the first component holds the
+"short" checksum and the second the "long" checksum.
+The long checksum, without the prefix, is string with 27 characters.
+The short checksum, without the prefix, is the first six characters
+of the long checksum.
+All checksums are prefixed with a label indicating which SEGUID
+method was used.
+Except for \code{seguid()}, which uses \emph{base64} encoding, all functions
+produce checksums using the \emph{base64url} encoding ("Base 64 Encoding
+with URL and Filename Safe Alphabet").
 
-\code{lsseguid()} returns a character string composed of the prefix \verb{lsseguid-}
-followed by a \emph{base64url} encoding (2) ("Base 64 Encoding with URL and
-Filename Safe Alphabet").
+\code{seguid()} calculates the original SEGUID checksum for a linear,
+single-stranded sequence.
 
-\code{csseguid()} returns a character string composed of the prefix \verb{csseguid-}
-followed by a \emph{base64url} encoding.
+\code{lsseguid()} calculates the SEGUID v2 checksum for a linear,
+single-stranded sequence.
 
-\code{cdseguid()} returns a character string composed of the prefix \verb{cdseguid-}
-followed by a \emph{base64url} encoding.
+\code{csseguid()} calculates the SEGUID v2 checksum for a circular,
+single-stranded sequence.
+
+\code{ldseguid()} calculates the SEGUID v2 checksum for a linear,
+double-stranded sequence.
+
+\code{cdseguid()} calculates the SEGUID v2 checksum for a circular,
+double-stranded sequence.
 }
 \description{
 SEGUID checksum for protein and linear single-stranded DNA
 }
-\details{
-The Sequence Globally Unique Identifiers (SEGUID) (1) is defined as the
-Base64-encoded SHA-1 checksum (4) calculated for the sequence in
-uppercase with the trailing pad character \code{=} removed.
-In contrast to the original implementation (1), this function returns
-the SEGUID checksum prefixed with \verb{seguid-}.
-}
-\section{Base64 checksums are neither filename nor URL safe}{
-
-The Base64 checksum is not guaranteed to comprise symbols that can
-safely be used as-is in Uniform Resource Locator (URL). Specifically,
-it may consist of forward slashes (\code{/}) and plus symbols (\code{+}), which
-are characters that carry special meaning in a URL.
-For the same reason, a Base64 checksum can be guaranteed to be used
-as a file or directory name, because it may have a forward slash.
-}
-
-\section{Base64url checksums are filename and URL safe}{
+\section{Base64 and Base64url encodings}{
 
 The base64url encoding is the base64 encoding with non-URL-safe characters
 substituted with URL-safe ones. Specifically, the plus symbol (\code{+}) is
 replaced by the minus symbol (\code{-}), and the forward slash (\code{/}) is
 replaced by the underscore symbol (\verb{_}).
+
+The Base64 checksum, which is used for the original SEGUID checksum,
+is not guaranteed to comprise symbols that can
+safely be used as-is in Uniform Resource Locator (URL). Specifically,
+it may consist of forward slashes (\code{/}) and plus symbols (\code{+}), which
+are characters that carry special meaning in a URL.
+For the same reason, a Base64 checksum cannot safely be used
+as a file or directory name, because it may have a forward slash.
+
+The checksum returned is always 27-character long. This is because the
+represention always end with a padding character (\code{=}) so that the length
+is a multiple of four character. We relax this requirement, by dropping
+the padding character.
 }
 
 \examples{
@@ -108,13 +117,13 @@ csseguid("GATTACA")
 ## Linear double-stranded DNA
 ## GATTACA
 ## CTAATGT
-seguid::ldseguid("GATTACA", "TGTAATC", overhang = 0)
+ldseguid("GATTACA", "TGTAATC", overhang = 0)
 #> ldseguid-XscjVNyZarYrROVgGXUCleJcMC
 
 ## Circular double-stranded DNA
 ## GATTACA = ATTACAG = ... = AGATTAC
 ## CTAATGT = TAATGTC = ... = TCTAATG
-seguid::cdseguid("GATTACA", "TGTAATC")
+cdseguid("GATTACA", "TGTAATC")
 #> cdseguid-zCuq031K3_-40pArbl-Y4N9RLnA
 
 }

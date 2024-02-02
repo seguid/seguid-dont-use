@@ -63,8 +63,8 @@ with_prefix <- function(s, prefix, form = c("long", "short", "both")) {
       res <- c(res, substr(checksum, start = 1L, stop = 6L))
     }
   }
-  res <- paste0(prefix, res)
-  paste(res, collapse = " ")
+  
+  paste0(prefix, res)
 }
 
 .seguid <- function(seq, table, encoding, prefix = "") {
@@ -100,25 +100,41 @@ with_prefix <- function(s, prefix, form = c("long", "short", "both")) {
 #' If `"both", both the short and the long checksums are outputted.
 #'
 #' @return
-#' `seguid()` returns a character string composed of the prefix `seguid-`
-#' followed by a _base64_ encoding (2) ("Base 64 Encoding").
-#' A base64 encoding is always 27-character long, and may comprise
-#' non-URL-safe characters.
+#' The SEGUID functions return a single character string, if `form` is
+#' either `"long"` or `"short"`. If `form` is `"both"`, then a character
+#' vector of length two is return, where the first component holds the
+#' "short" checksum and the second the "long" checksum.
+#' The long checksum, without the prefix, is string with 27 characters.
+#' The short checksum, without the prefix, is the first six characters
+#' of the long checksum.
+#' All checksums are prefixed with a label indicating which SEGUID
+#' method was used.
+#' Except for `seguid()`, which uses _base64_ encoding, all functions
+#' produce checksums using the _base64url_ encoding ("Base 64 Encoding
+#' with URL and Filename Safe Alphabet").
 #'
-#' @details
-#' The Sequence Globally Unique Identifiers (SEGUID) (1) is defined as the
-#' Base64-encoded SHA-1 checksum (4) calculated for the sequence in
-#' uppercase with the trailing pad character `=` removed.
-#' In contrast to the original implementation (1), this function returns
-#' the SEGUID checksum prefixed with `seguid-`.
+#' `seguid()` calculates the original SEGUID checksum for a linear,
+#' single-stranded sequence. 
 #'
-#' @section Base64 checksums are neither filename nor URL safe:
-#' The Base64 checksum is not guaranteed to comprise symbols that can
+#' @section Base64 and Base64url encodings:
+#' The base64url encoding is the base64 encoding with non-URL-safe characters
+#' substituted with URL-safe ones. Specifically, the plus symbol (`+`) is
+#' replaced by the minus symbol (`-`), and the forward slash (`/`) is
+#' replaced by the underscore symbol (`_`).
+#'
+#' The Base64 checksum, which is used for the original SEGUID checksum,
+#' is not guaranteed to comprise symbols that can
 #' safely be used as-is in Uniform Resource Locator (URL). Specifically,
 #' it may consist of forward slashes (`/`) and plus symbols (`+`), which
 #' are characters that carry special meaning in a URL.
-#' For the same reason, a Base64 checksum can be guaranteed to be used
+#' For the same reason, a Base64 checksum cannot safely be used
 #' as a file or directory name, because it may have a forward slash.
+#'
+#' The checksum returned is always 27-character long. This is because the
+#" SHA-1 hash (4) is 160-bit long (20 bytes), which result in the encoded
+#' represention always end with a padding character (`=`) so that the length
+#' is a multiple of four character. We relax this requirement, by dropping
+#' the padding character.
 #'
 #' @examples
 #' ## Linear single-stranded DNA:
@@ -139,13 +155,13 @@ with_prefix <- function(s, prefix, form = c("long", "short", "both")) {
 #' ## Linear double-stranded DNA
 #' ## GATTACA
 #' ## CTAATGT
-#' seguid::ldseguid("GATTACA", "TGTAATC", overhang = 0)
+#' ldseguid("GATTACA", "TGTAATC", overhang = 0)
 #' #> ldseguid-XscjVNyZarYrROVgGXUCleJcMC
 #'
 #' ## Circular double-stranded DNA
 #' ## GATTACA = ATTACAG = ... = AGATTAC
 #' ## CTAATGT = TAATGTC = ... = TCTAATG
-#' seguid::cdseguid("GATTACA", "TGTAATC")
+#' cdseguid("GATTACA", "TGTAATC")
 #' #> cdseguid-zCuq031K3_-40pArbl-Y4N9RLnA
 #'
 #' @references
@@ -174,15 +190,8 @@ seguid <- function(seq, table = "{DNA}", form = c("long", "short", "both")) {
 
 
 #' @return
-#' `lsseguid()` returns a character string composed of the prefix `lsseguid-`
-#' followed by a _base64url_ encoding (2) ("Base 64 Encoding with URL and
-#' Filename Safe Alphabet").
-#'
-#' @section Base64url checksums are filename and URL safe:
-#' The base64url encoding is the base64 encoding with non-URL-safe characters
-#' substituted with URL-safe ones. Specifically, the plus symbol (`+`) is
-#' replaced by the minus symbol (`-`), and the forward slash (`/`) is
-#' replaced by the underscore symbol (`_`).
+#' `lsseguid()` calculates the SEGUID v2 checksum for a linear,
+#' single-stranded sequence.
 #'
 #' @rdname seguid
 #' @export
@@ -197,8 +206,8 @@ lsseguid <- function(seq, table = "{DNA}", form = c("long", "short", "both")) {
 
 
 #' @return
-#' `csseguid()` returns a character string composed of the prefix `csseguid-`
-#' followed by a _base64url_ encoding.
+#' `csseguid()` calculates the SEGUID v2 checksum for a circular,
+#' single-stranded sequence.
 #'
 #' @rdname seguid
 #' @export
@@ -215,7 +224,11 @@ csseguid <- function(seq, table = "{DNA}", form = c("long", "short", "both")) {
 #'
 #' @param overhang (integer) Amount of 3' overhang in the 5' side of
 #' the molecule. A molecule with 5' overhang has a negative value.
-#' 
+#'
+#' @return
+#' `ldseguid()` calculates the SEGUID v2 checksum for a linear,
+#' double-stranded sequence.
+#'
 #' @rdname seguid
 #' @export
 ldseguid <- function(watson, crick, overhang, table = "{DNA}", form = c("long", "short", "both")) {
@@ -243,8 +256,8 @@ ldseguid <- function(watson, crick, overhang, table = "{DNA}", form = c("long", 
 
 
 #' @return
-#' `cdseguid()` returns a character string composed of the prefix `cdseguid-`
-#' followed by a _base64url_ encoding.
+#' `cdseguid()` calculates the SEGUID v2 checksum for a circular,
+#' double-stranded sequence.
 #'
 #' @rdname seguid
 #' @export
