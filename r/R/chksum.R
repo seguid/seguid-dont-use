@@ -47,8 +47,24 @@ sha1_b64encode_urlsafe <- function(seq) {
 }    
 
 
-with_prefix <- function(s, prefix) {
-  paste0(prefix, sub("^(|(l|c)(s|d))*seguid-", "", s))
+with_prefix <- function(s, prefix, form = c("long", "short", "both")) {
+  form <- match.arg(form)
+  
+  checksum <- sub("^(|(l|c)(s|d))*seguid-", "", s)
+  assert_checksum(checksum, prefix = "")
+
+  if (form == "both") form <- c("short", "long")
+
+  res <- character(0L)
+  for (ff in form) {
+    if (ff == "long") {
+      res <- c(res, checksum)
+    } else if (ff == "short") {
+      res <- c(res, substr(checksum, start = 1L, stop = 6L))
+    }
+  }
+  res <- paste0(prefix, res)
+  paste(res, collapse = " ")
 }
 
 .seguid <- function(seq, table, encoding, prefix = "") {
@@ -142,13 +158,13 @@ with_prefix <- function(s, prefix) {
 #' @importFrom base64enc base64encode
 #' @importFrom digest digest
 #' @export
-seguid <- function(seq, table = "{DNA}") {
+seguid <- function(seq, table = "{DNA}", form = c("long", "short", "both")) {
   if (nchar(seq) == 0) {
     stop("A sequence must not be empty")
   }
   
   table2 <- get_table(table)
-  with_prefix(.seguid(seq, table = table2, encoding = sha1_b64encode), prefix = "seguid-")
+  with_prefix(.seguid(seq, table = table2, encoding = sha1_b64encode), prefix = "seguid-", form = form)
 }
 
 
@@ -165,13 +181,13 @@ seguid <- function(seq, table = "{DNA}") {
 #'
 #' @rdname seguid
 #' @export
-lsseguid <- function(seq, table = "{DNA}") {
+lsseguid <- function(seq, table = "{DNA}", form = c("long", "short", "both")) {
   if (nchar(seq) == 0) {
     stop("A sequence must not be empty")
   }
   
   table2 <- get_table(table)
-  with_prefix(.seguid(seq, table = table2, encoding = sha1_b64encode_urlsafe), prefix = "lsseguid-")
+  with_prefix(.seguid(seq, table = table2, encoding = sha1_b64encode_urlsafe), prefix = "lsseguid-", form = form)
 }
 
 
@@ -181,12 +197,12 @@ lsseguid <- function(seq, table = "{DNA}") {
 #'
 #' @rdname seguid
 #' @export
-csseguid <- function(seq, table = "{DNA}") {
+csseguid <- function(seq, table = "{DNA}", form = c("long", "short", "both")) {
   if (nchar(seq) == 0) {
     stop("A sequence must not be empty")
   }
   
-  with_prefix(lsseguid(rotate_to_min(seq), table = table), prefix = "csseguid-")
+  with_prefix(lsseguid(rotate_to_min(seq), table = table), prefix = "csseguid-", form = form)
 }
 
 
@@ -197,7 +213,7 @@ csseguid <- function(seq, table = "{DNA}") {
 #' 
 #' @rdname seguid
 #' @export
-ldseguid <- function(watson, crick, overhang, table = "{DNA}") {
+ldseguid <- function(watson, crick, overhang, table = "{DNA}", form = c("long", "short", "both")) {
   if (nchar(watson) == 0 || nchar(crick) == 0) {
     stop("A sequence must not be empty")
   }
@@ -217,7 +233,7 @@ ldseguid <- function(watson, crick, overhang, table = "{DNA}") {
   msg <- repr_from_tuple(watson = w, crick = c, overhang = o, table = table2, space = "-")
 
   table2 <- paste0(table, "+[-\n]")
-  with_prefix(lsseguid(msg, table = table2), prefix = "ldseguid-")
+  with_prefix(lsseguid(msg, table = table2), prefix = "ldseguid-", form = form)
 }
 
 
@@ -227,7 +243,7 @@ ldseguid <- function(watson, crick, overhang, table = "{DNA}") {
 #'
 #' @rdname seguid
 #' @export
-cdseguid <- function(watson, crick, table = "{DNA}") {
+cdseguid <- function(watson, crick, table = "{DNA}", form = c("long", "short", "both")) {
   if (nchar(watson) == 0 || nchar(crick) == 0) {
     stop("A sequence must not be empty")
   }
@@ -246,5 +262,5 @@ cdseguid <- function(watson, crick, table = "{DNA}") {
       w <- crick_min
   }
 
-  with_prefix(ldseguid(w, rc(w, table = table2), overhang = 0, table = table), prefix = "cdseguid-")
+  with_prefix(ldseguid(w, rc(w, table = table2), overhang = 0, table = table), prefix = "cdseguid-", form = form)
 }

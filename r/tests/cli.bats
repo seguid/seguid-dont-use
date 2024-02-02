@@ -121,6 +121,24 @@ setup() {
     assert_output "seguid-IQiZThf2zKn/I1KtqStlEdsHYDQ"
 }
 
+@test "<CLI call> --type=seguid --table='{DNA}' --form='long' <<< \"ACGT\"" {
+    run "${cli_call[@]}" --type=seguid --table='{DNA}' --form='long' <<< "ACGT"
+    assert_success
+    assert_output "seguid-IQiZThf2zKn/I1KtqStlEdsHYDQ"
+}
+
+@test "<CLI call> --type=seguid --table='{DNA}' --form='short' <<< \"ACGT\"" {
+    run "${cli_call[@]}" --type=seguid --table='{DNA}' --form='short' <<< "ACGT"
+    assert_success
+    assert_output "seguid-IQiZTh"
+}
+
+@test "<CLI call> --type=seguid --table='{DNA}' --form='both' <<< \"ACGT\"" {
+    run "${cli_call[@]}" --type=seguid --table='{DNA}' --form='both' <<< "ACGT"
+    assert_success
+    assert_output "seguid-IQiZTh seguid-IQiZThf2zKn/I1KtqStlEdsHYDQ"
+}
+
 
 ## --------------------------------------------------------
 ## Corner cases (single-symbol input)

@@ -8,15 +8,21 @@
 \alias{cdseguid}
 \title{SEGUID checksum for protein and linear single-stranded DNA}
 \usage{
-seguid(seq, table = "{DNA}")
+seguid(seq, table = "{DNA}", form = c("long", "short", "both"))
 
-lsseguid(seq, table = "{DNA}")
+lsseguid(seq, table = "{DNA}", form = c("long", "short", "both"))
 
-csseguid(seq, table = "{DNA}")
+csseguid(seq, table = "{DNA}", form = c("long", "short", "both"))
 
-ldseguid(watson, crick, overhang, table = "{DNA}")
+ldseguid(
+  watson,
+  crick,
+  overhang,
+  table = "{DNA}",
+  form = c("long", "short", "both")
+)
 
-cdseguid(watson, crick, table = "{DNA}")
+cdseguid(watson, crick, table = "{DNA}", form = c("long", "short", "both"))
 }
 \arguments{
 \item{seq}{(character string) The sequence for which the checksum
