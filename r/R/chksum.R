@@ -48,10 +48,10 @@ sha1_b64encode_urlsafe <- function(seq) {
 
 
 with_prefix <- function(s, prefix) {
-  sub("^(|(l|c)(s|d))*seguid-", prefix, s)
+  paste0(prefix, sub("^(|(l|c)(s|d))*seguid-", "", s))
 }
 
-.seguid <- function(seq, table, encoding, prefix) {
+.seguid <- function(seq, table, encoding, prefix = "") {
     assert_table(table)
     assert_in_alphabet(seq, alphabet = names(table))
     stopifnot(is.function(encoding))
@@ -59,8 +59,8 @@ with_prefix <- function(s, prefix) {
 
     checksum <- encoding(seq)
 
-    checksum <- paste(prefix, checksum, sep = "")
-    assert_checksum(checksum)
+    checksum <- paste0(prefix, checksum)
+    assert_checksum(checksum, prefix = prefix)
     checksum
 }
 
@@ -148,7 +148,7 @@ seguid <- function(seq, table = "{DNA}") {
   }
   
   table2 <- get_table(table)
-  .seguid(seq, table = table2, encoding = sha1_b64encode, prefix = "seguid-")
+  with_prefix(.seguid(seq, table = table2, encoding = sha1_b64encode), prefix = "seguid-")
 }
 
 
@@ -171,7 +171,7 @@ lsseguid <- function(seq, table = "{DNA}") {
   }
   
   table2 <- get_table(table)
-  .seguid(seq, table = table2, encoding = sha1_b64encode_urlsafe, prefix = "lsseguid-")
+  with_prefix(.seguid(seq, table = table2, encoding = sha1_b64encode_urlsafe), prefix = "lsseguid-")
 }
 
 
@@ -186,7 +186,7 @@ csseguid <- function(seq, table = "{DNA}") {
     stop("A sequence must not be empty")
   }
   
-  with_prefix(lsseguid(rotate_to_min(seq), table = table), "csseguid-")
+  with_prefix(lsseguid(rotate_to_min(seq), table = table), prefix = "csseguid-")
 }
 
 
@@ -217,7 +217,7 @@ ldseguid <- function(watson, crick, overhang, table = "{DNA}") {
   msg <- repr_from_tuple(watson = w, crick = c, overhang = o, table = table2, space = "-")
 
   table2 <- paste0(table, "+[-\n]")
-  with_prefix(lsseguid(msg, table = table2), "ldseguid-")
+  with_prefix(lsseguid(msg, table = table2), prefix = "ldseguid-")
 }
 
 
@@ -246,5 +246,5 @@ cdseguid <- function(watson, crick, table = "{DNA}") {
       w <- crick_min
   }
 
-  with_prefix(ldseguid(w, rc(w, table = table2), overhang = 0, table = table), "cdseguid-")
+  with_prefix(ldseguid(w, rc(w, table = table2), overhang = 0, table = table), prefix = "cdseguid-")
 }
