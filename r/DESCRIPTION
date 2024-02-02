@@ -14,5 +14,5 @@ License: MIT + file LICENSE
 URL: https://github.com/MetabolicEngineeringGroupCBMA/seguid/
 BugReports: https://github.com/MetabolicEngineeringGroupCBMA/seguid/issues
 Encoding: UTF-8
-RoxygenNote: 7.3.0
+RoxygenNote: 7.3.1
 Roxygen: list(markdown = TRUE)
