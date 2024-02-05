@@ -78,7 +78,7 @@ assert_anneal <- function(watson, crick, overhang, table = COMPLEMENT_TABLE_DNA)
 assert_checksum <- function(checksum, prefix = "") {
   stopifnot(length(checksum) == 1L, !is.na(checksum))
   if (nzchar(prefix)) {
-    pattern <- "^(|(l|c)(s|d))seguid-"
+    pattern <- "^(|(l|c)(s|d))seguid="
     stopifnot(grepl(pattern, checksum))
     checksum <- sub(pattern, "", checksum)
   }

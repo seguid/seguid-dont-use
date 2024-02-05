@@ -50,7 +50,7 @@ sha1_b64encode_urlsafe <- function(seq) {
 with_prefix <- function(s, prefix, form = c("long", "short", "both")) {
   form <- match.arg(form)
   
-  checksum <- sub("^(|(l|c)(s|d))*seguid-", "", s)
+  checksum <- sub("^(|(l|c)(s|d))*seguid=", "", s)
   assert_checksum(checksum, prefix = "")
 
   if (form == "both") form <- c("short", "long")
@@ -140,29 +140,29 @@ with_prefix <- function(s, prefix, form = c("long", "short", "both")) {
 #' ## Linear single-stranded DNA:
 #' ## GATTACA
 #' seguid("GATTACA")
-#' #> seguid-tp2jzeCM2e3W4yxtrrx09CMKa/8
+#' #> seguid=tp2jzeCM2e3W4yxtrrx09CMKa/8
 #'
 #' ## Linear single-stranded DNA
 #' ## GATTACA
 #' lsseguid("GATTACA")
-#' #> lsseguid-tp2jzeCM2e3W4yxtrrx09CMKa_8
+#' #> lsseguid=tp2jzeCM2e3W4yxtrrx09CMKa_8
 #'
 #' ## Circular single-stranded DNA
 #' ## GATTACA = ATTACAG = ... = AGATTAC
 #' csseguid("GATTACA")
-#' #> csseguid-mtrvbtuwr6_MoBxvtm4BEpv-jKQ
+#' #> csseguid=mtrvbtuwr6_MoBxvtm4BEpv-jKQ
 #'
 #' ## Linear double-stranded DNA
 #' ## GATTACA
 #' ## CTAATGT
 #' ldseguid("GATTACA", "TGTAATC", overhang = 0)
-#' #> ldseguid-XscjVNyZarYrROVgGXUCleJcMC
+#' #> ldseguid=XscjVNyZarYrROVgGXUCleJcMC
 #'
 #' ## Circular double-stranded DNA
 #' ## GATTACA = ATTACAG = ... = AGATTAC
 #' ## CTAATGT = TAATGTC = ... = TCTAATG
 #' cdseguid("GATTACA", "TGTAATC")
-#' #> cdseguid-zCuq031K3_-40pArbl-Y4N9RLnA
+#' #> cdseguid=zCuq031K3_-40pArbl-Y4N9RLnA
 #'
 #' @references
 #' 1. Babnigg, G., Giometti, CS. A database of unique protein sequence
@@ -185,7 +185,7 @@ seguid <- function(seq, table = "{DNA}", form = c("long", "short", "both")) {
   }
   
   table2 <- get_table(table)
-  with_prefix(.seguid(seq, table = table2, encoding = sha1_b64encode), prefix = "seguid-", form = form)
+  with_prefix(.seguid(seq, table = table2, encoding = sha1_b64encode), prefix = "seguid=", form = form)
 }
 
 
@@ -201,7 +201,7 @@ lsseguid <- function(seq, table = "{DNA}", form = c("long", "short", "both")) {
   }
   
   table2 <- get_table(table)
-  with_prefix(.seguid(seq, table = table2, encoding = sha1_b64encode_urlsafe), prefix = "lsseguid-", form = form)
+  with_prefix(.seguid(seq, table = table2, encoding = sha1_b64encode_urlsafe), prefix = "lsseguid=", form = form)
 }
 
 
@@ -216,7 +216,7 @@ csseguid <- function(seq, table = "{DNA}", form = c("long", "short", "both")) {
     stop("A sequence must not be empty")
   }
   
-  with_prefix(lsseguid(rotate_to_min(seq), table = table), prefix = "csseguid-", form = form)
+  with_prefix(lsseguid(rotate_to_min(seq), table = table), prefix = "csseguid=", form = form)
 }
 
 
@@ -251,7 +251,7 @@ ldseguid <- function(watson, crick, overhang, table = "{DNA}", form = c("long", 
   msg <- repr_from_tuple(watson = w, crick = c, overhang = o, table = table2, space = "-")
 
   table2 <- paste0(table, "+[-\n]")
-  with_prefix(lsseguid(msg, table = table2), prefix = "ldseguid-", form = form)
+  with_prefix(lsseguid(msg, table = table2), prefix = "ldseguid=", form = form)
 }
 
 
@@ -280,5 +280,5 @@ cdseguid <- function(watson, crick, table = "{DNA}", form = c("long", "short", "
       w <- crick_min
   }
 
-  with_prefix(ldseguid(w, rc(w, table = table2), overhang = 0, table = table), prefix = "cdseguid-", form = form)
+  with_prefix(ldseguid(w, rc(w, table = table2), overhang = 0, table = table), prefix = "cdseguid=", form = form)
 }
