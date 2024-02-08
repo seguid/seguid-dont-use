@@ -12,22 +12,22 @@ original SEGUID algorithm.
 > library(seguid)
 
 > lsseguid("AT")
-[1] "lsseguid-Ax_RG6hzSrMEEWoCO1IWMGska-4"
+[1] "lsseguid=Ax_RG6hzSrMEEWoCO1IWMGska-4"
 
 > lsseguid("AT")
-[1] "lsseguid-Ax_RG6hzSrMEEWoCO1IWMGska-4"
+[1] "lsseguid=Ax_RG6hzSrMEEWoCO1IWMGska-4"
 
 > csseguid("AT")
-[1] "csseguid-Ax_RG6hzSrMEEWoCO1IWMGska-4"
+[1] "csseguid=Ax_RG6hzSrMEEWoCO1IWMGska-4"
 
 > csseguid("TA")
-[1] "csseguid-Ax_RG6hzSrMEEWoCO1IWMGska-4"
+[1] "csseguid=Ax_RG6hzSrMEEWoCO1IWMGska-4"
 
 > cdseguid("AT", "AT")
-[1] "cdseguid-AWD-dt5-TEua8RbOWfnctJIu9nA"
+[1] "cdseguid=AWD-dt5-TEua8RbOWfnctJIu9nA"
 
 > cdseguid("TA", "TA")
-[1] "cdseguid-AWD-dt5-TEua8RbOWfnctJIu9nA"
+[1] "cdseguid=AWD-dt5-TEua8RbOWfnctJIu9nA"
 ```
 
 

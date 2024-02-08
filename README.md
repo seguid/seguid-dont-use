@@ -15,18 +15,18 @@ Python:
 >>> from seguid import *
 
 >>> lsseguid("AT")
-'lsseguid-Ax_RG6hzSrMEEWoCO1IWMGska-4'
+'lsseguid=Ax_RG6hzSrMEEWoCO1IWMGska-4'
 
 >>> cdseguid("AT", "AT")
-'cdseguid-AWD-dt5-TEua8RbOWfnctJIu9nA'
+'cdseguid=AWD-dt5-TEua8RbOWfnctJIu9nA'
 ```
 
 ```sh
 $ python -m seguid --type="lsseguid" <<< "AT"
-lsseguid-Ax_RG6hzSrMEEWoCO1IWMGska-4
+lsseguid=Ax_RG6hzSrMEEWoCO1IWMGska-4
 
 $ python -m seguid --type="cdseguid" <<< $'AT\nTA'
-cdseguid-AWD-dt5-TEua8RbOWfnctJIu9nA
+cdseguid=AWD-dt5-TEua8RbOWfnctJIu9nA
 ```
 
 
@@ -36,16 +36,16 @@ R:
 > library(seguid)
 
 > lsseguid("AT")
-[1] "lsseguid-Ax_RG6hzSrMEEWoCO1IWMGska-4"
+[1] "lsseguid=Ax_RG6hzSrMEEWoCO1IWMGska-4"
 
 > cdseguid("AT", "AT")
-[1] "cdseguid-AWD-dt5-TEua8RbOWfnctJIu9nA"
+[1] "cdseguid=AWD-dt5-TEua8RbOWfnctJIu9nA"
 ```
 
 ```sh
 $ Rscript -e seguid::lsseguid <<< "AT"
-lsseguid-Ax_RG6hzSrMEEWoCO1IWMGska-4
+lsseguid=Ax_RG6hzSrMEEWoCO1IWMGska-4
 
 $ Rscript -e seguid::cdseguid <<< $'AT\nTA'
-cdseguid-AWD-dt5-TEua8RbOWfnctJIu9nA
+cdseguid=AWD-dt5-TEua8RbOWfnctJIu9nA
 ```
