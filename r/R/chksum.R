@@ -232,6 +232,11 @@ csseguid <- function(seq, table = "{DNA}", form = c("long", "short", "both")) {
 #' @rdname seguid
 #' @export
 ldseguid <- function(watson, crick, overhang, table = "{DNA}", form = c("long", "short", "both")) {
+  ## Make sure to collate in the 'C' locale
+  old_locale <- Sys.getlocale("LC_COLLATE")
+  on.exit(Sys.setlocale("LC_COLLATE", old_locale))
+  Sys.setlocale("LC_COLLATE", "C")
+
   if (nchar(watson) == 0 || nchar(crick) == 0) {
     stop("A sequence must not be empty")
   }

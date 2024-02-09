@@ -102,29 +102,29 @@ the padding character.
 ## Linear single-stranded DNA:
 ## GATTACA
 seguid("GATTACA")
-#> seguid-tp2jzeCM2e3W4yxtrrx09CMKa/8
+#> seguid=tp2jzeCM2e3W4yxtrrx09CMKa/8
 
 ## Linear single-stranded DNA
 ## GATTACA
 lsseguid("GATTACA")
-#> lsseguid-tp2jzeCM2e3W4yxtrrx09CMKa_8
+#> lsseguid=tp2jzeCM2e3W4yxtrrx09CMKa_8
 
 ## Circular single-stranded DNA
 ## GATTACA = ATTACAG = ... = AGATTAC
 csseguid("GATTACA")
-#> csseguid-mtrvbtuwr6_MoBxvtm4BEpv-jKQ
+#> csseguid=mtrvbtuwr6_MoBxvtm4BEpv-jKQ
 
 ## Linear double-stranded DNA
 ## GATTACA
 ## CTAATGT
 ldseguid("GATTACA", "TGTAATC", overhang = 0)
-#> ldseguid-XscjVNyZarYrROVgGXUCleJcMC
+#> ldseguid=XscjVNyZarYrROVgGXUCleJcMC
 
 ## Circular double-stranded DNA
 ## GATTACA = ATTACAG = ... = AGATTAC
 ## CTAATGT = TAATGTC = ... = TCTAATG
 cdseguid("GATTACA", "TGTAATC")
-#> cdseguid-zCuq031K3_-40pArbl-Y4N9RLnA
+#> cdseguid=zCuq031K3_-40pArbl-Y4N9RLnA
 
 }
 \references{
