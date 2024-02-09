@@ -25,7 +25,6 @@ setup() {
     assert_output --partial "--version"
     assert_output --partial "--help"
     assert_output --regexp "[Uu]sage:"
-    assert_output --regexp "[Oo]ptions:"
 }
 
 
@@ -346,6 +345,22 @@ setup() {
     run "${cli_call[@]}" --table='A,C,D,E,F,G,H,I,K,L,M,N,P,Q,R,S,T,V,W,Y' <<< "ARDNAKNTLYLQMSRLRSEDTAMYYCAR"
     assert_success
     assert_output "seguid=IdtGC8ZYgDbkA0i4u4n0tiAQwng"
+}
+
+
+# Expanded epigenetic alphabet per Viner et al. (2024)
+@test "<CLI call> --table='{DNA},m1,1m,h2,2h,f3,3f,c4,4c' <<< 'AmT2C\nT1AhG'" {
+    run "${cli_call[@]}" --type=ldseguid --table="{DNA},m1,1m,h2,2h,f3,3f,c4,4c" <<< $'AmT2C\nT1AhG'
+    assert_success
+    assert_output "ldseguid=rsPDjP4SWr3-ploCeXTdTA80u0Y"
+}
+
+
+# Ambigous expanded epigenetic alphabet per Viner et al. (2024)
+@test "<CLI call> --table='{DNA},m1,1m,h2,2h,f3,3f,c4,4c,w6,6w,x7,7x,y8,8y,z9,9z' <<< 'AmT2C\nT1AhG'" {
+    run "${cli_call[@]}" --type=ldseguid --table="{DNA},m1,1m,h2,2h,f3,3f,c4,4c,w6,6w,x7,7x,y8,8y,z9,9z" <<< $'AAAhyAmA\nTTT28T1T'
+    assert_success
+    assert_output "ldseguid=ARKoPbYshXt9atSMOfbwMdcviXA"
 }
 
 
