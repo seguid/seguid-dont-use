@@ -58,13 +58,13 @@ with_prefix <- function(s, prefix, form = c("long", "short", "both")) {
   res <- character(0L)
   for (ff in form) {
     if (ff == "long") {
-      res <- c(res, checksum)
+      res <- c(res, paste0(prefix, checksum))
     } else if (ff == "short") {
       res <- c(res, substr(checksum, start = 1L, stop = 6L))
     }
   }
   
-  paste0(prefix, res)
+  res
 }
 
 .seguid <- function(seq, table, encoding, prefix = "") {
