@@ -349,15 +349,21 @@ setup() {
 
 
 # Expanded epigenetic alphabet per Viner et al. (2024)
-@test "<CLI call> --table='{DNA},m1,1m,h2,2h,f3,3f,c4,4c' <<< 'AmT2C\nT1AhG'" {
+@test "<CLI call> --type=lsseguid --table='{DNA},m1,1m,h2,2h,f3,3f,c4,4c' <<< 'AmT2C'" {
+    run "${cli_call[@]}" --type=lsseguid --table="{DNA},m1,1m,h2,2h,f3,3f,c4,4c" <<< 'AmT2C'
+    assert_success
+    assert_output "lsseguid=MW4Rh3lGY2mhwteaSKh1-Kn2fGA"
+}
+
+# Expanded epigenetic alphabet per Viner et al. (2024)
+@test "<CLI call> --type=ldseguid --table='{DNA},m1,1m,h2,2h,f3,3f,c4,4c' <<< \$'AmT2C\nT1AhG'" {
     run "${cli_call[@]}" --type=ldseguid --table="{DNA},m1,1m,h2,2h,f3,3f,c4,4c" <<< $'AmT2C\nT1AhG'
     assert_success
     assert_output "ldseguid=rsPDjP4SWr3-ploCeXTdTA80u0Y"
 }
 
-
 # Ambigous expanded epigenetic alphabet per Viner et al. (2024)
-@test "<CLI call> --table='{DNA},m1,1m,h2,2h,f3,3f,c4,4c,w6,6w,x7,7x,y8,8y,z9,9z' <<< 'AmT2C\nT1AhG'" {
+@test "<CLI call> --type=ldseguid --table='{DNA},m1,1m,h2,2h,f3,3f,c4,4c,w6,6w,x7,7x,y8,8y,z9,9z' <<< \$'AmT2C\nT1AhG'" {
     run "${cli_call[@]}" --type=ldseguid --table="{DNA},m1,1m,h2,2h,f3,3f,c4,4c,w6,6w,x7,7x,y8,8y,z9,9z" <<< $'AAAhyAmA\nTTT28T1T'
     assert_success
     assert_output "ldseguid=ARKoPbYshXt9atSMOfbwMdcviXA"
