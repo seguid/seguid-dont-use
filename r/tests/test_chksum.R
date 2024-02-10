@@ -41,11 +41,11 @@ truth <- "ldseguid=JwB2eUmZkCNjyWAv471JeUbiSDM"
 stopifnot(do.call(ldseguid, args = dlDNA2) == truth)
 
 dlDNA3 <- list("TA", "AT", -1)
-truth <- "ldseguid=bv0UOR12eWrBeaAx79PNZvveviU"
+truth <- "ldseguid=XBcVadfQevTW_lklW4rdqw5udQ8"
 stopifnot(do.call(ldseguid, args = dlDNA3) == truth)
 
 dlDNA4 <- list("CTATAG", "AT", -2)
-truth <- "ldseguid=np3hncfQvOh8rZ8Co1Ts_02NXg4"
+truth <- "ldseguid=_E05Xeo7KnLxrjsqDdpXNw_AIDE"
 stopifnot(do.call(ldseguid, args = dlDNA4) == truth)
 
 dlDNA5 <- list("AT", "CTATAG", 2)

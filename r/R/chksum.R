@@ -244,19 +244,18 @@ ldseguid <- function(watson, crick, overhang, table = "{DNA}", form = c("long", 
   table2 <- get_table(table)
   assert_anneal(watson, crick, overhang = overhang, table = table2)
 
-  lw <- nchar(watson)
-  lc <- nchar(crick)
-  df <- data.frame(A = c(watson, crick), B = c(crick, watson), C = c(overhang, lw - lc + overhang))
-  o <- order(df$A, df$B, df$C, decreasing = FALSE)
-  df <- df[o[1],]
-  w <- df$A
-  c <- df$B
-  o <- df$C
+  watson_crick_repr <- repr_from_tuple(watson = watson, crick = crick, overhang =  overhang, table = table2, space = "-")
+  crick_watson_repr <- strsplit(watson_crick_repr, split = "\n")[[1]]
+  crick_watson_repr <- paste(rev(crick_watson_repr), collapse = "\n")
 
-  msg <- repr_from_tuple(watson = w, crick = c, overhang = o, table = table2, space = "-")
+  if (is_seq_less_than(watson_crick_repr, crick_watson_repr)) {
+    repr <- watson_crick_repr
+  } else {
+    repr <- crick_watson_repr
+  }
 
   table2 <- paste0(table, "+[-\n]")
-  with_prefix(lsseguid(msg, table = table2), prefix = "ldseguid=", form = form)
+  with_prefix(lsseguid(repr, table = table2), prefix = "ldseguid=", form = form)
 }
 
 

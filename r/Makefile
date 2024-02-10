@@ -14,7 +14,7 @@ build:
 	mkdir -p ".local"
 	cd ".local" && R CMD build ..
 
-check:
+check: build
 	cd ".local" && R CMD check --as-cran seguid_*.tar.gz
 	cd ".local" && R CMD INSTALL seguid_*.tar.gz
 

@@ -79,7 +79,7 @@ setup() {
 @test "Rscript -e seguid::ldseguid --args <<< \$'-CGT\\nTGCA'" {
     run Rscript -e seguid::ldseguid --args <<< $'-CGT\nTGCA'
     assert_success
-    assert_output "ldseguid=MpPe6pJoya3CoRh3BAw2qgEOcKI"
+    assert_output "ldseguid=ONPHQCrPDPDbypL85mg8vXNQGPw"
 }
 
 @test "Rscript -e seguid::ldseguid --args <<< \$'-CGT\nTGC-'" {
