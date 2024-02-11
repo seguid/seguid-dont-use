@@ -111,8 +111,10 @@ min_rotation <- function(s) {
 
 
 rotate_to_min <- function(s) {
-  ## Assert that upper-case letters are ordered before lower-case letters
+  ## Assert that upper-case letters are ordered before lower-case letters,
+  ## and digits before upper-case letters
   stopifnot(min_rotation("Aa") == 0)
+  stopifnot(min_rotation("0A") == 0)
   
   amount <- min_rotation(s)
   rotate(s, amount = amount)
