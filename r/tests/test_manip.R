@@ -4,25 +4,25 @@ rotate <- seguid:::rotate
 min_rotation <- seguid:::min_rotation
 rotate_to_min <- seguid:::rotate_to_min
 
-table <- c(G = "C", A = "T", T = "A", C = "G")
+alphabet <- c(G = "C", A = "T", T = "A", C = "G")
 
 seq <- "AACCGGTT"
 seq_complementary <- "TTGGCCAA"
-stopifnot(complementary(seq, table = table) == seq_complementary)
-stopifnot(complementary(seq_complementary, table = table) == seq)
-stopifnot(complementary(complementary(seq, table = table), table = table) == seq)
+stopifnot(complementary(seq, alphabet = alphabet) == seq_complementary)
+stopifnot(complementary(seq_complementary, alphabet = alphabet) == seq)
+stopifnot(complementary(complementary(seq, alphabet = alphabet), alphabet = alphabet) == seq)
 
 seq <- "AACCGGTTxx"
 res <- tryCatch({
-  complementary(seq, table = table)
+  complementary(seq, alphabet = alphabet)
 }, error = identity)
 stopifnot(inherits(res, "error"))
 
 watson <- "ACGTAACCGGTT"
 crick <- "AACCGGTTACGT"
-stopifnot(rc(watson, table = table) == crick)
-stopifnot(rc(crick, table = table) == watson)
-stopifnot(rc(rc(watson, table = table), table = table) == watson)
+stopifnot(rc(watson, alphabet = alphabet) == crick)
+stopifnot(rc(crick, alphabet = alphabet) == watson)
+stopifnot(rc(rc(watson, alphabet = alphabet), alphabet = alphabet) == watson)
 
 seq <- "ACGTAACCGGTT"
 n <- nchar(seq)
@@ -35,21 +35,21 @@ stopifnot(rotate("", 0) == "")
 stopifnot(rotate("", 1) == "")
 
 ## Rotate on the complementary strand
-stopifnot(complementary(rotate(complementary(seq, table = table), +1), table = table) == rotate(seq, +1))
+stopifnot(complementary(rotate(complementary(seq, alphabet = alphabet), +1), alphabet = alphabet) == rotate(seq, +1))
 
 watson <- "ACGTAACCGGTT"
 crick <- "AACCGGTTACGT"
 
 ## Rotate on Watson, is the opposite rotation on Crick
-stopifnot(rc(watson, table = table)                 == crick             )
-stopifnot(rc(rotate(crick, -1), table = table)      == rotate(watson, +1))
-stopifnot(rc(rotate(rc(watson, table = table), -1), table = table) == rotate(watson, +1))
+stopifnot(rc(watson, alphabet = alphabet)                 == crick             )
+stopifnot(rc(rotate(crick, -1), alphabet = alphabet)      == rotate(watson, +1))
+stopifnot(rc(rotate(rc(watson, alphabet = alphabet), -1), alphabet = alphabet) == rotate(watson, +1))
 
-stopifnot(rc("GAT", table = table) == "ATC")
-stopifnot(rc("GTT", table = table) == "AAC")
+stopifnot(rc("GAT", alphabet = alphabet) == "ATC")
+stopifnot(rc("GTT", alphabet = alphabet) == "AAC")
 
 res <- tryCatch({
-  rc("GTZ", table = table)
+  rc("GTZ", alphabet = alphabet)
 }, error = identity)
 stopifnot(inherits(res, "error"))
 

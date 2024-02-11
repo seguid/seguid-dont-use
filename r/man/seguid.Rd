@@ -8,28 +8,28 @@
 \alias{cdseguid}
 \title{SEGUID checksum for protein and linear single-stranded DNA}
 \usage{
-seguid(seq, table = "{DNA}", form = c("long", "short", "both"))
+seguid(seq, alphabet = "{DNA}", form = c("long", "short", "both"))
 
-lsseguid(seq, table = "{DNA}", form = c("long", "short", "both"))
+lsseguid(seq, alphabet = "{DNA}", form = c("long", "short", "both"))
 
-csseguid(seq, table = "{DNA}", form = c("long", "short", "both"))
+csseguid(seq, alphabet = "{DNA}", form = c("long", "short", "both"))
 
 ldseguid(
   watson,
   crick,
   overhang,
-  table = "{DNA}",
+  alphabet = "{DNA}",
   form = c("long", "short", "both")
 )
 
-cdseguid(watson, crick, table = "{DNA}", form = c("long", "short", "both"))
+cdseguid(watson, crick, alphabet = "{DNA}", form = c("long", "short", "both"))
 }
 \arguments{
 \item{seq}{(character string) The sequence for which the checksum
 should be calculated.  The sequence may only comprise of characters
-in the alphabet specified by the \code{table} argument.}
+in the alphabet specified by the \code{alphabet} argument.}
 
-\item{table}{(character string) The type of sequence used.
+\item{alphabet}{(character string) The type of sequence used.
 If \code{"{DNA}"} (default), then the input is a DNA sequence.
 If \code{"iupac"}, then the input is a DNA sequence specified with
 IUPAC ambigous DNA symbols (3).

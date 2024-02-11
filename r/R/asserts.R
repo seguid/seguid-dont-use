@@ -37,34 +37,34 @@ assert_in_alphabet <- function(seq, alphabet) {
   }
 }
 
-assert_table <- function(table) {
-  stopifnot(is.character(table), !anyNA(table), is.character(names(table)))
+assert_alphabet <- function(alphabet) {
+  stopifnot(is.character(alphabet), !anyNA(alphabet), is.character(names(alphabet)))
   
-  dups <- names(table)[duplicated(names(table))]
+  dups <- names(alphabet)[duplicated(names(alphabet))]
   if (length(dups) > 0) {
     dups <- paste(dups, collapse = " ")
-    stop(sprintf("Detected duplicated names (%s) in 'table'", dups))
+    stop(sprintf("Detected duplicated names (%s) in 'alphabet'", dups))
   }
   
-  if (all(nchar(table) == 0)) {
+  if (all(nchar(alphabet) == 0)) {
     return()
   }
 
-  unknown <- setdiff(table, names(table))
+  unknown <- setdiff(alphabet, names(alphabet))
   if (length(unknown) > 0) {
     missing <- paste(unknown, collapse = " ")
-    stop(sprintf("Detected values (%s) in 'table' that are not in the names", missing))
+    stop(sprintf("Detected values (%s) in 'alphabet' that are not in the names", missing))
   }
 }
 
-assert_anneal <- function(watson, crick, overhang, table = COMPLEMENT_TABLE_DNA) {
-  assert_table(table)
-  assert_in_alphabet(watson, alphabet = names(table))
-  assert_in_alphabet(crick, alphabet = names(table))
+assert_anneal <- function(watson, crick, overhang, alphabet = COMPLEMENT_ALPHABET_DNA) {
+  assert_alphabet(alphabet)
+  assert_in_alphabet(watson, alphabet = names(alphabet))
+  assert_in_alphabet(crick, alphabet = names(alphabet))
   stopifnot(length(overhang) == 1, is.numeric(overhang), !is.na(overhang))
   stopifnot(-nchar(watson) < overhang, overhang < nchar(crick))
 
-  crick_rc <- rc(crick, table = table)
+  crick_rc <- rc(crick, alphabet = alphabet)
   
   up <- substr(watson,   start = max(-overhang, 0) + 1, stop = nchar(crick)  - overhang)
   dn <- substr(crick_rc, start = max(+overhang, 0) + 1, stop = nchar(watson) + overhang)

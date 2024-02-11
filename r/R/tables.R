@@ -1,19 +1,19 @@
 # Definition of Complementary DNA Symbols
-COMPLEMENT_TABLE_DNA <- c(G="C",
+COMPLEMENT_ALPHABET_DNA <- c(G="C",
                           A="T",
                           C="G",
                           T="A")
 
 
 # Definition of Complementary RNA Symbols
-COMPLEMENT_TABLE_RNA <- c(G="C",
+COMPLEMENT_ALPHABET_RNA <- c(G="C",
                           A="U",
                           C="G",
                           U="A")
 
 
 # Definition of Complementary IUPAC Ambigous DNA Symbols
-COMPLEMENT_TABLE_IUPAC <- c(COMPLEMENT_TABLE_DNA, c(B="V",
+COMPLEMENT_ALPHABET_IUPAC <- c(COMPLEMENT_ALPHABET_DNA, c(B="V",
                                                     D="H",
                                                     H="D",
                                                     K="M",
@@ -24,7 +24,7 @@ COMPLEMENT_TABLE_IUPAC <- c(COMPLEMENT_TABLE_DNA, c(B="V",
                                                     N="N"))
 
 
-TABLE_IUPAC_PROTEIN <- c(A="",
+ALPHABET_IUPAC_PROTEIN <- c(A="",
                          C="",
                          D="",
                          E="",
@@ -46,29 +46,29 @@ TABLE_IUPAC_PROTEIN <- c(A="",
                          Y="")
 
 
-make_table <- function(definition) {
+make_alphabet <- function(definition) {
   stopifnot(length(definition) == 1, is.character(definition), !is.na(definition))
-  table <- strsplit(definition, split = ",", fixed = TRUE)[[1]]
-  n <- nchar(table)[1]
-  stopifnot(nchar(table) == n, n %in% 1:2)
+  alphabet <- strsplit(definition, split = ",", fixed = TRUE)[[1]]
+  n <- nchar(alphabet)[1]
+  stopifnot(nchar(alphabet) == n, n %in% 1:2)
   
-  table <- strsplit(table, split = "", fixed = TRUE)
-  keys <- vapply(table, FUN = function(x) x[1], FUN.VALUE = NA_character_)
+  alphabet <- strsplit(alphabet, split = "", fixed = TRUE)
+  keys <- vapply(alphabet, FUN = function(x) x[1], FUN.VALUE = NA_character_)
   assert_valid_alphabet(keys)
   
   if (n == 1L) {
     values <- rep("", times = length(keys))
     names(values) <- keys
   } else if (n == 2L) {
-    values <- vapply(table, FUN = function(x) x[2], FUN.VALUE = NA_character_)
+    values <- vapply(alphabet, FUN = function(x) x[2], FUN.VALUE = NA_character_)
     assert_valid_alphabet(values)
     names(values) <- keys
-    assert_table(values)
+    assert_alphabet(values)
   }
   values
 }
 
-get_table <- function(spec) {
+get_alphabet <- function(spec) {
   stopifnot(length(spec) == 1, is.character(spec), !is.na(spec))
   
   ## Extras? Example: "{DNA}+[-]+[\n]" and "{DNA}+[-\n]"
@@ -87,28 +87,28 @@ get_table <- function(spec) {
     part <- parts[kk]
     if (grepl("^[{][[:alpha:]][[:alnum:]]+[}]$", part)) {
       if (part == "{DNA}") {
-        table <- COMPLEMENT_TABLE_DNA
+        alphabet <- COMPLEMENT_ALPHABET_DNA
       } else if (part == "{RNA}") {
-        table <- COMPLEMENT_TABLE_RNA
+        alphabet <- COMPLEMENT_ALPHABET_RNA
       } else if (part == "{IUPAC}") {
-        table <- COMPLEMENT_TABLE_IUPAC
+        alphabet <- COMPLEMENT_ALPHABET_IUPAC
       } else if (part == "{protein}") {
-        table <- TABLE_IUPAC_PROTEIN
+        alphabet <- ALPHABET_IUPAC_PROTEIN
       } else {
-        stop("Unknown table: ", sQuote(part))
+        stop("Unknown alphabet: ", sQuote(part))
       }
-      part <- paste(sprintf("%s%s", names(table), table), collapse = ",")
+      part <- paste(sprintf("%s%s", names(alphabet), alphabet), collapse = ",")
       parts[kk] <- part
     }
   }
   parts <- paste(parts, collapse = ",")
-  table <- make_table(parts)
+  alphabet <- make_alphabet(parts)
 
   ## Add extras?
   if (length(extras) > 0) {
     names(extras) <- extras
-    table <- c(table, extras)
+    alphabet <- c(alphabet, extras)
   }
 
-  table
+  alphabet
 }

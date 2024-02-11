@@ -23,10 +23,10 @@ cleandoc <- function(s) {
   paste(s, collapse = "\n")
 }
 
-tuple_from_repr <- function(rpr, table = COMPLEMENT_TABLE_DNA, space = "-") {
+tuple_from_repr <- function(rpr, alphabet = COMPLEMENT_ALPHABET_DNA, space = "-") {
   stopifnot(length(space) == 1, is.character(space), !is.na(space))
   rpr <- cleandoc(rpr)
-  assert_in_alphabet(rpr, alphabet = c(names(table), space, "\n"))
+  assert_in_alphabet(rpr, alphabet = c(names(alphabet), space, "\n"))
   rpr <- strsplit(rpr, split = "\n", fixed = TRUE)[[1]]
   watson <- rpr[[1]]
   crickrv <- rpr[[2]]
@@ -35,8 +35,8 @@ tuple_from_repr <- function(rpr, table = COMPLEMENT_TABLE_DNA, space = "-") {
   suffix <- sprintf("[%s]+$", space)
   stopifnot(!(grepl(prefix, watson) && grepl(prefix, crickrv)))
   stopifnot(!(grepl(suffix, watson) && grepl(suffix, crickrv)))
-  assert_in_alphabet(watson, alphabet = c(names(table), space))
-  assert_in_alphabet(crickrv, alphabet = c(names(table), space))
+  assert_in_alphabet(watson, alphabet = c(names(alphabet), space))
+  assert_in_alphabet(crickrv, alphabet = c(names(alphabet), space))
 
   lstrip <- function(s, symbol) {
     pattern <- sprintf("^[%s]+", symbol)
@@ -54,14 +54,14 @@ tuple_from_repr <- function(rpr, table = COMPLEMENT_TABLE_DNA, space = "-") {
   watson <- strip(watson, space)
   crick <- reverse(strip(crickrv, space))
   
-  assert_in_alphabet(watson, alphabet = c(names(table), space))
-  assert_in_alphabet(crick , alphabet = c(names(table), space))
+  assert_in_alphabet(watson, alphabet = c(names(alphabet), space))
+  assert_in_alphabet(crick , alphabet = c(names(alphabet), space))
   
-  table2 <- c(table, space)
-  names(table2)[length(table2)] <- space
-  assert_table(table2)
+  alphabet2 <- c(alphabet, space)
+  names(alphabet2)[length(alphabet2)] <- space
+  assert_alphabet(alphabet2)
   
-  assert_anneal(watson, crick, table = table2, overhang = overhang)
+  assert_anneal(watson, crick, alphabet = alphabet2, overhang = overhang)
   
   list(watson = watson, crick = crick, overhang = overhang)
 }
@@ -74,8 +74,8 @@ pad <- function(n, symbol = " ") {
 }
 
 
-repr_from_tuple <- function(watson, crick, overhang, table = COMPLEMENT_TABLE_DNA, space = "-") {
-  assert_anneal(watson, crick, overhang = overhang, table = table)
+repr_from_tuple <- function(watson, crick, overhang, alphabet = COMPLEMENT_ALPHABET_DNA, space = "-") {
+  assert_anneal(watson, crick, overhang = overhang, alphabet = alphabet)
 
   roverhang <- overhang + nchar(watson) - nchar(crick)
   rpr <- paste0(
@@ -83,7 +83,7 @@ repr_from_tuple <- function(watson, crick, overhang, table = COMPLEMENT_TABLE_DN
     "\n",
     paste0(pad(-overhang, symbol = space), reverse(crick), pad(+roverhang, symbol = space))
   )
-  assert_in_alphabet(rpr, alphabet = c(names(table), space, "\n"))
+  assert_in_alphabet(rpr, alphabet = c(names(alphabet), space, "\n"))
   rpr
 }
 

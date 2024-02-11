@@ -67,9 +67,9 @@ with_prefix <- function(s, prefix, form = c("long", "short", "both")) {
   res
 }
 
-.seguid <- function(seq, table, encoding, prefix = "") {
-    assert_table(table)
-    assert_in_alphabet(seq, alphabet = names(table))
+.seguid <- function(seq, alphabet, encoding, prefix = "") {
+    assert_alphabet(alphabet)
+    assert_in_alphabet(seq, alphabet = names(alphabet))
     stopifnot(is.function(encoding))
     stopifnot(length(prefix) == 1, is.character(prefix), !is.na(prefix))
 
@@ -85,9 +85,9 @@ with_prefix <- function(s, prefix, form = c("long", "short", "both")) {
 #'
 #' @param seq (character string) The sequence for which the checksum
 #' should be calculated.  The sequence may only comprise of characters
-#' in the alphabet specified by the `table` argument.
+#' in the alphabet specified by the `alphabet` argument.
 #'
-#' @param table (character string) The type of sequence used.
+#' @param alphabet (character string) The type of sequence used.
 #' If `"{DNA}"` (default), then the input is a DNA sequence.
 #' If `"iupac"`, then the input is a DNA sequence specified with
 #' IUPAC ambigous DNA symbols (3).
@@ -179,13 +179,13 @@ with_prefix <- function(s, prefix, form = c("long", "short", "both")) {
 #' @importFrom base64enc base64encode
 #' @importFrom digest digest
 #' @export
-seguid <- function(seq, table = "{DNA}", form = c("long", "short", "both")) {
+seguid <- function(seq, alphabet = "{DNA}", form = c("long", "short", "both")) {
   if (nchar(seq) == 0) {
     stop("A sequence must not be empty")
   }
   
-  table2 <- get_table(table)
-  with_prefix(.seguid(seq, table = table2, encoding = sha1_b64encode), prefix = "seguid=", form = form)
+  alphabet2 <- get_alphabet(alphabet)
+  with_prefix(.seguid(seq, alphabet = alphabet2, encoding = sha1_b64encode), prefix = "seguid=", form = form)
 }
 
 
@@ -195,13 +195,13 @@ seguid <- function(seq, table = "{DNA}", form = c("long", "short", "both")) {
 #'
 #' @rdname seguid
 #' @export
-lsseguid <- function(seq, table = "{DNA}", form = c("long", "short", "both")) {
+lsseguid <- function(seq, alphabet = "{DNA}", form = c("long", "short", "both")) {
   if (nchar(seq) == 0) {
     stop("A sequence must not be empty")
   }
   
-  table2 <- get_table(table)
-  with_prefix(.seguid(seq, table = table2, encoding = sha1_b64encode_urlsafe), prefix = "lsseguid=", form = form)
+  alphabet2 <- get_alphabet(alphabet)
+  with_prefix(.seguid(seq, alphabet = alphabet2, encoding = sha1_b64encode_urlsafe), prefix = "lsseguid=", form = form)
 }
 
 
@@ -211,12 +211,12 @@ lsseguid <- function(seq, table = "{DNA}", form = c("long", "short", "both")) {
 #'
 #' @rdname seguid
 #' @export
-csseguid <- function(seq, table = "{DNA}", form = c("long", "short", "both")) {
+csseguid <- function(seq, alphabet = "{DNA}", form = c("long", "short", "both")) {
   if (nchar(seq) == 0) {
     stop("A sequence must not be empty")
   }
   
-  with_prefix(lsseguid(rotate_to_min(seq), table = table), prefix = "csseguid=", form = form)
+  with_prefix(lsseguid(rotate_to_min(seq), alphabet = alphabet), prefix = "csseguid=", form = form)
 }
 
 
@@ -231,7 +231,7 @@ csseguid <- function(seq, table = "{DNA}", form = c("long", "short", "both")) {
 #'
 #' @rdname seguid
 #' @export
-ldseguid <- function(watson, crick, overhang, table = "{DNA}", form = c("long", "short", "both")) {
+ldseguid <- function(watson, crick, overhang, alphabet = "{DNA}", form = c("long", "short", "both")) {
   ## Make sure to collate in the 'C' locale
   old_locale <- Sys.getlocale("LC_COLLATE")
   on.exit(Sys.setlocale("LC_COLLATE", old_locale))
@@ -241,10 +241,10 @@ ldseguid <- function(watson, crick, overhang, table = "{DNA}", form = c("long", 
     stop("A sequence must not be empty")
   }
   
-  table2 <- get_table(table)
-  assert_anneal(watson, crick, overhang = overhang, table = table2)
+  alphabet2 <- get_alphabet(alphabet)
+  assert_anneal(watson, crick, overhang = overhang, alphabet = alphabet2)
 
-  watson_crick_repr <- repr_from_tuple(watson = watson, crick = crick, overhang =  overhang, table = table2, space = "-")
+  watson_crick_repr <- repr_from_tuple(watson = watson, crick = crick, overhang =  overhang, alphabet = alphabet2, space = "-")
   crick_watson_repr <- strsplit(watson_crick_repr, split = "\n")[[1]]
   crick_watson_repr <- paste(rev(crick_watson_repr), collapse = "\n")
 
@@ -254,8 +254,8 @@ ldseguid <- function(watson, crick, overhang, table = "{DNA}", form = c("long", 
     repr <- crick_watson_repr
   }
 
-  table2 <- paste0(table, "+[-\n]")
-  with_prefix(lsseguid(repr, table = table2), prefix = "ldseguid=", form = form)
+  alphabet2 <- paste0(alphabet, "+[-\n]")
+  with_prefix(lsseguid(repr, alphabet = alphabet2), prefix = "ldseguid=", form = form)
 }
 
 
@@ -265,14 +265,14 @@ ldseguid <- function(watson, crick, overhang, table = "{DNA}", form = c("long", 
 #'
 #' @rdname seguid
 #' @export
-cdseguid <- function(watson, crick, table = "{DNA}", form = c("long", "short", "both")) {
+cdseguid <- function(watson, crick, alphabet = "{DNA}", form = c("long", "short", "both")) {
   if (nchar(watson) == 0 || nchar(crick) == 0) {
     stop("A sequence must not be empty")
   }
   
   stopifnot(nchar(watson) == nchar(crick))
-  table2 <- get_table(table)
-  assert_anneal(watson, crick, overhang = 0, table = table2)
+  alphabet2 <- get_alphabet(alphabet)
+  assert_anneal(watson, crick, overhang = 0, alphabet = alphabet2)
 
   watson_min <- rotate_to_min(watson)
   crick_min <- rotate_to_min(crick)
@@ -284,5 +284,5 @@ cdseguid <- function(watson, crick, table = "{DNA}", form = c("long", "short", "
       w <- crick_min
   }
 
-  with_prefix(ldseguid(w, rc(w, table = table2), overhang = 0, table = table), prefix = "cdseguid=", form = form)
+  with_prefix(ldseguid(w, rc(w, alphabet = alphabet2), overhang = 0, alphabet = alphabet), prefix = "cdseguid=", form = form)
 }

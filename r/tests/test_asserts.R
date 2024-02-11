@@ -1,7 +1,7 @@
 assert_anneal <- seguid:::assert_anneal
 assert_valid_alphabet <- seguid:::assert_valid_alphabet
 assert_in_alphabet <- seguid:::assert_in_alphabet
-assert_table <- seguid:::assert_table
+assert_alphabet <- seguid:::assert_alphabet
 
 seq <- "ABCDEFGH"
 alphabet <- c("A", "C", "G", "T")
@@ -28,12 +28,12 @@ stopifnot(inherits(res, "error"))
 
 
 
-table <- c(G = "C", A = "T", T = "A", C = "G")
-assert_table(table)
+alphabet <- c(G = "C", A = "T", T = "A", C = "G")
+assert_alphabet(alphabet)
 
 res <- tryCatch({
-  table <- c(G = "C", A = "T", T = "A", x = "G")
-  assert_table(table)
+  alphabet <- c(G = "C", A = "T", T = "A", x = "G")
+  assert_alphabet(alphabet)
 }, error = identity)
 stopifnot(inherits(res, "error"))
 
@@ -46,12 +46,12 @@ tuples <- list(
    list("AT", "AT", 0)
 )
 
-table <- c(G = "C", A = "T", T = "A", C = "G")
+alphabet <- c(G = "C", A = "T", T = "A", C = "G")
 for (tuple in tuples) {
   watson <- tuple[[1]]
   crick <- tuple[[2]]
   overhang <- tuple[[3]]
-  assert_anneal(watson, crick, overhang  = overhang, table = table)
+  assert_anneal(watson, crick, overhang  = overhang, alphabet = alphabet)
 }
 
 tuples = list(
@@ -60,18 +60,18 @@ tuples = list(
   list("AT", "CTATAG", 1)
 )
 
-table <- c(G = "C", A = "T", T = "A", C = "G")
+alphabet <- c(G = "C", A = "T", T = "A", C = "G")
 for (tuple in tuples) {
   watson <- tuple[[1]]
   crick <- tuple[[2]]
   overhang <- tuple[[3]]
   res <- tryCatch({
-    assert_anneal(watson, crick, overhang = overhang, table = table)
+    assert_anneal(watson, crick, overhang = overhang, alphabet = alphabet)
   }, error = identity)
   stopifnot(inherits(res, "error"))
 }
 
 res <- tryCatch({
-  assert_anneal("AT", "AT", overhang = 4, table = table)
+  assert_anneal("AT", "AT", overhang = 4, alphabet = alphabet)
 }, error = identity)
 stopifnot(inherits(res, "error"))

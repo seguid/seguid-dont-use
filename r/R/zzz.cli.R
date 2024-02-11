@@ -23,13 +23,13 @@ License: MIT
 '
 
 #' @importFrom utils capture.output file_test str
-cli_call_fcn <- function(..., table = "{DNA}", file = NULL, debug = FALSE, fcn) {
+cli_call_fcn <- function(..., alphabet = "{DNA}", file = NULL, debug = FALSE, fcn) {
   if (is.character(fcn)) {
     fcn <- get(fcn, mode = "function", envir = getNamespace(.packageName), inherits = FALSE)
   }
   stopifnot(length(debug) == 1, is.logical(debug), !is.na(debug))
 
-  table2 <- get_table(table)
+  alphabet2 <- get_alphabet(alphabet)
   
   seq <- NULL
   
@@ -78,9 +78,9 @@ cli_call_fcn <- function(..., table = "{DNA}", file = NULL, debug = FALSE, fcn) 
   if (is.element("crick", argnames)) {
     nseq <- length(strsplit(seq, split = "\n", fixed = TRUE)[[1]])
     if (nseq == 1) {
-      args2 <- list(watson = seq, crick = rc(seq, table = table2))
+      args2 <- list(watson = seq, crick = rc(seq, alphabet = alphabet2))
     } else {
-      args2 <- tuple_from_repr(seq, table = table2)
+      args2 <- tuple_from_repr(seq, alphabet = alphabet2)
     }
     if (debug) {
       msg <- sprintf("Sequence tuple:\nwatson=%s\ncrick=%s", args2[[1]], args2[[2]])
@@ -94,7 +94,7 @@ cli_call_fcn <- function(..., table = "{DNA}", file = NULL, debug = FALSE, fcn) 
   } else {
     args2 <- list(seq)
   }
-  args <- c(args2, args, table = table)
+  args <- c(args2, args, alphabet = alphabet)
   if (debug) {
     message(sprintf("Arguments:\n%s", paste(capture.output(str(args)), collapse = "\n")))
   }

@@ -21,15 +21,15 @@ rotate <- function(seq, amount = 0) {
   seq
 }
 
-complementary <- function(seq, table = COMPLEMENT_TABLE_DNA) {
-  ## Validate 'table':
-  assert_table(table)
+complementary <- function(seq, alphabet = COMPLEMENT_ALPHABET_DNA) {
+  ## Validate 'alphabet':
+  assert_alphabet(alphabet)
 
   ## Validate 'seq':
-  assert_in_alphabet(seq, alphabet = names(table))
+  assert_in_alphabet(seq, alphabet = names(alphabet))
 
   seq <- strsplit(seq, split = "", fixed = TRUE)[[1]]
-  seq_c <- table[seq]
+  seq_c <- alphabet[seq]
   paste(seq_c, collapse = "")
 }
 
@@ -40,8 +40,8 @@ reverse <- function(seq) {
 } 
 
 # Reverse complement
-rc <- function(seq, table = COMPLEMENT_TABLE_DNA) {
-  reverse(complementary(seq, table = table))
+rc <- function(seq, alphabet = COMPLEMENT_ALPHABET_DNA) {
+  reverse(complementary(seq, alphabet = alphabet))
 }
 
 
