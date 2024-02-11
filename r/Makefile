@@ -2,21 +2,24 @@ SHELL=bash
 
 BROWSER=google-chrome
 
-all:
+all: install check check-cli
 
 requirements:
 	Rscript -e "install.packages(c('knitr', 'rmarkdown'))"
 
-install:
+install: doc
 	Rscript -e "install.packages('.', repos = NULL)"
 
-build:
+doc:
+	Rscript -e "devtools::document()"
+
+build: doc
 	mkdir -p ".local"
+	rm .local/seguid_*.tar.gz || true
 	cd ".local" && R CMD build ..
 
 check: build
 	cd ".local" && R CMD check --as-cran seguid_*.tar.gz
-	cd ".local" && R CMD INSTALL seguid_*.tar.gz
 
 check-cli:
 	module load CBI bats-core bats-assert bats-file; \
