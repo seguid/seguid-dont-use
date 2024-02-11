@@ -9,7 +9,7 @@ escape_symbols <- function(s) {
   s
 }
 
-assert_alphabet <- function(alphabet) {
+assert_valid_alphabet <- function(alphabet) {
   stopifnot(length(alphabet) > 0, is.character(alphabet), !anyNA(alphabet), all(nchar(alphabet) == 1))
   
   ## Allow only for 0-9, A-Z, a-Z, '-', '\n'
@@ -22,7 +22,7 @@ assert_alphabet <- function(alphabet) {
 
 assert_in_alphabet <- function(seq, alphabet) {
   stopifnot(length(seq) == 1, is.character(seq), !is.na(seq))
-  assert_alphabet(alphabet)
+  assert_valid_alphabet(alphabet)
 
   ## Nothing to do?
   if (nchar(seq) == 0) {

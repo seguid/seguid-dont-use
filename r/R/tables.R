@@ -54,14 +54,14 @@ make_table <- function(definition) {
   
   table <- strsplit(table, split = "", fixed = TRUE)
   keys <- vapply(table, FUN = function(x) x[1], FUN.VALUE = NA_character_)
-  assert_alphabet(keys)
+  assert_valid_alphabet(keys)
   
   if (n == 1L) {
     values <- rep("", times = length(keys))
     names(values) <- keys
   } else if (n == 2L) {
     values <- vapply(table, FUN = function(x) x[2], FUN.VALUE = NA_character_)
-    assert_alphabet(values)
+    assert_valid_alphabet(values)
     names(values) <- keys
     assert_table(values)
   }
