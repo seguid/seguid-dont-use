@@ -81,23 +81,30 @@ with_prefix <- function(s, prefix, form = c("long", "short", "both")) {
 }
 
 
-#' SEGUID checksum for protein and linear single-stranded DNA
+#' SEGUID checksums for linear, circular, single- and double-stranded sequences
 #'
 #' @param seq (character string) The sequence for which the checksum
-#' should be calculated.  The sequence may only comprise of characters
+#' should be calculated.  The sequence may only comprise of symbols
 #' in the alphabet specified by the `alphabet` argument.
 #'
 #' @param alphabet (character string) The type of sequence used.
 #' If `"{DNA}"` (default), then the input is a DNA sequence.
-#' If `"iupac"`, then the input is a DNA sequence specified with
+#' If `"{IUPAC}"`, then the input is a DNA sequence specified with
 #' IUPAC ambigous DNA symbols (3).
 #' If `"{RNA}"`, then the input is an RNA sequence.
 #' If `"{protein}"`, then the input is an amino-acid sequence.
+#' A custom alphabet may also be used.
+#' A non-complementary alphabet is specified as a comma-separated
+#' set of single symbols, e.g. `"X,Y,Z"`.
+#' A complementary alphabet is specified as a comma-separated
+#' set of paired symbols, e.g. `"AT,TA,CG,GC"`.
+#' It is also possible to extend a pre-defined alphabet, e.g.
+#' `"{DNA},XY,YX"`.
 #'
 #' @param form (character string) How the checksum is presented.
-#' If `"long" (default), the full-length checksum is outputted.
-#' If `"short", the short, six-digit checksum is outputted.
-#' If `"both", both the short and the long checksums are outputted.
+#' If `"long"` (default), the full-length checksum is outputted.
+#' If `"short"`, the short, six-digit checksum is outputted.
+#' If `"both"`, both the short and the long checksums are outputted.
 #'
 #' @return
 #' The SEGUID functions return a single character string, if `form` is
@@ -113,7 +120,7 @@ with_prefix <- function(s, prefix, form = c("long", "short", "both")) {
 #' produce checksums using the _base64url_ encoding ("Base 64 Encoding
 #' with URL and Filename Safe Alphabet").
 #'
-#' `seguid()` calculates the original SEGUID checksum for a linear,
+#' `seguid()` calculates the SEGUID v1 checksum for a linear,
 #' single-stranded sequence. 
 #'
 #' @section Base64 and Base64url encodings:
@@ -136,33 +143,7 @@ with_prefix <- function(s, prefix, form = c("long", "short", "both")) {
 #' is a multiple of four character. We relax this requirement, by dropping
 #' the padding character.
 #'
-#' @examples
-#' ## Linear single-stranded DNA:
-#' ## GATTACA
-#' seguid("GATTACA")
-#' #> seguid=tp2jzeCM2e3W4yxtrrx09CMKa/8
-#'
-#' ## Linear single-stranded DNA
-#' ## GATTACA
-#' lsseguid("GATTACA")
-#' #> lsseguid=tp2jzeCM2e3W4yxtrrx09CMKa_8
-#'
-#' ## Circular single-stranded DNA
-#' ## GATTACA = ATTACAG = ... = AGATTAC
-#' csseguid("GATTACA")
-#' #> csseguid=mtrvbtuwr6_MoBxvtm4BEpv-jKQ
-#'
-#' ## Linear double-stranded DNA
-#' ## GATTACA
-#' ## CTAATGT
-#' ldseguid("GATTACA", "TGTAATC", overhang = 0)
-#' #> ldseguid=XscjVNyZarYrROVgGXUCleJcMC
-#'
-#' ## Circular double-stranded DNA
-#' ## GATTACA = ATTACAG = ... = AGATTAC
-#' ## CTAATGT = TAATGTC = ... = TCTAATG
-#' cdseguid("GATTACA", "TGTAATC")
-#' #> cdseguid=zCuq031K3_-40pArbl-Y4N9RLnA
+#' @example incl/seguid.R
 #'
 #' @references
 #' 1. Babnigg, G., Giometti, CS. A database of unique protein sequence

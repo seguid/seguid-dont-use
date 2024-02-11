@@ -6,7 +6,7 @@
 \alias{csseguid}
 \alias{ldseguid}
 \alias{cdseguid}
-\title{SEGUID checksum for protein and linear single-stranded DNA}
+\title{SEGUID checksums for linear, circular, single- and double-stranded sequences}
 \usage{
 seguid(seq, alphabet = "{DNA}", form = c("long", "short", "both"))
 
@@ -26,19 +26,27 @@ cdseguid(watson, crick, alphabet = "{DNA}", form = c("long", "short", "both"))
 }
 \arguments{
 \item{seq}{(character string) The sequence for which the checksum
-should be calculated.  The sequence may only comprise of characters
+should be calculated.  The sequence may only comprise of symbols
 in the alphabet specified by the \code{alphabet} argument.}
 
 \item{alphabet}{(character string) The type of sequence used.
 If \code{"{DNA}"} (default), then the input is a DNA sequence.
-If \code{"iupac"}, then the input is a DNA sequence specified with
+If \code{"{IUPAC}"}, then the input is a DNA sequence specified with
 IUPAC ambigous DNA symbols (3).
 If \code{"{RNA}"}, then the input is an RNA sequence.
-If \code{"{protein}"}, then the input is an amino-acid sequence.}
+If \code{"{protein}"}, then the input is an amino-acid sequence.
+A custom alphabet may also be used.
+A non-complementary alphabet is specified as a comma-separated
+set of single symbols, e.g. \code{"X,Y,Z"}.
+A complementary alphabet is specified as a comma-separated
+set of paired symbols, e.g. \code{"AT,TA,CG,GC"}.
+It is also possible to extend a pre-defined alphabet, e.g.
+\code{"{DNA},XY,YX"}.}
 
 \item{form}{(character string) How the checksum is presented.
-If \verb{"long" (default), the full-length checksum is outputted. If }"short", the short, six-digit checksum is outputted.
-If `"both", both the short and the long checksums are outputted.}
+If \code{"long"} (default), the full-length checksum is outputted.
+If \code{"short"}, the short, six-digit checksum is outputted.
+If \code{"both"}, both the short and the long checksums are outputted.}
 
 \item{watson, crick}{(character string) Two reverse-complementary DNA strands.}
 
@@ -59,7 +67,7 @@ Except for \code{seguid()}, which uses \emph{base64} encoding, all functions
 produce checksums using the \emph{base64url} encoding ("Base 64 Encoding
 with URL and Filename Safe Alphabet").
 
-\code{seguid()} calculates the original SEGUID checksum for a linear,
+\code{seguid()} calculates the SEGUID v1 checksum for a linear,
 single-stranded sequence.
 
 \code{lsseguid()} calculates the SEGUID v2 checksum for a linear,
@@ -75,7 +83,7 @@ double-stranded sequence.
 double-stranded sequence.
 }
 \description{
-SEGUID checksum for protein and linear single-stranded DNA
+SEGUID checksums for linear, circular, single- and double-stranded sequences
 }
 \section{Base64 and Base64url encodings}{
 
@@ -99,33 +107,41 @@ the padding character.
 }
 
 \examples{
-## Linear single-stranded DNA:
-## GATTACA
+## SEGUID v1 on linear single-stranded DNA
 seguid("GATTACA")
 #> seguid=tp2jzeCM2e3W4yxtrrx09CMKa/8
 
-## Linear single-stranded DNA
-## GATTACA
+## SEGUID v2 on linear single-stranded DNA
 lsseguid("GATTACA")
 #> lsseguid=tp2jzeCM2e3W4yxtrrx09CMKa_8
 
-## Circular single-stranded DNA
+## SEGUID v2 on cicular single-stranded DNA
 ## GATTACA = ATTACAG = ... = AGATTAC
 csseguid("GATTACA")
 #> csseguid=mtrvbtuwr6_MoBxvtm4BEpv-jKQ
 
-## Linear double-stranded DNA
-## GATTACA
-## CTAATGT
+## SEGUID v2 on linear double-stranded DNA
+##   GATTACA
+##   CTAATGT
 ldseguid("GATTACA", "TGTAATC", overhang = 0)
-#> ldseguid=XscjVNyZarYrROVgGXUCleJcMC
+#> ldseguid=AcRsEcNFrui5wCxI7xxo6wnDYPY
 
-## Circular double-stranded DNA
+## SEGUID v2 on circular double-stranded DNA
 ## GATTACA = ATTACAG = ... = AGATTAC
 ## CTAATGT = TAATGTC = ... = TCTAATG
 cdseguid("GATTACA", "TGTAATC")
 #> cdseguid=zCuq031K3_-40pArbl-Y4N9RLnA
 
+## SEGUID v2 on linear single-stranded expanded
+## epigenetic sequence (Viner et al., 2024)
+viner_DNA <- "{DNA},m1,1m,h2,2h,f3,3f,c4,4c"
+lsseguid("AmT2C", alphabet = viner_DNA)
+#> lsseguid=MW4Rh3lGY2mhwteaSKh1-Kn2fGA
+
+## SEGUID v2 on linear double-stranded expanded
+## epigenetic sequence (Viner et al., 2024)
+ldseguid("AmT2C", "GhA1T", overhang = 0, alphabet = viner_DNA)
+#> ldseguid=rsPDjP4SWr3-ploCeXTdTA80u0Y
 }
 \references{
 \enumerate{
