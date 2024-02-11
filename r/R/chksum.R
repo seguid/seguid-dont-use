@@ -201,7 +201,8 @@ csseguid <- function(seq, alphabet = "{DNA}", form = c("long", "short", "both"))
 }
 
 
-#' @param watson,crick (character string) Two reverse-complementary DNA strands.
+#' @param watson,crick (character strings) Two reverse-complementary DNA
+#' sequences. Both sequences should be specified in the 5'-to-3' direction.
 #'
 #' @param overhang (integer) Amount of 3' overhang in the 5' side of
 #' the molecule. A molecule with 5' overhang has a negative value.

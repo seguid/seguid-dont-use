@@ -48,7 +48,8 @@ If \code{"long"} (default), the full-length checksum is outputted.
 If \code{"short"}, the short, six-digit checksum is outputted.
 If \code{"both"}, both the short and the long checksums are outputted.}
 
-\item{watson, crick}{(character string) Two reverse-complementary DNA strands.}
+\item{watson, crick}{(character strings) Two reverse-complementary DNA
+sequences. Both sequences should be specified in the 5'-to-3' direction.}
 
 \item{overhang}{(integer) Amount of 3' overhang in the 5' side of
 the molecule. A molecule with 5' overhang has a negative value.}
