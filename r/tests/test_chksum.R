@@ -32,25 +32,31 @@ stopifnot(csseguid(m13dna) == truth)
 dlDNA <- "AT"
 truth <- "ldseguid=AWD-dt5-TEua8RbOWfnctJIu9nA"
 stopifnot(ldseguid(dlDNA, rc(dlDNA), 0) == truth)
+stopifnot(ldseguid(dlDNA, rc(dlDNA)) == truth)
 
 dlDNAb <- list("AT", rc("AT"), 0)
 stopifnot(do.call(ldseguid, args = dlDNAb) == truth)
+stopifnot(ldseguid(dlDNA, rc(dlDNA)) == truth)
 
 dlDNA2 <- list("AT", "TA", 1)
 truth <- "ldseguid=JwB2eUmZkCNjyWAv471JeUbiSDM"
 stopifnot(do.call(ldseguid, args = dlDNA2) == truth)
+stopifnot(ldseguid("-AT", "-TA") == truth)
 
 dlDNA3 <- list("TA", "AT", -1)
 truth <- "ldseguid=XBcVadfQevTW_lklW4rdqw5udQ8"
 stopifnot(do.call(ldseguid, args = dlDNA3) == truth)
+stopifnot(ldseguid("-TA", "-AT") == truth)
 
 dlDNA4 <- list("CTATAG", "AT", -2)
 truth <- "ldseguid=_E05Xeo7KnLxrjsqDdpXNw_AIDE"
 stopifnot(do.call(ldseguid, args = dlDNA4) == truth)
+stopifnot(ldseguid("CTATAG", "--AT--") == truth)
 
 dlDNA5 <- list("AT", "CTATAG", 2)
 truth <- "ldseguid=np3hncfQvOh8rZ8Co1Ts_02NXg4"
 stopifnot(do.call(ldseguid, args = dlDNA5) == truth)
+stopifnot(ldseguid("--AT--", "CTATAG") == truth)
 
 truth <- "cdseguid=tYeHZYwxQGDHTqGDcrebERag0AU"
 stopifnot(cdseguid("ACGTT", "AACGT") == truth)

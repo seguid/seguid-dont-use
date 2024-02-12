@@ -88,3 +88,32 @@ repr_from_tuple <- function(watson, crick, overhang, alphabet = COMPLEMENT_ALPHA
 }
 
   
+
+dsseq_to_tuple <- function(watson, crick, overhang) {
+  ## Staggeredness specified via dash symbols ('-')
+  if (!grepl("-", watson, fixed = TRUE) && !grepl("-", crick, fixed = TRUE)) {
+    return(list(watson = watson, crick = crick, overhang = overhang))
+  }
+
+  pattern <- "^([-]*)([^-]*)([-]*)$"
+  stopifnot(grepl(pattern, watson), grepl(pattern, crick), nchar(watson) == nchar(crick))
+  watson_trim <- sub(pattern, "\\2", watson)
+  watson_pad_left <- sub(pattern, "\\1", watson)
+  watson_pad_right <- sub(pattern, "\\3", watson)
+  crick_trim <- sub(pattern, "\\2", crick)
+  crick_pad_left <- sub(pattern, "\\1", crick)
+  crick_pad_right <- sub(pattern, "\\3", crick)
+  
+  if (nchar(watson_pad_left) > 0) {
+    stopifnot(nchar(crick_pad_right) == 0)
+    overhang <- nchar(watson_pad_left)
+  } else if (nchar(crick_pad_left) > 0) {
+    stopifnot(nchar(watson_pad_right) == 0)
+    overhang <- -nchar(crick_pad_left)
+  }
+
+  watson <- watson_trim
+  crick <- crick_trim
+  
+  list(watson = watson, crick = crick, overhang = overhang)
+} ## dsseq_to_tuple()

@@ -213,7 +213,7 @@ csseguid <- function(seq, alphabet = "{DNA}", form = c("long", "short", "both"))
 #'
 #' @rdname seguid
 #' @export
-ldseguid <- function(watson, crick, overhang, alphabet = "{DNA}", form = c("long", "short", "both")) {
+ldseguid <- function(watson, crick, overhang = 0L, alphabet = "{DNA}", form = c("long", "short", "both")) {
   ## Make sure to collate in the 'C' locale
   old_locale <- Sys.getlocale("LC_COLLATE")
   on.exit(Sys.setlocale("LC_COLLATE", old_locale))
@@ -222,7 +222,12 @@ ldseguid <- function(watson, crick, overhang, alphabet = "{DNA}", form = c("long
   if (nchar(watson) == 0 || nchar(crick) == 0) {
     stop("A sequence must not be empty")
   }
-  
+
+  tuple <- dsseq_to_tuple(watson = watson, crick = crick, overhang = overhang)
+  watson <- tuple[["watson"]]
+  crick <- tuple[["crick"]]
+  overhang <- tuple[["overhang"]]
+
   alphabet2 <- get_alphabet(alphabet)
   assert_anneal(watson, crick, overhang = overhang, alphabet = alphabet2)
 

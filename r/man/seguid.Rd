@@ -17,7 +17,7 @@ csseguid(seq, alphabet = "{DNA}", form = c("long", "short", "both"))
 ldseguid(
   watson,
   crick,
-  overhang,
+  overhang = 0L,
   alphabet = "{DNA}",
   form = c("long", "short", "both")
 )
@@ -121,11 +121,17 @@ lsseguid("GATTACA")
 csseguid("GATTACA")
 #> csseguid=mtrvbtuwr6_MoBxvtm4BEpv-jKQ
 
-## SEGUID v2 on linear double-stranded DNA
+## SEGUID v2 on blunt, linear double-stranded DNA
 ##   GATTACA
 ##   CTAATGT
 ldseguid("GATTACA", "TGTAATC", overhang = 0)
 #> ldseguid=AcRsEcNFrui5wCxI7xxo6wnDYPY
+
+## SEGUID v2 on staggered, linear double-stranded DNA
+##   -ATTACA
+##   CTAAT--
+ldseguid("-ATTACA", "--TAATC")
+#> ldseguid=98Klwxd3ZQPGHqnH3BheIuZVHQQ
 
 ## SEGUID v2 on circular double-stranded DNA
 ## GATTACA = ATTACAG = ... = AGATTAC
