@@ -14,13 +14,7 @@ lsseguid(seq, alphabet = "{DNA}", form = c("long", "short", "both"))
 
 csseguid(seq, alphabet = "{DNA}", form = c("long", "short", "both"))
 
-ldseguid(
-  watson,
-  crick,
-  overhang = 0L,
-  alphabet = "{DNA}",
-  form = c("long", "short", "both")
-)
+ldseguid(watson, crick, alphabet = "{DNA}", form = c("long", "short", "both"))
 
 cdseguid(watson, crick, alphabet = "{DNA}", form = c("long", "short", "both"))
 }
@@ -50,9 +44,6 @@ If \code{"both"}, both the short and the long checksums are outputted.}
 
 \item{watson, crick}{(character strings) Two reverse-complementary DNA
 sequences. Both sequences should be specified in the 5'-to-3' direction.}
-
-\item{overhang}{(integer) Amount of 3' overhang in the 5' side of
-the molecule. A molecule with 5' overhang has a negative value.}
 }
 \value{
 The SEGUID functions return a single character string, if \code{form} is
@@ -124,7 +115,7 @@ csseguid("GATTACA")
 ## SEGUID v2 on blunt, linear double-stranded DNA
 ##   GATTACA
 ##   CTAATGT
-ldseguid("GATTACA", "TGTAATC", overhang = 0)
+ldseguid("GATTACA", "TGTAATC")
 #> ldseguid=AcRsEcNFrui5wCxI7xxo6wnDYPY
 
 ## SEGUID v2 on staggered, linear double-stranded DNA
@@ -147,7 +138,7 @@ lsseguid("AmT2C", alphabet = viner_DNA)
 
 ## SEGUID v2 on linear double-stranded expanded
 ## epigenetic sequence (Viner et al., 2024)
-ldseguid("AmT2C", "GhA1T", overhang = 0, alphabet = viner_DNA)
+ldseguid("AmT2C", "GhA1T", alphabet = viner_DNA)
 #> ldseguid=rsPDjP4SWr3-ploCeXTdTA80u0Y
 }
 \references{

@@ -81,14 +81,11 @@ cli_call_fcn <- function(..., alphabet = "{DNA}", file = NULL, debug = FALSE, fc
       args2 <- list(watson = seq, crick = rc(seq, alphabet = alphabet2))
     } else {
       args2 <- tuple_from_repr(seq, alphabet = alphabet2)
+      
+      args2 <- watson_crick_from_tuple(watson = args2[[1]], crick = args2[[2]], overhang = args2[[3]])
     }
     if (debug) {
-      msg <- sprintf("Sequence tuple:\nwatson=%s\ncrick=%s", args2[[1]], args2[[2]])
-    }
-    if (!is.element("overhang", argnames)) {
-      args2 <- args2[-3]
-    } else if (debug) {
-      msg <- sprintf("%s\noverhang=%d", msg, args2[[3]])
+      msg <- sprintf("Sequence tuple:\nwatson=%s\ncrick=%s", sQuote(args2[[1]]), sQuote(args2[[2]]))
     }
     if (debug) message(msg)
   } else {

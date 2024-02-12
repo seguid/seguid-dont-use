@@ -204,16 +204,13 @@ csseguid <- function(seq, alphabet = "{DNA}", form = c("long", "short", "both"))
 #' @param watson,crick (character strings) Two reverse-complementary DNA
 #' sequences. Both sequences should be specified in the 5'-to-3' direction.
 #'
-#' @param overhang (integer) Amount of 3' overhang in the 5' side of
-#' the molecule. A molecule with 5' overhang has a negative value.
-#'
 #' @return
 #' `ldseguid()` calculates the SEGUID v2 checksum for a linear,
 #' double-stranded sequence.
 #'
 #' @rdname seguid
 #' @export
-ldseguid <- function(watson, crick, overhang = 0L, alphabet = "{DNA}", form = c("long", "short", "both")) {
+ldseguid <- function(watson, crick, alphabet = "{DNA}", form = c("long", "short", "both")) {
   ## Make sure to collate in the 'C' locale
   old_locale <- Sys.getlocale("LC_COLLATE")
   on.exit(Sys.setlocale("LC_COLLATE", old_locale))
@@ -223,7 +220,7 @@ ldseguid <- function(watson, crick, overhang = 0L, alphabet = "{DNA}", form = c(
     stop("A sequence must not be empty")
   }
 
-  tuple <- dsseq_to_tuple(watson = watson, crick = crick, overhang = overhang)
+  tuple <- dsseq_to_tuple(watson = watson, crick = crick, overhang = 0L)
   watson <- tuple[["watson"]]
   crick <- tuple[["crick"]]
   overhang <- tuple[["overhang"]]
@@ -271,5 +268,5 @@ cdseguid <- function(watson, crick, alphabet = "{DNA}", form = c("long", "short"
       w <- crick_min
   }
 
-  with_prefix(ldseguid(w, rc(w, alphabet = alphabet2), overhang = 0, alphabet = alphabet), prefix = "cdseguid=", form = form)
+  with_prefix(ldseguid(watson = w, crick = rc(w, alphabet = alphabet2), alphabet = alphabet), prefix = "cdseguid=", form = form)
 }

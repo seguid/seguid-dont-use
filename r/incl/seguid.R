@@ -14,7 +14,7 @@ csseguid("GATTACA")
 ## SEGUID v2 on blunt, linear double-stranded DNA
 ##   GATTACA
 ##   CTAATGT
-ldseguid("GATTACA", "TGTAATC", overhang = 0)
+ldseguid("GATTACA", "TGTAATC")
 #> ldseguid=AcRsEcNFrui5wCxI7xxo6wnDYPY
 
 ## SEGUID v2 on staggered, linear double-stranded DNA
@@ -37,5 +37,5 @@ lsseguid("AmT2C", alphabet = viner_DNA)
 
 ## SEGUID v2 on linear double-stranded expanded
 ## epigenetic sequence (Viner et al., 2024)
-ldseguid("AmT2C", "GhA1T", overhang = 0, alphabet = viner_DNA)
+ldseguid("AmT2C", "GhA1T", alphabet = viner_DNA)
 #> ldseguid=rsPDjP4SWr3-ploCeXTdTA80u0Y
