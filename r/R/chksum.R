@@ -246,15 +246,13 @@ cdseguid <- function(watson, crick, alphabet = "{DNA}", form = c("long", "short"
   
   stopifnot(nchar(watson) == nchar(crick))
   
-  alphabet2 <- get_alphabet(alphabet)
-  if (watson != rc(crick, alphabet = alphabet2)) {
-    stop("Mismatched basepairs")
-  }
+  assert_complementary(watson, crick, alphabet = alphabet)
 
   watson_min <- rotate_to_min(watson)
   crick_min <- rotate_to_min(crick)
 
   ## Keep the "minimum" of the two variants
+  alphabet2 <- get_alphabet(alphabet)
   if (is_seq_less_than(watson_min, crick_min)) {
       w <- watson_min
       c <- rc(w, alphabet = alphabet2)  ## FIXME [#74]
