@@ -21,29 +21,11 @@ rotate <- function(seq, amount = 0) {
   seq
 }
 
-complementary <- function(seq, alphabet = COMPLEMENT_ALPHABET_DNA) {
-  ## Validate 'alphabet':
-  assert_alphabet(alphabet)
-
-  ## Validate 'seq':
-  assert_in_alphabet(seq, alphabet = names(alphabet))
-
-  seq <- strsplit(seq, split = "", fixed = TRUE)[[1]]
-  seq_c <- alphabet[seq]
-  paste(seq_c, collapse = "")
-}
-
 reverse <- function(seq) {
   seq <- strsplit(seq, split = "", fixed = TRUE)[[1]]
   seq <- rev(seq)
   paste(seq, collapse = "")
 } 
-
-# Reverse complement
-rc <- function(seq, alphabet = COMPLEMENT_ALPHABET_DNA) {
-  reverse(complementary(seq, alphabet = alphabet))
-}
-
 
 is_seq_less_than <- function(a, b) {
   ## Make sure to collate in the 'C' locale

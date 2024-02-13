@@ -248,17 +248,19 @@ cdseguid <- function(watson, crick, alphabet = "{DNA}", form = c("long", "short"
   
   assert_complementary(watson, crick, alphabet = alphabet)
 
-  watson_min <- rotate_to_min(watson)
-  crick_min <- rotate_to_min(crick)
+  amount_watson <- min_rotation(watson)
+  watson_min <- rotate(watson, amount = amount_watson)
+  
+  amount_crick <- min_rotation(crick)
+  crick_min <- rotate(crick, amount = amount_crick)
 
   ## Keep the "minimum" of the two variants
-  alphabet2 <- get_alphabet(alphabet)
   if (is_seq_less_than(watson_min, crick_min)) {
       w <- watson_min
-      c <- rc(w, alphabet = alphabet2)  ## FIXME [#74]
+      c <- rotate(crick, amount = -amount_watson)
   } else {
       w <- crick_min
-      c <- rc(w, alphabet = alphabet2)  ## FIXME [#74]
+      c <- rotate(watson, amount = -amount_crick)
   }
 
   with_prefix(ldseguid(watson = w, crick = c, alphabet = alphabet), prefix = "cdseguid=", form = form)
