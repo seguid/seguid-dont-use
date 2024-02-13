@@ -79,7 +79,7 @@ cli_call_fcn <- function(..., alphabet = "{DNA}", file = NULL, debug = FALSE, fc
   if (is.element("crick", argnames)) {
     nseq <- length(strsplit(seq, split = "\n", fixed = TRUE)[[1]])
     if (nseq == 1) {
-      args2 <- list(watson = seq, crick = rc(seq, alphabet = alphabet2))
+      stop(sprintf("Specified sequence string contains a single sequence, but expected two: %s", seq))
     } else {
       seq_spec <- parse_sequence_string(seq)
       args2 <- list(watson = seq_spec[["watson"]], crick = seq_spec[["crick"]])

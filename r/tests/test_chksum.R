@@ -1,6 +1,5 @@
 library(seguid)
 
-rc <- seguid:::rc
 reverse <- seguid:::reverse
 
 assert_error <- function(expr, envir = parent.frame()) {
@@ -29,9 +28,8 @@ truth <- "csseguid=aAjgnsF9cPI6cu8IQ81sYnstVzU"
 stopifnot(csseguid(m13dna) == truth)
 
 
-dlDNA <- "AT"
 truth <- "ldseguid=AWD-dt5-TEua8RbOWfnctJIu9nA"
-stopifnot(ldseguid(dlDNA, rc(dlDNA)) == truth)
+stopifnot(ldseguid("AT", "AT") == truth)
 
 truth <- "ldseguid=JwB2eUmZkCNjyWAv471JeUbiSDM"
 stopifnot(ldseguid("-AT", "-TA") == truth)
@@ -50,8 +48,9 @@ stopifnot(cdseguid("ACGTT", "AACGT") == truth)
 stopifnot(cdseguid("AACGT", "ACGTT") == truth)
 
 pUC19dna <- readLines("test_data/pUC19.txt", warn = FALSE)
+pUC19dna_rc <- reverse(chartr("ACGT", "TGCA", pUC19dna))
 truth <- "cdseguid=zhw8Yrxfo3FO5DDccx4PamBVPCQ"
-stopifnot(cdseguid(pUC19dna, rc(pUC19dna)) == truth)
+stopifnot(cdseguid(pUC19dna, pUC19dna_rc) == truth)
 bfr <- readLines("test_data/pUC19_minimal_rotation_watson_linebreak_crick.txt", warn = FALSE)
 w <- bfr[1]
 c <- bfr[2]
