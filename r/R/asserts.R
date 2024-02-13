@@ -57,21 +57,32 @@ assert_alphabet <- function(alphabet) {
   }
 }
 
-assert_anneal <- function(watson, crick, overhang, alphabet = COMPLEMENT_ALPHABET_DNA) {
+assert_complementary <- function(watson, crick, alphabet = COMPLEMENT_ALPHABET_DNA) {
+  alphabet <- get_alphabet(alphabet)
+
+  ## Validate 'alphabet':
   assert_alphabet(alphabet)
+
+  if (!"-" %in% names(alphabet)) {
+    alphabet <- c(alphabet, "-" = "-")
+  }
+
+  ## Validate 'watson' and 'crick':
+  stopifnot(nchar(watson) == nchar(crick))
   assert_in_alphabet(watson, alphabet = names(alphabet))
   assert_in_alphabet(crick, alphabet = names(alphabet))
-  stopifnot(length(overhang) == 1, is.numeric(overhang), !is.na(overhang))
-  stopifnot(-nchar(watson) < overhang, overhang < nchar(crick))
 
-  crick_rc <- rc(crick, alphabet = alphabet)
-  
-  up <- substr(watson,   start = max(-overhang, 0) + 1, stop = nchar(crick)  - overhang)
-  dn <- substr(crick_rc, start = max(+overhang, 0) + 1, stop = nchar(watson) + overhang)
-
-  if (up != dn) {
-    stop("Mismatched basepairs.")
+  watson <- strsplit(watson, split = "", fixed = TRUE)[[1]]
+  crick <- rev(strsplit(crick, split = "", fixed = TRUE)[[1]])
+  for (kk in seq_along(watson)) {
+    if (watson[kk] == "-" || crick[kk] == "-")
+      next
+    if (!crick[kk] %in% alphabet[names(alphabet) == watson[kk]]) {
+      stop(sprintf("Non-complementary basepair (%s,%s) detected at position %d", watson[kk], crick[kk], kk))
+    }
   }
+  
+  invisible(TRUE)
 }
 
 

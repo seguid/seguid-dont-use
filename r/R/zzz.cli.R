@@ -18,7 +18,7 @@ Rscript -e seguid::ldseguid <<< $\'-CGT\nTGCA\'
 Rscript -e seguid::cdseguid <<< $\'ACGT\nTGCA\'
 
 Version: {{ version }}
-Copyright: Henrik Bengtsson (2023)
+Copyright: Henrik Bengtsson (2023-2024)
 License: MIT
 '
 
@@ -74,18 +74,18 @@ cli_call_fcn <- function(..., alphabet = "{DNA}", file = NULL, debug = FALSE, fc
     message(sprintf("Arguments:\n%s", paste(capture.output(str(args)), collapse = "\n")))
   }
 
+  ## Parse sequence string. This will throw an error if not meeting the minimal specifications
   argnames <- names(formals(fcn))
   if (is.element("crick", argnames)) {
     nseq <- length(strsplit(seq, split = "\n", fixed = TRUE)[[1]])
     if (nseq == 1) {
       args2 <- list(watson = seq, crick = rc(seq, alphabet = alphabet2))
     } else {
-      args2 <- tuple_from_repr(seq, alphabet = alphabet2)
-      
-      args2 <- watson_crick_from_tuple(watson = args2[[1]], crick = args2[[2]], overhang = args2[[3]])
+      seq_spec <- parse_sequence_string(seq)
+      args2 <- list(watson = seq_spec[["watson"]], crick = seq_spec[["crick"]])
     }
     if (debug) {
-      msg <- sprintf("Sequence tuple:\nwatson=%s\ncrick=%s", sQuote(args2[[1]]), sQuote(args2[[2]]))
+      msg <- sprintf("Double-stranded sequence pair:\nwatson=%s\ncrick=%s", sQuote(args2[[1]]), sQuote(args2[[2]]))
     }
     if (debug) message(msg)
   } else {

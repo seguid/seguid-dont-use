@@ -220,26 +220,16 @@ ldseguid <- function(watson, crick, alphabet = "{DNA}", form = c("long", "short"
     stop("A sequence must not be empty")
   }
 
-  tuple <- dsseq_to_tuple(watson = watson, crick = crick, overhang = 0L)
-  watson <- tuple[["watson"]]
-  crick <- tuple[["crick"]]
-  overhang <- tuple[["overhang"]]
-
-  alphabet2 <- get_alphabet(alphabet)
-  assert_anneal(watson, crick, overhang = overhang, alphabet = alphabet2)
-
-  watson_crick_repr <- repr_from_tuple(watson = watson, crick = crick, overhang =  overhang, alphabet = alphabet2, space = "-")
-  crick_watson_repr <- strsplit(watson_crick_repr, split = "\n")[[1]]
-  crick_watson_repr <- paste(rev(crick_watson_repr), collapse = "\n")
-
-  if (is_seq_less_than(watson_crick_repr, crick_watson_repr)) {
-    repr <- watson_crick_repr
-  } else {
-    repr <- crick_watson_repr
-  }
-
   alphabet2 <- paste0(alphabet, "+[-\n]")
-  with_prefix(lsseguid(repr, alphabet = alphabet2), prefix = "ldseguid=", form = form)
+  assert_complementary(watson, crick, alphabet = alphabet2)
+
+  rcrick <- reverse(crick)
+  if (is_seq_less_than(watson, rcrick)) {
+    spec <- paste(watson, rcrick, sep = "\n")
+  } else {
+    spec <- paste(rcrick, watson, sep = "\n")
+  }
+  with_prefix(lsseguid(spec, alphabet = alphabet2), prefix = "ldseguid=", form = form)
 }
 
 
@@ -255,8 +245,11 @@ cdseguid <- function(watson, crick, alphabet = "{DNA}", form = c("long", "short"
   }
   
   stopifnot(nchar(watson) == nchar(crick))
+  
   alphabet2 <- get_alphabet(alphabet)
-  assert_anneal(watson, crick, overhang = 0, alphabet = alphabet2)
+  if (watson != rc(crick, alphabet = alphabet2)) {
+    stop("Mismatched basepairs")
+  }
 
   watson_min <- rotate_to_min(watson)
   crick_min <- rotate_to_min(crick)
@@ -264,9 +257,11 @@ cdseguid <- function(watson, crick, alphabet = "{DNA}", form = c("long", "short"
   ## Keep the "minimum" of the two variants
   if (is_seq_less_than(watson_min, crick_min)) {
       w <- watson_min
+      c <- rc(w, alphabet = alphabet2)  ## FIXME [#74]
   } else {
       w <- crick_min
+      c <- rc(w, alphabet = alphabet2)  ## FIXME [#74]
   }
 
-  with_prefix(ldseguid(watson = w, crick = rc(w, alphabet = alphabet2), alphabet = alphabet), prefix = "cdseguid=", form = form)
+  with_prefix(ldseguid(watson = w, crick = c, alphabet = alphabet), prefix = "cdseguid=", form = form)
 }
