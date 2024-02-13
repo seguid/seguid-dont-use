@@ -39,12 +39,13 @@ assert_in_alphabet <- function(seq, alphabet) {
 
 assert_alphabet <- function(alphabet) {
   stopifnot(is.character(alphabet), !anyNA(alphabet), is.character(names(alphabet)))
-  
-  dups <- names(alphabet)[duplicated(names(alphabet))]
-  if (length(dups) > 0) {
-    dups <- paste(dups, collapse = " ")
-    stop(sprintf("Detected duplicated names (%s) in 'alphabet'", dups))
-  }
+
+#  ## Assert unique letters (only for bijective alphabets)
+#  dups <- names(alphabet)[duplicated(names(alphabet))]
+#  if (length(dups) > 0) {
+#    dups <- paste(dups, collapse = " ")
+#    stop(sprintf("Detected duplicated names (%s) in 'alphabet'", dups))
+#  }
   
   if (all(nchar(alphabet) == 0)) {
     return()
