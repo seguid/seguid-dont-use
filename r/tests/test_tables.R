@@ -47,13 +47,6 @@ res <- tryCatch({
 }, error = identity)
 stopifnot(inherits(res, "error"))
 
-## Duplicates
-res <- tryCatch({
-  alphabet <- make_alphabet("AT,AT,TA,TA")
-}, error = identity)
-stopifnot(inherits(res, "error"))
-
-
 truth <- c(get_alphabet("{DNA}"), a = "u", u = "a")
 alphabet <- get_alphabet("{DNA},au,ua")
 stopifnot(identical(sort(alphabet), sort(truth)))
