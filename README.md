@@ -1,51 +1,14 @@
-[![Python checks](https://github.com/MetabolicEngineeringGroupCBMA/seguid/actions/workflows/check-python.yml/badge.svg)](https://github.com/MetabolicEngineeringGroupCBMA/seguid/actions/workflows/check-python.yml)
-[![R checks](https://github.com/MetabolicEngineeringGroupCBMA/seguid/actions/workflows/check-r.yml/badge.svg)](https://github.com/MetabolicEngineeringGroupCBMA/seguid/actions/workflows/check-r.yml)
+# SEGUID v2: Development and Discussions
 
+This repository was used to developer SEGUID v2, which is an extension
+of the original SEGUID method. Since then, implementations of SEGUID
+v2 can now be found in repositories:
 
-# SEGUID v2: Checksums Circular, Linear, Single- and Double-Stranded Sequences
+* https://github.com/seguid/seguid-python (Python implementation)
+* https://github.com/seguid/seguid-r (R implementation)
 
-This repository hosts packaged implementations in [Python](python/)
-and [R](r/) of SEGUID v2 together with the original SEGUID algorithm.
+The remain parts of this repository hosts the deprecated "SEGUID
+v1.5", which was the first iteration of the SEGUID extension that
+later became SEGUID v2.  Although some parts of v1.5 and v2 are the
+same, there are enough difference that no one should use v1.5 anymore.
 
-## Quick examples
-
-Python:
-
-```python
->>> from seguid import *
-
->>> lsseguid("AT")
-'lsseguid=Ax_RG6hzSrMEEWoCO1IWMGska-4'
-
->>> cdseguid("AT", "AT")
-'cdseguid=AWD-dt5-TEua8RbOWfnctJIu9nA'
-```
-
-```sh
-$ python -m seguid --type="lsseguid" <<< "AT"
-lsseguid=Ax_RG6hzSrMEEWoCO1IWMGska-4
-
-$ python -m seguid --type="cdseguid" <<< $'AT\nTA'
-cdseguid=AWD-dt5-TEua8RbOWfnctJIu9nA
-```
-
-
-R:
-
-```r
-> library(seguid)
-
-> lsseguid("AT")
-[1] "lsseguid=Ax_RG6hzSrMEEWoCO1IWMGska-4"
-
-> cdseguid("AT", "AT")
-[1] "cdseguid=AWD-dt5-TEua8RbOWfnctJIu9nA"
-```
-
-```sh
-$ Rscript -e seguid::lsseguid <<< "AT"
-lsseguid=Ax_RG6hzSrMEEWoCO1IWMGska-4
-
-$ Rscript -e seguid::cdseguid <<< $'AT\nTA'
-cdseguid=AWD-dt5-TEua8RbOWfnctJIu9nA
-```
